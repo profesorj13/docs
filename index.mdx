@@ -1,97 +1,81 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "TUNI"
+description: "Plataforma adaptativa de tutoría universitaria con Ada, una tutora con IA que personaliza la experiencia educativa según las necesidades de cada estudiante."
+icon: "graduation-cap"
 ---
 
-## Setting up
+# Bienvenido a TUNI
 
-Get your documentation site up and running in minutes.
+TUNI (Tutoría Universitaria Inteligente) es una plataforma de tutoría adaptativa para estudiantes universitarios. A través de Ada, una tutora con personalidad propia, TUNI personaliza el recorrido de aprendizaje según el nivel, perfil y necesidades de cada alumno.
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+> Un tutor que adapta la experiencia educativa a las necesidades de cada alumno a través de un modelo de IA.
 
-## Make it yours
+## Conocé a Ada
 
-Design a docs site that looks great and empowers your users.
+Ada es la tutora virtual de TUNI. No es un chatbot genérico ni un asistente de IA: es una tutora con personalidad propia que acompaña al estudiante durante todo su recorrido académico. Ada usa métodos socráticos, adapta su estilo de explicación al perfil del alumno, y nunca da respuestas directas durante evaluaciones.
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Identidad de Ada" icon="bot" href="/identity">
+    Conocé quién es Ada: su personalidad, voz, tono, comportamiento pedagógico y límites. La fuente de verdad sobre la tutora de TUNI.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Clase" icon="chalkboard-teacher" href="/epicas/clase/overview">
+    Experiencia principal de tutoría adaptativa. Comprende los modos de enseñanza, comprobación y el flujo completo de una sesión de estudio.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Onboarding" icon="door-open" href="/epicas/onboarding/overview">
+    Flujo de incorporación de nuevos usuarios. Registro de preferencias, presentación de Ada y configuración inicial del perfil del estudiante.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Dashboard" icon="gauge" href="/epicas/dashboard/overview">
+    Panel de control para estudiantes. Seguimiento de progreso, métricas de estudio y acceso a los cursos disponibles.
   </Card>
-</Columns>
+  <Card title="Evaluaciones" icon="circle-check" href="/epicas/evaluaciones/overview">
+    Sistema de comprobación de conocimientos. Actividades, retroalimentación formativa y métricas de desempeño.
+  </Card>
+  <Card title="Supervisores" icon="users" href="/epicas/supervisores/overview">
+    Herramientas para docentes y stakeholders. Seguimiento de cohortes, análisis de desempeño y gestión de contenido.
+  </Card>
+  <Card title="Contenido" icon="book-open" href="/epicas/contenido/overview">
+    Gestión y generación de material educativo. Píldoras de conocimiento, actividades y recursos de aprendizaje.
+  </Card>
+  <Card title="Integraciones" icon="plug" href="/integraciones/overview">
+    Integración con LMS externos, comenzando por Canvas. Widget de chat anónimo y autenticación OAuth.
+  </Card>
+</CardGroup>
 
-## Create beautiful pages
+---
 
-Everything you need to create world-class documentation.
+## Estructura de épicas
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+Todas las funcionalidades de TUNI están organizadas en épicas. El estado actual de desarrollo es:
 
-## Need inspiration?
+| Épica | Descripción | Estado |
+|-------|-------------|--------|
+| **Clase** | Experiencia principal de tutoría adaptativa | En desarrollo |
+| **Onboarding** | Flujo de incorporación de usuarios | En desarrollo |
+| **Dashboard** | Panel de control para estudiantes | En desarrollo |
+| **Supervisores** | Herramientas para docentes y stakeholders | En desarrollo |
+| **Integraciones** | Integración con LMS externos | En desarrollo |
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+---
+
+## Convenciones de documentación
+
+### Nomenclatura de archivos
+
+| Archivo | Contenido |
+|---------|-----------|
+| `overview.mdx` | Overview de la épica o feature |
+| `spec.mdx` | Especificación funcional detallada |
+| `tickets.mdx` | Lista de historias y tickets derivados |
+| `prompt.mdx` | System prompts para el LLM |
+
+---
+
+## Referencias rápidas
+
+- **Figma:** Pendiente de agregar
+- **Plane (Tickets):** Pendiente de agregar
+- **Repositorio:** Pendiente de agregar
+
+---
+
+*Última actualización: Enero 2026*

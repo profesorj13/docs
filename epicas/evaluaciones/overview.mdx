@@ -1,0 +1,105 @@
+---
+title: "Evaluaciones"
+description: "Evaluaciones optativas por módulo para que el estudiante mida su dominio y reciba feedback accionable."
+icon: "clipboard-check"
+---
+
+## Problema
+
+El estudiante no tiene forma de medir su nivel real de dominio sobre un módulo antes de un examen. Necesita una instancia de práctica que simule condiciones de evaluación real, le muestre su evolución entre intentos y le indique qué reforzar.
+
+## Objetivos
+
+<CardGroup cols={2}>
+  <Card title="Medir dominio" icon="bullseye">
+    A nivel módulo de forma realista.
+  </Card>
+  <Card title="Mostrar progreso" icon="chart-line">
+    Comparando resultados entre intentos.
+  </Card>
+  <Card title="Identificar áreas de mejora" icon="magnifying-glass">
+    Con desglose por unidad.
+  </Card>
+  <Card title="Conectar con aprendizaje" icon="link">
+    Derivar a clase de refuerzo desde los errores.
+  </Card>
+</CardGroup>
+
+<Note>
+  La evaluación se mantiene como práctica **no bloqueante** en MVP.
+</Note>
+
+## Alcance MVP
+
+### Incluye
+
+- **Iniciar evaluación**: acceso desde Dashboard (por módulo).
+- **Flujo de evaluación**: preguntas sin feedback en tiempo real.
+- **Pantalla de cierre**:
+  - Nota obtenida.
+  - Gráfico por unidad (puntaje por cada unidad del módulo).
+  - Áreas fuertes / Áreas de mejora.
+  - Comparación con evaluación anterior (si existe).
+  - "Ver detalle" — navegación pregunta por pregunta con feedback.
+  - "Aprender de mis errores" — clase de refuerzo específica.
+  - "Ir a mi materia" — cerrar.
+- **Historial de evaluaciones**: side panel agrupado por módulo ("Ver evaluaciones").
+
+### No incluye
+
+- Evaluaciones por unidad (solo a nivel módulo en MVP).
+- Sugerencia automática de cuándo evaluar (no hay fechas de parcial en el sistema).
+- Pool de preguntas: definición de contenido + backend pendiente.
+
+## Principios de diseño
+
+<Accordion title="Simulación de examen real">
+  Sin pistas, feedback ni indicadores de acierto/error durante la evaluación. El estudiante responde todas las preguntas y recibe resultados al final.
+</Accordion>
+
+<Accordion title="Feedback accionable al cierre">
+  No solo mostrar nota: desglosar por unidad, señalar fortalezas y debilidades. Ofrecer acciones concretas: revisar detalle, aprender de errores, volver a la materia.
+</Accordion>
+
+<Accordion title="Progreso visible">
+  Comparar con evaluación anterior para que el estudiante vea su evolución.
+</Accordion>
+
+## Sub-épicas
+
+| Componente | Descripción |
+|---|---|
+| Flujo de evaluación | Preguntas sin feedback, entrega al final |
+| Cierre y resultados | Nota, desglose por unidad, comparativa, acciones |
+| Historial | Side panel con intentos anteriores agrupados por módulo |
+| Clase de refuerzo | "Aprender de mis errores" — derivación a épica Clase |
+
+## Decisiones abiertas
+
+<Warning>
+  Los siguientes puntos están pendientes de definición para avanzar en el desarrollo:
+  - Cuándo sugerir evaluación (no hay fechas de parcial en el sistema).
+  - Pool de preguntas por módulo: definición de contenido + backend.
+  - Diseño UX del flujo de preguntas (cantidad, tipos, navegación).
+  - Clase de refuerzo ("Aprender de mis errores"): integración con épica Clase.
+</Warning>
+
+## Referencias
+
+- [Decisiones de Diseño](/epicas/evaluaciones/decisiones)
+- [Historias de Usuario](/epicas/evaluaciones/historias)
+- [Especificación Funcional](/epicas/evaluaciones/spec)
+
+### Épicas relacionadas
+
+<CardGroup cols={3}>
+  <Card title="Dashboard" icon="gauge" href="/epicas/dashboard/overview">
+    Punto de entrada a evaluaciones.
+  </Card>
+  <Card title="Clase" icon="chalkboard-teacher" href="/epicas/clase/overview">
+    Clase de refuerzo desde errores.
+  </Card>
+  <Card title="Contenido" icon="book" href="/epicas/contenido/overview">
+    Pool de preguntas.
+  </Card>
+</CardGroup>

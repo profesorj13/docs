@@ -1,0 +1,196 @@
+---
+title: "Especificación Funcional"
+description: "Flujos, pantallas, componentes, métricas y consideraciones técnicas de la épica Supervisores."
+icon: "file-text"
+---
+
+## Fuentes
+
+- Transcripción reunión Supervisores 2026-01-29
+
+## Usuarios
+
+| Rol | Nivel de vista | Necesidades principales |
+|-----|----------------|-------------------------|
+| **Docente** | Por materia | Ver progreso y resultados de sus alumnos en su/s materia/s |
+| **Coordinador** | Por carrera/programa | Vista agregada de múltiples materias y cohortes |
+| **Administrador** | Institucional | Métricas globales del sistema, todas las materias y alumnos |
+| **Curador de contenido** | Por contenido/materia | Métricas de efectividad del contenido educativo |
+
+## Flujos principales
+
+### Flujo 1: Dashboard por materia (Docente)
+
+<Steps>
+  <Step title="Accede al sistema">
+    El docente accede al sistema y ve la lista de sus materias.
+  </Step>
+  <Step title="Selecciona una materia">
+    Selecciona una materia.
+  </Step>
+  <Step title="Dashboard de materia">
+    Se muestra el **dashboard de materia** con:
+    - **Métricas generales:** cantidad de alumnos activos, promedio de dominio, tasa de actividad semanal, alumnos en riesgo.
+    - **Listado de alumnos** con filtros (por dominio, actividad, estado).
+    - Indicadores visuales para outliers: alumnos destacados y alumnos en riesgo.
+  </Step>
+  <Step title="Detalle individual del alumno">
+    El docente selecciona un alumno para ver el **detalle individual**:
+    - Dominio por módulo/unidad.
+    - Historial de clases y evaluaciones.
+    - Tiempo de estudio.
+    - Tendencia (mejora/retroceso).
+  </Step>
+</Steps>
+
+### Flujo 2: Dashboard agregado (Coordinador / Administrador)
+
+<Steps>
+  <Step title="Accede al sistema">
+    El coordinador o administrador accede al sistema.
+  </Step>
+  <Step title="Dashboard institucional">
+    Se muestra el **dashboard institucional** con:
+    - **Métricas institucionales:** total alumnos activos, promedio global de dominio, tasa de retención, materias con mejor/peor desempeño.
+    - **Comparativas entre materias:** ranking de materias por dominio promedio, actividad, progreso.
+  </Step>
+  <Step title="Drill-down por nivel">
+    El usuario puede hacer **drill-down** por niveles de agregación:
+    Institucional → Programa/carrera → Materia → Alumno.
+  </Step>
+  <Step title="Métricas por nivel">
+    En cada nivel se muestran métricas relevantes y la posibilidad de profundizar.
+  </Step>
+</Steps>
+
+### Flujo 3: Curaduría de contenido (Curador)
+
+<Steps>
+  <Step title="Accede a la sección de curaduría">
+    El curador accede a la sección de curaduría.
+  </Step>
+  <Step title="Métricas por concepto/contenido">
+    Se muestran **métricas por concepto/contenido**:
+    - Tasa de acierto por actividad.
+    - Actividades con bajo rendimiento (posible problema de calidad).
+    - Actividades más y menos utilizadas.
+    - Correlación entre actividad y mejora de dominio.
+  </Step>
+  <Step title="Gestión de revisión">
+    El curador puede marcar actividades para revisión, edición o reemplazo.
+  </Step>
+</Steps>
+
+## Pantallas / Módulos
+
+| Pantalla | Descripción | Estado |
+|----------|-------------|--------|
+| Lista de materias (Docente) | Materias asignadas al docente con métricas resumidas | En progreso |
+| Dashboard de materia | Métricas generales, listado de alumnos, filtros | En progreso |
+| Detalle de alumno | Dominio por módulo, historial, tiempo, tendencia | En progreso |
+| Dashboard institucional | Métricas globales, comparativas entre materias | En progreso |
+| Drill-down por programa | Materias del programa con métricas comparativas | En progreso |
+| Curaduría de contenido | Métricas por actividad/concepto, gestión de revisión | En progreso |
+
+## Niveles de agregación
+
+```
+Institucional (Admin)
+  └── Programa / Carrera (Coordinador)
+       └── Materia (Docente)
+            └── Alumno (detalle individual)
+```
+
+Cada nivel permite drill-down al siguiente y drill-up al anterior. Las métricas se agregan automáticamente al nivel correspondiente.
+
+## Componentes
+
+### Layout y navegación
+
+- Sidebar con navegación por rol (materias para docente, programas para coordinador, global para admin).
+- Breadcrumb para indicar nivel de agregación actual.
+- Selector de periodo (semana, mes, cuatrimestre).
+
+### Cards de métricas
+
+- `MetricCard`: componente reutilizable con título, valor principal, tendencia (flecha arriba/abajo) y periodo.
+- Variantes: numérico, porcentaje, ratio.
+
+### Tablas de alumnos
+
+- Tabla con columnas configurables: nombre, dominio, actividad reciente, estado, tendencia.
+- Filtros: por dominio (alto/medio/bajo), por actividad (activo/inactivo), por estado (en riesgo/normal/destacado).
+- Ordenamiento por cualquier columna.
+- Paginación.
+
+### Gráficos
+
+- Gráfico de barras: comparativa entre materias o entre alumnos.
+- Gráfico de línea: tendencia temporal de métricas.
+- Donut/gauge: dominio promedio.
+
+### Drill-down
+
+- Click en cualquier fila (materia, programa, alumno) navega al nivel inferior.
+- Breadcrumb se actualiza automáticamente.
+
+### Exportación
+
+<Note>
+  Pendiente de definición para MVP (fuera de alcance inicial).
+</Note>
+
+## Métricas
+
+### Métricas de progreso de alumnos
+
+| Métrica | Descripción | Nivel |
+|---------|-------------|-------|
+| Alumnos activos | Cantidad de alumnos con actividad en el periodo | Materia, Programa, Institucional |
+| Dominio promedio | Promedio de dominio de todos los alumnos | Materia, Programa, Institucional |
+| Tasa de actividad semanal | Porcentaje de alumnos con al menos 1 sesión en la semana | Materia, Programa |
+| Alumnos en riesgo | Alumnos con bajo dominio y/o inactividad prolongada | Materia, Programa, Institucional |
+| Alumnos destacados | Alumnos con alto dominio y actividad consistente | Materia, Programa |
+| Tiempo promedio de estudio | Horas promedio por alumno en el periodo | Materia |
+| Evaluaciones completadas | Cantidad de evaluaciones realizadas en el periodo | Materia |
+| Mejora promedio entre intentos | Diferencial promedio de nota entre evaluaciones consecutivas | Materia |
+
+### Métricas de curaduría de contenido
+
+| Métrica | Descripción | Nivel |
+|---------|-------------|-------|
+| Tasa de acierto por actividad | Porcentaje de respuestas correctas por actividad | Concepto |
+| Actividades con bajo rendimiento | Actividades donde la tasa de acierto es anómalamente baja | Concepto, Unidad |
+| Actividades más utilizadas | Ranking de actividades por cantidad de usos | Materia |
+| Correlación actividad-dominio | Relación entre completar una actividad y mejora de dominio | Concepto |
+| Actividades pendientes de revisión | Cantidad de actividades marcadas para revisión | Materia |
+
+## Consideraciones técnicas
+
+<Accordion title="Vistas adaptadas por rol">
+  Cada usuario ve únicamente la información correspondiente a su ámbito y permisos. El modelo de autorización (quién puede ver qué) está pendiente de definición.
+</Accordion>
+
+<Accordion title="Insights accionables">
+  No solo mostrar métricas sino señalar oportunidades de intervención. Destacar outliers (alumnos destacados y en riesgo) de forma visual.
+</Accordion>
+
+<Accordion title="Definición de «alumno en riesgo»">
+  Criterios específicos pendientes (días sin actividad, porcentaje de errores, tendencia negativa, etc.).
+</Accordion>
+
+<Accordion title="Frecuencia de actualización">
+  Pendiente de definir si las métricas son en tiempo real o batch diario.
+</Accordion>
+
+<Accordion title="Alertas y notificaciones">
+  Automatizadas o manuales, pendiente de definición. Fuera de alcance MVP.
+</Accordion>
+
+<Accordion title="Exportación de datos">
+  Formatos y automatización pendientes. Fuera de alcance MVP.
+</Accordion>
+
+<Accordion title="Integración con LMS">
+  Si los datos vienen de Canvas o viven solo en TUNI, ver épica Integraciones.
+</Accordion>

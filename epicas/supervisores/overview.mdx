@@ -1,0 +1,103 @@
+---
+title: "Supervisores"
+description: "Herramientas para docentes, coordinadores y administradores que necesitan visibilidad sobre el progreso de los alumnos y la curaduría de contenido."
+icon: "users"
+---
+
+## Problema
+
+Los stakeholders del sistema (docentes, coordinadores, administradores) no tienen forma de conocer la situación general del progreso de los alumnos ni la efectividad del contenido educativo. Sin visibilidad, no pueden tomar decisiones pedagógicas ni intervenir a tiempo ante alumnos en riesgo.
+
+## Objetivos
+
+<CardGroup cols={2}>
+  <Card title="Proveer visibilidad" icon="eye">
+    Del progreso académico a docentes, coordinadores y administradores.
+  </Card>
+  <Card title="Facilitar toma de decisiones" icon="chart-bar">
+    Pedagógicas y estratégicas basadas en datos.
+  </Card>
+  <Card title="Intervención temprana" icon="triangle-exclamation">
+    Al detectar alumnos en riesgo o con bajo rendimiento.
+  </Card>
+  <Card title="Monitorear calidad del contenido" icon="star">
+    Mediante métricas de uso y efectividad.
+  </Card>
+</CardGroup>
+
+<Note>
+  Soporta diferentes niveles de agregación según el rol y permisos del usuario.
+</Note>
+
+## Alcance MVP
+
+### Incluye
+
+- **Dashboard por materia (docente):** métricas generales, listado de alumnos con filtros, drill-down a detalle individual.
+- **Dashboard agregado (coordinador/admin):** métricas institucionales, comparativas entre materias, drill-down multinivel.
+- **Curaduría de contenido (curador):** métricas de efectividad por concepto/contenido, gestión de revisión.
+
+### No incluye
+
+- Generación automática de reportes (PDF/Excel).
+- Notificaciones push/email automáticas.
+- Comparación con benchmarks externos.
+- Integración con sistemas de gestión académica (ver épica Integraciones).
+
+## Principios de diseño
+
+<Accordion title="Vistas adaptadas por rol">
+  Cada usuario ve solo la información relevante a su ámbito, con navegación clara entre niveles de detalle (drill-down/drill-up).
+</Accordion>
+
+<Accordion title="Insights accionables">
+  No solo mostrar métricas, sino señalar oportunidades de intervención. Destacar outliers (alumnos destacados y en riesgo).
+</Accordion>
+
+<Accordion title="Curaduría como proceso continuo">
+  Cuando existe, debe tener visibilidad clara con métricas de calidad vinculadas a desempeño.
+</Accordion>
+
+## Usuarios
+
+| Rol | Nivel de vista | Necesidades principales |
+|-----|----------------|-------------------------|
+| **Docente** | Por materia | Ver progreso y resultados de sus alumnos en su/s materia/s |
+| **Coordinador** | Por carrera/programa | Vista agregada de múltiples materias y cohortes |
+| **Administrador** | Institucional | Métricas globales del sistema, todas las materias y alumnos |
+| **Curador de contenido** | Por contenido/materia | Métricas de efectividad del contenido educativo |
+
+## Decisiones abiertas
+
+<Warning>
+  Los siguientes puntos están pendientes de definición:
+
+  - **Alcance del MVP:** ¿Empezamos solo con vista de materia para docentes?
+  - **Permisos y roles:** Modelo de autorización (quién puede ver qué).
+  - **Alertas y notificaciones:** ¿Automatizadas o manuales? ¿Push, email, in-app?
+  - **Exportación de datos:** Formatos, periodicidad, automatización.
+  - **Integración con LMS:** ¿Los datos vienen de Canvas o viven solo en TUNI? (ver épica Integraciones)
+  - **Frecuencia de actualización:** ¿Métricas en tiempo real o batch diario?
+  - **Definición de "alumno en riesgo":** Criterios específicos (días sin actividad, % de errores, etc).
+</Warning>
+
+## Referencias
+
+- [Especificación Funcional](/epicas/supervisores/spec)
+
+### Épicas relacionadas
+
+<CardGroup cols={2}>
+  <Card title="Dashboard" icon="gauge" href="/epicas/dashboard/overview">
+    Punto de entrada desde el sistema.
+  </Card>
+  <Card title="Clase" icon="chalkboard-teacher" href="/epicas/clase/overview">
+    Datos de clases y sesiones de refuerzo.
+  </Card>
+  <Card title="Contenido" icon="book" href="/epicas/contenido/overview">
+    Pool de actividades y conceptos curados.
+  </Card>
+  <Card title="Integraciones" icon="plug">
+    Integración con sistemas de gestión académica.
+  </Card>
+</CardGroup>

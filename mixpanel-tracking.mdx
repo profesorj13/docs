@@ -1,0 +1,412 @@
+---
+title: "Mixpanel Tracking Plan"
+description: "Documentación completa de todos los eventos de Mixpanel implementados en TUNI: 53 eventos distribuidos entre frontend (webapp y widget) y backend (Go)."
+icon: "chart-bar"
+---
+
+> Documentación completa de todos los eventos de Mixpanel implementados en TUNI.
+> Última actualización: 2026-02-18
+
+---
+
+## Configuración
+
+### Token
+
+```
+6bed2d8fb70f0a3ffa1f89218466a219
+```
+
+### Inicialización
+
+| Plataforma | Ubicación | Método |
+|------------|-----------|--------|
+| **Webapp** | `src/app/providers/mixpanel.tsx` | `mixpanel.init(VITE_MIXPANEL_TOKEN, { persistence: 'localStorage' })` — wrappea toda la app via `<MixPanelProvider>` |
+| **Widget** | `src/TuniWidget.tsx` (línea 2–8) | `mixpanel.init(TOKEN, { track_pageview: false, persistence: 'localStorage' })` — token hardcodeado, build IIFE standalone |
+| **Backend** | `src/repositories/analytics/mixpanel.go` | HTTP POST a `api.mixpanel.com/track` — fire-and-forget en goroutines |
+
+### Identificación de usuarios
+
+En `src/modules/auth/store/use-auth.ts` (línea 66):
+
+```ts
+mixpanel.identify(user.id);
+mixpanel.people.set({
+  $first_name: user.firstName,
+  $last_name: user.lastName,
+  $email: user.emailAddress,
+});
+```
+
+Se ejecuta al momento del `logIn()` en el store de auth. El widget es anónimo (no identifica).
+
+### Naming Convention
+
+```
+{modulo}.{area}.{accion}
+```
+
+<Note>
+Todas las properties se escriben en `snake_case`.
+</Note>
+
+---
+
+## Módulos y Eventos
+
+### 1. Widget — Chat Anónimo en Canvas LMS
+
+**Branch:** `widget/chat-widget`
+**Archivo:** `src/TuniWidget.tsx`
+**SDK:** `mixpanel-browser` (inicializado con token hardcodeado)
+
+| # | Evento | Trigger | Properties |
+|---|--------|---------|------------|
+| 1 | `widget.launcher.clicked` | Click en botón flotante "Estudiar con TUNI" (solo al abrir) | `course_code`, `lecture`, `module` (condicional, solo si se parsea contexto de Canvas) |
+| 2 | `widget.chat.message_sent` | Usuario envía mensaje en el chat | `session_id`, `message_length`, `course_code` (condicional) |
+| 3 | `widget.auth.card_shown` | Bot responde con tool `show_auth` | `session_id` |
+| 4 | `widget.auth.modal_opened` | Se muestra el modal de autenticación | `source` (`header` \| `chat`) |
+| 5 | `widget.auth.popup_opened` | Se abre popup de OAuth de Canvas | `source` (`header` \| `chat`) |
+| 6 | `widget.auth.completed` | Token recibido via `postMessage` desde popup OAuth | `source`, `session_id` |
+| 7 | `widget.auth.cancelled` | Click en "Cancelar" en modal de auth | `source` (`header` \| `chat`) |
+| 8 | `widget.go_to_tuni.clicked` | Click en "Ir a TUNI" (desde header o card en chat) | `source` (`header` \| `chat_card`), `has_token` |
+| 9 | `widget.video.played` | Click en link de video promo en mensaje del bot | — |
+
+**Flujo típico del widget:**
+
+```
+widget.launcher.clicked
+    |
+    v
+widget.chat.message_sent (x N)
+    |
+    v
+widget.auth.card_shown          <-- bot sugiere autenticarse
+    |
+    v
+widget.auth.modal_opened
+    |
+    +---> widget.auth.cancelled  (usuario cancela)
+    |
+    +---> widget.auth.popup_opened
+              |
+              v
+          widget.auth.completed
+              |
+              v
+          widget.go_to_tuni.clicked (source: chat_card)
+```
+
+---
+
+### 2. Auth — Autenticación y Permisos
+
+**Branch:** `analytics/product-tour` (PR pendiente)
+**Analytics module:** `src/modules/auth/analytics/index.ts`
+
+| # | Evento | Trigger | Properties | Archivo |
+|---|--------|---------|------------|---------|
+| 1 | `auth.permissions.denied_viewed` | Componente `<AccessDeniedError />` monta | — | `auth/components/access-denied-error/index.tsx` |
+| 2 | `auth.login.completed` | Login exitoso (después de `logIn()`) | `method` (`token` \| `code`) | `auth/components/login-by-token/index.tsx`, `login-by-code/index.tsx` |
+| 3 | `auth.login.failed` | Error en login | `method` (`token` \| `code`), `error_type` | `auth/components/login-by-token/index.tsx`, `login-by-code/index.tsx` |
+
+**Flujo:**
+
+```
+Usuario llega con token en URL
+    |
+    +---> auth.login.completed (method: token)
+    |
+    +---> auth.login.failed (method: token, error_type: ...)
+              |
+              v
+          auth.permissions.denied_viewed  (si no tiene permisos)
+
+Usuario llega con code OAuth
+    |
+    +---> auth.login.completed (method: code)
+    |
+    +---> auth.login.failed (method: code, error_type: U10 | ...)
+```
+
+---
+
+### 3. Onboarding — Registro de preferencias (5 pasos)
+
+**Branch:** `analytics/product-tour` (PR pendiente)
+**Analytics module:** `src/modules/onboarding/analytics/index.ts`
+
+| # | Evento | Trigger | Properties | Archivo |
+|---|--------|---------|------------|---------|
+| 1 | `onboarding.started` | Paso 1 (nombre) monta | — | `onboarding/pages/name/index.tsx` |
+| 2 | `onboarding.step_completed` | Click en "Continuar" en cada paso | `step_number` (1–5), `step_name` | Cada page del onboarding |
+| 3 | `onboarding.completed` | Click en "Finalizar" (paso 5, intereses) | `nickname`, `age_range`, `objective`, `personality`, `hobbies_count` | `onboarding/pages/interests/index.tsx` |
+
+**Pasos y `step_name`:**
+
+| `step_number` | `step_name` | Pantalla |
+|---------------|-------------|----------|
+| 1 | `name` | ¿Cómo preferís que te llamemos? |
+| 2 | `age_range` | ¿En qué rango de edad estás? |
+| 3 | `objective` | ¿Qué te gustaría lograr con TUNI? |
+| 4 | `personality` | ¿Cómo te gustaría que te acompañe Ada? |
+| 5 | `interests` | ¿Qué temas te interesan? |
+
+**Flujo:**
+
+```
+onboarding.started
+    |
+    v
+onboarding.step_completed (1, name)
+    |
+    v
+onboarding.step_completed (2, age_range)
+    |
+    v
+onboarding.step_completed (3, objective)
+    |
+    v
+onboarding.step_completed (4, personality)
+    |
+    v
+onboarding.step_completed (5, interests)
+    |
+    v
+onboarding.completed { nickname, age_range, objective, personality, hobbies_count }
+```
+
+---
+
+### 4. Tutor — Sesión de Estudio
+
+**Branch:** `analytics/product-tour` (PR pendiente)
+**Analytics module:** `src/modules/tutor/analytics/index.ts`
+
+#### 4a. Sesión y Actividades
+
+| # | Evento | Trigger | Properties | Archivo |
+|---|--------|---------|------------|---------|
+| 1 | `tutor.session.created` | `createSessionMutation` onSuccess | `session_id` | `tutor/pages/index.tsx` |
+| 2 | `tutor.activity.card_clicked` | Click en card "Desafío: Repaso" | `session_id` | `tutor/components/chat/ai-message.tsx` |
+| 3 | `tutor.activity.completed` | `handleCurrentActivityComplete()` | `session_id`, `activity_id`, `activity_type`, `is_correct`, `score`, `is_last` | `tutor/pages/index.tsx` |
+| 4 | `tutor.session.ended` | `handleSessionEnd()` | `session_id`, `total_correct`, `total_incorrect`, `max_streak` | `tutor/pages/index.tsx` |
+| 5 | `tutor.finish_screen.revisar_clicked` | Click en "Revisar Desafío" en FinishScreen | `session_id` | `tutor/components/chat/activity-panel/finish-screen.tsx` |
+| 6 | `tutor.finish_screen.continuar_clicked` | Click en "Continuar" en FinishScreen | `session_id` | `tutor/components/chat/activity-panel/finish-screen.tsx` |
+
+#### 4b. Closure Flow — Cierre de clase (3 pantallas overlay)
+
+| # | Evento | Trigger | Properties | Archivo |
+|---|--------|---------|------------|---------|
+| 7 | `tutor.closure.finalizar_clase_clicked` | Click en botón "Finalizar clase" | `session_id` | `tutor/pages/index.tsx` |
+| 8 | `tutor.closure.points_viewed` | Pantalla de puntos se muestra | `total_xp` | `tutor/pages/index.tsx` |
+| 9 | `tutor.closure.points_continue_clicked` | Click en "Continuar" en pantalla de puntos | `total_xp` | `tutor/pages/index.tsx` |
+| 10 | `tutor.closure.mastery_viewed` | Pantalla de dominio se muestra | `mastery_percentage` | `tutor/pages/index.tsx` |
+| 11 | `tutor.closure.mastery_continue_clicked` | Click en "Continuar" en pantalla de dominio | `mastery_percentage` | `tutor/pages/index.tsx` |
+| 12 | `tutor.closure.streak_viewed` | Pantalla de racha se muestra | `streak_count` | `tutor/pages/index.tsx` |
+| 13 | `tutor.closure.ir_a_materia_clicked` | Click en "Ir a materia" en pantalla de racha | — | `tutor/pages/index.tsx` |
+| 14 | `tutor.closure.continuar_estudiando_clicked` | Click en "Continuar estudiando" en pantalla de racha | — | `tutor/pages/index.tsx` |
+
+**Flujo completo del tutor:**
+
+```
+tutor.session.created
+    |
+    v
+tutor.activity.card_clicked (x N)
+    |
+    v
+tutor.activity.completed (x N, con is_last = false)
+    |
+    v
+tutor.activity.completed (is_last = true)
+    |
+    v
+tutor.session.ended { total_correct, total_incorrect, max_streak }
+    |
+    v
+tutor.finish_screen.revisar_clicked  --o  tutor.finish_screen.continuar_clicked
+    |
+    v (si completó todo el plan)
+tutor.closure.finalizar_clase_clicked
+    |
+    v
+tutor.closure.points_viewed --> tutor.closure.points_continue_clicked
+    |
+    v
+tutor.closure.mastery_viewed --> tutor.closure.mastery_continue_clicked
+    |
+    v
+tutor.closure.streak_viewed
+    |
+    +---> tutor.closure.ir_a_materia_clicked        (sale a /courses)
+    |
+    +---> tutor.closure.continuar_estudiando_clicked (nueva sesión)
+```
+
+---
+
+### 5. Courses — Página de cursos (pre-existente)
+
+**Analytics module:** `src/modules/courses/analytics/page-events/index.ts`
+
+| # | Evento | Trigger | Properties |
+|---|--------|---------|------------|
+| 1 | `course_page.main.viewed` | Página de detalle de curso monta | `course_id`, `seconds_since_page_load`, `version` |
+| 2 | `course_page.course_drawer.course_clicked` | Click en curso del drawer lateral | `course_id`, `seconds_since_page_load`, `version` |
+| 3 | `course_page.smart_study.card_clicked` | Click en banner "Clase recomendada" | `course_id`, `seconds_since_page_load`, `version` |
+| 4 | `course_page.smart_study.button_clicked` | Click en "Empezar a estudiar" | `course_id`, `seconds_since_page_load`, `version` |
+| 5 | `course_page.milestones.clicked` | Click en milestone | `event_id`, `event_type`, `seconds_since_page_load`, `version` |
+| 6 | `course_page.user_metrics.clicked` | Click en métrica semanal | `metric`, `seconds_since_page_load`, `version` |
+
+---
+
+### 6. Activities — Actividades de estudio (pre-existente)
+
+#### Common (todos los tipos)
+
+**Analytics module:** `src/modules/activities/analytics/common/index.ts`
+
+| # | Evento | Trigger | Properties |
+|---|--------|---------|------------|
+| 1 | `activity.common.progress_bar_clicked` | Click en barra de progreso | `activity_id`, `activity_type`, `time_spent_seconds`, `version`, `progress_percent` |
+| 2 | `activity.common.instruction_clicked` | Click en instrucción | `activity_id`, `activity_type`, `time_spent_seconds`, `version` |
+
+#### Multiple Choice
+
+**Analytics module:** `src/modules/activities/analytics/multiple-choice/index.ts`
+
+| # | Evento | Trigger | Properties |
+|---|--------|---------|------------|
+| 1 | `activity.multiple_choice.question_clicked` | Click en pregunta | `activity_id`, `time_spent_seconds`, `version` |
+| 2 | `activity.multiple_choice.option_clicked` | Click en opción | `activity_id`, `time_spent_seconds`, `version` |
+| 3 | `activity.multiple_choice.answered` | Respuesta enviada | `activity_id`, `time_spent_seconds`, `version`, `option_selected`, `response_result` |
+| 4 | `activity.multiple_choice.hint_button_clicked` | Click en botón de pista | `activity_id`, `time_spent_seconds`, `version` |
+| 5 | `activity.multiple_choice.hint_card_clicked` | Click en card de pista | `activity_id`, `time_spent_seconds`, `version` |
+| 6 | `activity.multiple_choice.more_info_clicked` | Click en "más info" | `activity_id`, `time_spent_seconds`, `version` |
+| 7 | `activity.multiple_choice.continue_clicked` | Click en "Continuar" | `activity_id`, `time_spent_seconds`, `version` |
+| 8 | `activity.multiple_choice.close_clicked` | Click en cerrar | `activity_id`, `time_spent_seconds`, `version` |
+
+---
+
+### 7. Product Tour (pendiente — feature no mergeado a main)
+
+**Branch:** `feature/product-tour` (todavía no en main)
+**Analytics module:** `src/modules/product-tour/analytics/index.ts`
+
+<Note>
+Estos eventos se agregarán cuando el feature branch de product tour se mergee a main.
+</Note>
+
+| # | Evento | Trigger | Properties |
+|---|--------|---------|------------|
+| 1 | `product_tour.started` | `<ProductTour />` monta | — |
+| 2 | `product_tour.step_viewed` | Cambio de `currentStep` | `step_number`, `step_title` |
+| 3 | `product_tour.completed` | `dismiss('completed')` | — |
+| 4 | `product_tour.skipped` | `dismiss('skipped')` | `skipped_at_step` |
+
+---
+
+### 8. Backend — Modo Enseñar (tich-cronos)
+
+**Branch:** `analytics/product-tour` en `tich-cronos`
+**Implementación:** HTTP POST a `api.mixpanel.com/track` via `MixpanelClient` (fire-and-forget goroutines)
+**Token:** env var `MIXPANEL_TOKEN`
+
+| # | Evento | Trigger | Properties | Archivo |
+|---|--------|---------|------------|---------|
+| 1 | `teaching.plan_created` | Plan de enseñanza generado exitosamente | `user_id`, `concept_id`, `concept_name`, `user_level`, `target_level`, `trigger` (`session_failed` \| `student_request`) | `handle_toolcalls.go`, `handle_study_session.go` |
+| 2 | `teaching.pill_completed` | Estudiante completa una "pill" del plan | `user_id`, `concept_id`, `pill_index`, `attempt_count` | `handle_toolcalls.go` |
+| 3 | `teaching.plan_completed` | Todo el plan de enseñanza completado | `user_id`, `concept_id`, `concept_name` | `chatting.go` |
+| 4 | `teaching.post_session_created` | Sesión de estudio auto-creada post-enseñanza | `user_id`, `concept_id`, `study_session_id` | `chatting.go` |
+
+**Flujo backend:**
+
+```
+teaching.plan_created (trigger: session_failed | student_request)
+    |
+    v
+teaching.pill_completed (x N)
+    |
+    v
+teaching.plan_completed
+    |
+    v
+teaching.post_session_created
+```
+
+---
+
+## Resumen de conteo
+
+| Módulo | Eventos | Estado |
+|--------|---------|--------|
+| Widget | 9 | Implementado (branch `widget/chat-widget`) |
+| Auth | 3 | PR pendiente (`analytics/product-tour`) |
+| Onboarding | 3 (+ `step_completed` x5) | PR pendiente (`analytics/product-tour`) |
+| Tutor - Sesión | 6 | PR pendiente (`analytics/product-tour`) |
+| Tutor - Closure | 8 | PR pendiente (`analytics/product-tour`) |
+| Courses | 6 | Pre-existente (ya en main) |
+| Activities | 10 | Pre-existente (ya en main) |
+| Product Tour | 4 | Pendiente (feature no mergeado) |
+| Backend | 4 | PR pendiente (`analytics/product-tour` en tich-cronos) |
+| **Total** | **53** | |
+
+---
+
+## Arquitectura de Analytics
+
+### Patrón por módulo (frontend)
+
+Cada módulo tiene su propio archivo de analytics:
+
+```
+src/modules/{modulo}/analytics/index.ts
+```
+
+Cada archivo exporta un objeto con métodos que encapsulan la llamada a `mixpanel.track()`:
+
+```ts
+import mixpanel from 'mixpanel-browser';
+
+const moduloAnalytics = {
+  eventoUno: (prop: string) => {
+    mixpanel.track('modulo.area.accion', { prop });
+  },
+};
+
+export default moduloAnalytics;
+```
+
+### Backend (Go)
+
+```
+src/core/providers/analytics.go          -- interface AnalyticsProvider
+src/repositories/analytics/mixpanel.go   -- implementación HTTP
+```
+
+Inyectado via Wire en los use cases. Llamadas fire-and-forget (goroutines).
+
+### Ubicación de archivos de analytics
+
+```
+tuni-ai-webapp/
+  src/
+    app/providers/mixpanel.tsx                              -- init + provider
+    modules/auth/analytics/index.ts                         -- 3 eventos
+    modules/auth/store/use-auth.ts                          -- identify + people.set
+    modules/tutor/analytics/index.ts                        -- 14 eventos
+    modules/onboarding/analytics/index.ts                   -- 3 eventos
+    modules/courses/analytics/page-events/index.ts          -- 6 eventos
+    modules/activities/analytics/common/index.ts            -- 2 eventos
+    modules/activities/analytics/multiple-choice/index.ts   -- 8 eventos
+    (pendiente) modules/product-tour/analytics/index.ts     -- 4 eventos
+
+tich-cronos/
+  src/
+    core/providers/analytics.go                             -- interface
+    repositories/analytics/mixpanel.go                      -- HTTP client
+    core/usecases/chat_session/chatting.go                  -- 2 eventos
+    core/usecases/chat_session/handle_toolcalls.go          -- 2 eventos
+    core/usecases/chat_session/handle_study_session.go      -- 1 evento
+```

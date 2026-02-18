@@ -1,0 +1,882 @@
+---
+title: "Historias de Usuario"
+description: "Todas las historias de usuario y tickets de implementación de la épica Clase, agrupadas por sub-épica: Comprobación y Enseñar."
+icon: "list"
+---
+
+Historias de usuario y tickets de implementación consolidados de la épica Clase. Agrupados por sub-épica: primero las historias de Comprobación, luego los tickets de Enseñar.
+
+---
+
+## Comprobación
+
+<AccordionGroup>
+  <Accordion title="CLS-050: Interfaces experiencia de puntos">
+    **Épica:** Clase / Comprobación · **Prioridad:** Alta · **Estado:** Done
+
+    **Historia de usuario**
+
+    Como estudiante, quiero ver una interfaz atractiva con los puntos obtenidos durante la comprobación, para sentirme motivado y entender mi rendimiento en la sesión.
+
+    **Descripción**
+
+    Crear interfaces de la experiencia de puntos en una comprobación. Los puntos se muestran al finalizar la study session.
+
+    **Puntos base:** Cada respuesta correcta vale **50 puntos**.
+
+    **Bonus por racha:**
+
+    | Racha máxima | Puntos extra |
+    |--------------|--------------|
+    | 1 | 0 |
+    | 2 | 75 |
+    | 3 | 175 |
+    | 4 | 300 |
+    | 5 | 450 |
+    | 6 | 575 |
+    | 7+ | 715 |
+
+    Al completar todas las actividades, se muestra: % de aciertos de la sesión, aumento de dominio de la unidad, puntos obtenidos + bonus por racha.
+
+    **Criterios de aceptación**
+
+    - [ ] Se muestra la interfaz de puntos al finalizar la study session
+    - [ ] Se visualizan los puntos base obtenidos por respuestas correctas
+    - [ ] Se visualiza el bonus por racha según la tabla definida
+    - [ ] Se muestra el % de aciertos, aumento de dominio y puntos totales
+    - [ ] Los diseños respetan las especificaciones de UX/UI
+
+    **Notas técnicas**
+
+    - Esfuerzo estimado: 24 horas
+    - Asignado: Rocío Etchebarne
+    - Labels: UX/UI
+    - Épica padre: TUNI-44 - Experiencia estimulante para actividades
+  </Accordion>
+
+  <Accordion title="CLS-051: Agregar puntos a study session">
+    **Épica:** Clase / Comprobación · **Prioridad:** Alta · **Estado:** QA
+
+    **Historia de usuario**
+
+    Como desarrollador backend, quiero agregar el campo de puntos al modelo de study session, para persistir el puntaje calculado durante la comprobación.
+
+    **Descripción**
+
+    Agregar "puntos" a la clase "study session". Este ticket agrega el campo de puntos al modelo de study session en el backend para persistir el puntaje calculado durante la comprobación.
+
+    **Sistema de Puntos:** Cada respuesta correcta vale **50 puntos**.
+
+    **Bonus por racha:**
+
+    | Racha máxima | Puntos extra |
+    |--------------|--------------|
+    | 1 | 0 |
+    | 2 | 75 |
+    | 3 | 175 |
+    | 4 | 300 |
+    | 5 | 450 |
+    | 6 | 575 |
+    | 7+ | 715 |
+
+    **Criterios de aceptación**
+
+    - [ ] El modelo de study session incluye un campo para almacenar puntos
+    - [ ] El campo se persiste correctamente en la base de datos
+    - [ ] El puntaje calculado durante la comprobación se guarda al finalizar la sesión
+
+    **Notas técnicas**
+
+    - Esfuerzo estimado: 0.5 horas
+    - Asignado: Alejo Bonadeo
+    - Labels: Backend
+    - Épica padre: TUNI-44 - Experiencia estimulante para actividades
+  </Accordion>
+
+  <Accordion title="CLS-052: Lógica de puntos por respuesta correcta">
+    **Épica:** Clase / Comprobación · **Prioridad:** Alta · **Estado:** Backlog
+
+    **Historia de usuario**
+
+    Como estudiante, quiero que mis puntos se calculen en tiempo real según mis respuestas correctas y rachas, para ver mi progreso durante la sesión de comprobación.
+
+    **Descripción**
+
+    Agregar lógica de puntos por respuesta correcta y multiplicadores (local).
+
+    1. Cada pregunta correcta suma 50 puntos.
+    2. La racha máxima sigue una lógica exponencial; por ahora se resuelve con un simple if.
+
+    **Subtareas:**
+    - [F] Ir calculando los puntos según tabla
+    - [B] Guardar al final de la study session
+
+    **Tabla de referencia:**
+
+    | Racha máxima | Puntos extra |
+    |--------------|--------------|
+    | 1 | 0 |
+    | 2 | 75 |
+    | 3 | 175 |
+    | 4 | 300 |
+    | 5 | 450 |
+    | 6 | 575 |
+    | 7+ | 715 |
+
+    La lógica debe calcular los puntos en tiempo real durante la sesión (frontend) y persistirlos al finalizar (backend).
+
+    **Criterios de aceptación**
+
+    - [ ] Cada respuesta correcta suma 50 puntos base
+    - [ ] El bonus por racha se calcula según la tabla definida
+    - [ ] Los puntos se calculan en tiempo real en el frontend
+    - [ ] Los puntos se persisten en el backend al finalizar la study session
+    - [ ] La lógica de racha se reinicia tras una respuesta incorrecta
+
+    **Notas técnicas**
+
+    - Esfuerzo estimado: 4 horas
+    - Asignado: Alejo Bonadeo
+    - Labels: Backend
+    - Épica padre: TUNI-44 - Experiencia estimulante para actividades
+  </Accordion>
+
+  <Accordion title="CLS-054: Calcular porcentaje de aciertos">
+    **Épica:** Clase / Comprobación · **Prioridad:** Alta · **Estado:** QA
+
+    **Historia de usuario**
+
+    Como estudiante, quiero ver mi porcentaje de aciertos al finalizar la sesión de comprobación, para conocer mi nivel de desempeño en las actividades realizadas.
+
+    **Descripción**
+
+    Calcular las métricas a mostrar en la pantalla de cierre de actividad (% de aciertos). El porcentaje se calcula como `(respuestas correctas / total de actividades) * 100` y se persiste en la base de datos al finalizar la sesión de comprobación.
+
+    Al completar todas las actividades, se muestra:
+    - **% de aciertos** de la sesión (este ticket)
+    - **Aumento de dominio** de la unidad
+    - **Puntos obtenidos** + bonus por racha
+
+    **Criterios de aceptación**
+
+    - [ ] Se calcula el porcentaje de aciertos como (correctas / total) * 100
+    - [ ] El porcentaje se persiste en la base de datos al terminar la sesión
+    - [ ] El valor se expone para la pantalla de cierre de actividades
+
+    **Notas técnicas**
+
+    - Esfuerzo estimado: 1 hora
+    - Asignado: Alejo Bonadeo
+    - Labels: Backend
+    - Épica padre: TUNI-44 - Experiencia estimulante para actividades
+  </Accordion>
+
+  <Accordion title="CLS-055: Calcular aumento de dominio">
+    **Épica:** Clase / Comprobación · **Prioridad:** Alta · **Estado:** QA
+
+    **Historia de usuario**
+
+    Como estudiante, quiero ver cuánto mejoró mi dominio de la unidad tras completar la comprobación, para entender mi progreso de aprendizaje.
+
+    **Descripción**
+
+    Calcular las métricas a mostrar en la pantalla de cierre de actividad: aumento de dominio de unidad. El aumento de dominio refleja cuánto mejoró el nivel de comprensión del estudiante sobre la unidad tras completar la sesión de comprobación. Esta métrica se calcula comparando el estado previo y posterior a la sesión.
+
+    Al completar todas las actividades, se muestra:
+    - **% de aciertos** de la sesión
+    - **Aumento de dominio** de la unidad (este ticket)
+    - **Puntos obtenidos** + bonus por racha
+
+    **Criterios de aceptación**
+
+    - [ ] Se calcula el aumento de dominio comparando estado previo y posterior a la sesión
+    - [ ] La métrica se persiste en la base de datos al finalizar la sesión
+    - [ ] El valor se expone para la pantalla de cierre de actividades
+
+    **Notas técnicas**
+
+    - Esfuerzo estimado: 1 hora
+    - Asignado: Alejo Bonadeo
+    - Labels: Backend
+    - Épica padre: TUNI-44 - Experiencia estimulante para actividades
+  </Accordion>
+
+  <Accordion title="CLS-056: Pantalla de cierre de actividades">
+    **Épica:** Clase / Comprobación · **Prioridad:** Alta · **Estado:** QA
+
+    **Historia de usuario**
+
+    Como estudiante, quiero ver una pantalla de cierre al completar todas las actividades de comprobación, para recibir un resumen de mi desempeño y un comentario motivacional del tutor.
+
+    **Descripción**
+
+    Diseño e implementación de la pantalla de cierre de actividades. Al completar todas las actividades de comprobación, se muestra una pantalla de cierre con:
+
+    - **% de aciertos** de la sesión
+    - **Aumento de dominio** de la unidad
+    - **Puntos obtenidos** + bonus por racha
+
+    **Cierre de Comprobación — Comentario del tutor**
+
+    Al terminar la sesión de comprobación, el tutor realiza un **comentario de cierre** personalizado:
+
+    - **Reconoce logros:** Menciona brevemente los aciertos y fortalezas demostradas
+    - **Propone desafíos:** Identifica áreas de mejora y sugiere al alumno trabajar en ellas
+    - **Tono motivacional:** Balance entre celebrar el progreso y orientar hacia el crecimiento
+
+    Ejemplo: "Muy bien! Mostraste buen dominio en [tema X]. Te sugiero que repases [tema Y] para fortalecer esa área. ¡Seguí practicando!"
+
+    **Referencias Figma**
+
+    - [Experiencia de puntos - Figma V2](https://www.figma.com/design/Il5HLiGC0Y6SCrLso88D5i/TICH-AI--%3E-Tuni-V2?node-id=6002-144039)
+    - [Diseños clase (general) - Figma V3](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=38-8377)
+
+    **Criterios de aceptación**
+
+    - [ ] Se muestra la pantalla de cierre al completar todas las actividades
+    - [ ] Se visualiza el % de aciertos de la sesión
+    - [ ] Se visualiza el aumento de dominio de la unidad
+    - [ ] Se visualizan los puntos obtenidos + bonus por racha
+    - [ ] Se muestra un comentario de cierre personalizado del tutor
+    - [ ] El diseño respeta las especificaciones de Figma
+
+    **Notas técnicas**
+
+    - Asignado: Leonardo Monzón
+    - Labels: Frontend
+    - Épica padre: TUNI-44 - Experiencia estimulante para actividades
+    - Nota: Quizá hay algo hecho; revisar implementación existente
+  </Accordion>
+
+  <Accordion title="CLS-116: Crear GET de puntos">
+    **Épica:** Clase / Comprobación · **Prioridad:** Media · **Estado:** QA
+
+    **Historia de usuario**
+
+    Como frontend, quiero un endpoint GET para consultar el puntaje acumulado del estudiante, para mostrarlo en la pantalla de cierre de actividades y en el dashboard.
+
+    **Descripción**
+
+    Crear endpoint GET de puntos para consultar el puntaje acumulado del estudiante. Este endpoint expone los puntos calculados durante las sesiones de comprobación. Los puntos se componen de:
+
+    - **Puntos base:** 50 puntos por cada respuesta correcta
+    - **Bonus por racha:** puntos extra según la racha máxima alcanzada (hasta 715 puntos extra por racha de 7+)
+
+    El GET permite al frontend consultar el puntaje para mostrarlo en la pantalla de cierre de actividades y potencialmente en el dashboard del estudiante.
+
+    **Criterios de aceptación**
+
+    - [ ] Existe un endpoint GET que devuelve los puntos acumulados del estudiante
+    - [ ] El endpoint devuelve puntos base y bonus por racha
+    - [ ] El endpoint es consumible desde el frontend
+
+    **Notas técnicas**
+
+    - Asignado: Alejo Bonadeo
+    - Épica padre: TUNI-44 - Experiencia estimulante para actividades
+  </Accordion>
+
+  <Accordion title="CLS-191: Componente Multiple Choice">
+    **Épica:** Clase / Comprobación · **Prioridad:** Media · **Estado:** QA
+
+    **Historia de usuario**
+
+    Como estudiante, quiero realizar actividades de selección múltiple con feedback inmediato, para evaluar mi comprensión de los conceptos de forma interactiva.
+
+    **Descripción**
+
+    Componente para realizar actividad: Multiple Choice. Se debe permitir al usuario realizar la actividad dando feedback ante las respuestas correctas o incorrectas. Se debe respetar los diseños según Figma.
+
+    **Tipo de actividad: Multiple Choice**
+
+    - **Propósito:** Evaluar reconocimiento y comprensión de conceptos, terminología y hechos básicos.
+    - **Niveles Bloom:** Recordar, Comprender | **Carga Cognitiva:** Baja
+
+    **Lineamientos:**
+    - 4 opciones totales (1 correcta + 3 distractores)
+    - Distractores plausibles basados en errores conceptuales comunes
+    - Opciones mutuamente excluyentes con consistencia gramatical
+    - Sin pistas verbales en la respuesta correcta
+    - Posición de respuesta correcta aleatorizada
+
+    **Comportamiento del tutor (Momento 2):** El tutor reformula preguntas, conecta con conocimientos previos y usa método socrático. Nunca revela respuestas ni descarta opciones incorrectas.
+
+    **Criterios de aceptación**
+
+    - [ ] El componente renderiza 4 opciones (1 correcta + 3 distractores)
+    - [ ] Se da feedback visual ante respuesta correcta o incorrecta
+    - [ ] La posición de la respuesta correcta es aleatoria
+    - [ ] El diseño respeta las especificaciones de Figma
+    - [ ] El tutor no revela respuestas durante la comprobación (Momento 2)
+
+    **Notas técnicas**
+
+    - Asignado: Leonardo Monzón
+    - Épica padre: TUNI-44 - Experiencia estimulante para actividades
+  </Accordion>
+
+  <Accordion title="CLS-192: Componente Fill the Blanks">
+    **Épica:** Clase / Comprobación · **Prioridad:** Media · **Estado:** QA
+
+    **Historia de usuario**
+
+    Como estudiante, quiero completar oraciones arrastrando chips a los espacios en blanco, para evaluar mi capacidad de recordar y comprender términos clave en contexto.
+
+    **Descripción**
+
+    Componente para realizar actividad: Fill the Blanks. Se debe permitir al usuario realizar la actividad dando feedback ante las respuestas correctas o incorrectas. Se debe respetar los diseños según Figma.
+
+    **Tipo de actividad: Completar con Chips**
+
+    - **Propósito:** Evaluar recall de términos específicos y comprensión de su uso en contexto.
+    - **Niveles Bloom:** Recordar, Comprender | **Carga Cognitiva:** Baja
+
+    **Lineamientos para la oración:**
+    - Omitir únicamente palabras clave significativas (términos técnicos, conceptos centrales)
+    - Asegurar única respuesta correcta por contexto
+    - Sintaxis simple y voz activa
+    - Máximo 3 blancos por oración
+
+    **Lineamientos para los chips:**
+    - 3-5 chips por actividad (respuestas + distractores)
+    - Distractores del mismo campo semántico
+    - Sin chips gramaticalmente imposibles
+
+    **Comportamiento del tutor (Momento 2):** El tutor reformula preguntas, conecta con conocimientos previos y usa método socrático. Nunca revela respuestas ni descarta opciones incorrectas.
+
+    **Criterios de aceptación**
+
+    - [ ] El componente renderiza la oración con espacios en blanco
+    - [ ] Se muestran 3-5 chips para arrastrar o seleccionar
+    - [ ] Se da feedback visual ante respuesta correcta o incorrecta
+    - [ ] Máximo 3 blancos por oración
+    - [ ] El diseño respeta las especificaciones de Figma
+
+    **Notas técnicas**
+
+    - Asignado: Leonardo Monzón
+    - Épica padre: TUNI-44 - Experiencia estimulante para actividades
+  </Accordion>
+
+  <Accordion title="CLS-193: Componente Pregunta Abierta">
+    **Épica:** Clase / Comprobación · **Prioridad:** Media · **Estado:** QA
+
+    **Historia de usuario**
+
+    Como estudiante, quiero responder preguntas abiertas que evalúen mi capacidad de síntesis y argumentación, para desarrollar pensamiento crítico y recibir feedback personalizado.
+
+    **Descripción**
+
+    Componente para realizar la actividad: Pregunta Abierta. Se debe permitir al usuario realizar la actividad dando feedback ante las respuestas. Se debe respetar los diseños según Figma.
+
+    **Tipo de actividad: Pregunta Abierta**
+
+    - **Propósito:** Evaluar capacidad de sintetizar conocimiento, formar opiniones fundamentadas y generar respuestas originales.
+    - **Niveles Bloom:** Evaluar, Crear | **Carga Cognitiva:** Alta
+
+    **Tipos de preguntas:**
+
+    | Tipo | Ejemplo de inicio |
+    |------|-------------------|
+    | Evaluativa | "¿Qué tan efectivo es...?", "Evaluá críticamente..." |
+    | Hipotética | "¿Qué pasaría si...?", "¿Cómo cambiaría...?" |
+    | De síntesis | "Diseñá una propuesta...", "Desarrollá un plan..." |
+    | De aplicación compleja | "¿Cómo aplicarías... a...?" |
+    | De perspectiva | "Desde la perspectiva de..., ¿cómo...?" |
+    | Caso puntual | "Un amigo tiene un problema..., ¿cómo lo resolverías?" |
+
+    **Lineamientos:** Verbos de alto nivel; requiere síntesis de múltiples conceptos; múltiples enfoques válidos; incluir respuesta ideal para comparación y scoring (1-10).
+
+    **Comportamiento del tutor (Momento 2):** El tutor reformula preguntas, conecta con conocimientos previos y usa método socrático. Nunca revela respuestas.
+
+    **Criterios de aceptación**
+
+    - [ ] El componente presenta la pregunta abierta con campo de texto libre
+    - [ ] Se permite al estudiante escribir respuestas extensas
+    - [ ] Se da feedback basado en comparación con la respuesta ideal
+    - [ ] El scoring se calcula en escala 1-10
+    - [ ] El diseño respeta las especificaciones de Figma
+
+    **Notas técnicas**
+
+    - Asignado: Leonardo Monzón
+    - Épica padre: TUNI-44 - Experiencia estimulante para actividades
+  </Accordion>
+
+  <Accordion title="CLS-194: Componente Postura + Justificación">
+    **Épica:** Clase / Comprobación · **Prioridad:** Media · **Estado:** Backlog
+
+    **Historia de usuario**
+
+    Como estudiante, quiero comparar dos posiciones y justificar mi elección, para desarrollar pensamiento crítico y capacidad de argumentación.
+
+    **Descripción**
+
+    Componente para realizar la actividad: Postura + Justificación. Se debe permitir al usuario realizar la actividad dando feedback ante las respuestas correctas o incorrectas. Se debe respetar los diseños según Figma.
+
+    **Tipo de actividad: Comparar y Justificar**
+
+    - **Propósito:** Desarrollar pensamiento crítico mediante evaluación de múltiples perspectivas y argumentación fundamentada.
+    - **Niveles Bloom:** Analizar, Evaluar | **Carga Cognitiva:** Media-Alta
+
+    **Estructura:**
+    1. Presentación del escenario o problema
+    2. Pregunta de análisis
+    3. 2 opciones/posiciones a comparar
+    4. Espacio para justificación
+
+    **Lineamientos:** Opciones con perspectivas genuinamente diferentes; evitar opciones claramente superiores/inferiores; especificar criterios de evaluación (eficiencia, ética, viabilidad).
+
+    **La justificación debe demostrar:** identificación de diferencias clave, uso de criterios relevantes, argumentación coherente, reconocimiento de limitaciones.
+
+    **Comportamiento del tutor (Momento 2):** El tutor reformula preguntas, conecta con conocimientos previos y usa método socrático. Nunca revela respuestas.
+
+    **Criterios de aceptación**
+
+    - [ ] El componente presenta el escenario y la pregunta de análisis
+    - [ ] Se muestran 2 opciones/posiciones a comparar
+    - [ ] Se provee un espacio para justificación de texto libre
+    - [ ] Se da feedback sobre la calidad de la argumentación
+    - [ ] El diseño respeta las especificaciones de Figma
+
+    **Notas técnicas**
+
+    - Asignado: Alejo Bonadeo
+    - Épica padre: TUNI-44 - Experiencia estimulante para actividades
+  </Accordion>
+
+  <Accordion title="CLS-199: Revisar prompt compare answers">
+    **Épica:** Clase / Comprobación · **Prioridad:** Media · **Estado:** Backlog
+
+    **Historia de usuario**
+
+    Como equipo de AI, quiero revisar y mejorar el prompt de compare answers, para garantizar que el LLM evalúe correctamente las justificaciones de los alumnos.
+
+    **Descripción**
+
+    Revisar prompt de compare answers. La actividad "Comparar y Justificar" requiere que el LLM evalúe la justificación del alumno. El prompt debe guiar al LLM para evaluar:
+
+    - Identificación de diferencias clave entre las opciones
+    - Uso de criterios relevantes (eficiencia, ética, viabilidad)
+    - Argumentación coherente
+    - Reconocimiento de limitaciones
+
+    **Regla crítica (Momento 2):** El tutor **nunca revela respuestas** durante la comprobación. El prompt debe asegurar que el feedback sea socrático: guía sin dar la respuesta directamente.
+
+    **Criterios de aceptación**
+
+    - [ ] El prompt guía al LLM para evaluar diferencias clave, criterios, argumentación y limitaciones
+    - [ ] El prompt asegura feedback socrático sin revelar respuestas
+    - [ ] Se valida el comportamiento con casos de prueba reales
+
+    **Notas técnicas**
+
+    - Asignado: Juan M.
+    - Épica padre: TUNI-44 - Experiencia estimulante para actividades
+    - Ticket relacionado: CLS-205 (Bug LLM compare answers) — puede estar causado por problemas en este prompt
+  </Accordion>
+
+  <Accordion title="CLS-200: [BUG] Feedback pregunta abierta">
+    **Épica:** Clase / Comprobación · **Prioridad:** Media · **Estado:** QA
+
+    **Historia de usuario**
+
+    Como estudiante, quiero recibir feedback correcto tras responder una pregunta abierta, para entender mis aciertos y errores de forma clara.
+
+    **Descripción**
+
+    Resolver el feedback para pregunta abierta. La actividad de pregunta abierta evalúa la capacidad del estudiante de sintetizar conocimiento y generar respuestas originales. El feedback debe:
+
+    - Ser **inmediato** tras la respuesta
+    - Incluir **explicación del razonamiento correcto** (no solo acierto/error)
+    - **Conexión con el contenido** del módulo
+
+    La pregunta abierta incluye una **respuesta ideal** para comparación y scoring (1-10). El bug afecta el mecanismo de feedback que compara la respuesta del alumno con la respuesta ideal.
+
+    **Criterios de aceptación**
+
+    - [ ] El feedback se muestra inmediatamente tras la respuesta del alumno
+    - [ ] El feedback incluye explicación del razonamiento correcto
+    - [ ] El feedback conecta con el contenido del módulo
+    - [ ] La comparación con la respuesta ideal funciona correctamente
+    - [ ] El scoring 1-10 se calcula de forma precisa
+
+    **Notas técnicas**
+
+    - Asignado: Alejo Bonadeo
+    - Épica padre: TUNI-44 - Experiencia estimulante para actividades
+  </Accordion>
+
+  <Accordion title="CLS-201: Componente para renderizar video">
+    **Épica:** Clase / Comprobación · **Prioridad:** Media · **Estado:** Backlog
+
+    **Historia de usuario**
+
+    Como estudiante, quiero ver videos educativos dentro del flujo de actividades de comprobación, para complementar mi aprendizaje con contenido audiovisual.
+
+    **Descripción**
+
+    Crear componente para renderizar video dentro del flujo de actividades de comprobación. Los videos son generados por la épica de Contenido (Creación de Videos Educativos) y se presentan durante la sesión de comprobación como recurso complementario.
+
+    **Principios de diseño aplicables:**
+    - **Simplicidad y claridad:** El reproductor debe ser directo e intuitivo.
+    - **Autosuficiencia:** El video debe ser autocontenido — el alumno puede comprender el contenido sin recursos externos adicionales.
+
+    **Criterios de aceptación**
+
+    - [ ] El componente renderiza videos dentro del flujo de actividades
+    - [ ] El reproductor es intuitivo y simple de usar
+    - [ ] El video se presenta como recurso complementario en la sesión
+    - [ ] El componente es responsive y funciona en distintos dispositivos
+
+    **Notas técnicas**
+
+    - Asignado: Joaquín Brito
+    - Épica padre: TUNI-44 - Experiencia estimulante para actividades
+  </Accordion>
+
+  <Accordion title="CLS-205: [BUG] LLM no procesa bien compare answers">
+    **Épica:** Clase / Comprobación · **Prioridad:** Media · **Estado:** Backlog
+
+    **Historia de usuario**
+
+    Como estudiante, quiero que el LLM procese correctamente mis respuestas en actividades de comparar y justificar, para recibir feedback preciso y útil sobre mi argumentación.
+
+    **Descripción**
+
+    El LLM en actividades tipo compare answers no procesa bien las respuestas. La actividad "Comparar y Justificar" presenta al alumno 2 opciones/posiciones a comparar y un espacio para justificación. El LLM debe evaluar:
+
+    - Identificación de diferencias clave
+    - Uso de criterios relevantes
+    - Argumentación coherente
+    - Reconocimiento de limitaciones
+
+    El bug indica que el LLM no está procesando correctamente las respuestas del alumno en este tipo de actividad, lo que afecta la calidad del feedback y el scoring.
+
+    **Criterios de aceptación**
+
+    - [ ] El LLM procesa correctamente las respuestas de compare answers
+    - [ ] El feedback refleja una evaluación precisa de la argumentación del alumno
+    - [ ] El scoring es coherente con la calidad de la justificación
+    - [ ] Se valida con casos de prueba reales
+
+    **Notas técnicas**
+
+    - Asignado: Leonardo Cano
+    - Ticket relacionado: CLS-199 (Revisar prompt compare answers) — revisión del prompt que podría ser la causa raíz de este bug
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Enseñar
+
+> Tickets derivados de reunión del 13/01/2026. Participantes: Juan M., Francisco Conte, Leonardo Cano.
+> Épica de referencia: **TUNI-126** — Conversación con el tutor (In Progress).
+
+**Resumen de tickets:**
+
+| Ticket | Título | Estado | Asignado |
+|--------|--------|--------|----------|
+| TUNI-212 | Implementar flujo base del Modo Enseñar | Todo | Leo Cano |
+| TUNI-213 | Crear tool call: buildPlan | Done | Leo Cano |
+| TUNI-214 | Crear tool call: updatePlan | Done | Leo Cano |
+| TUNI-215 | Implementar getConceptInfo con contenido indexado | Todo | Leo Cano |
+| TUNI-216 | Diseñar persistencia temporal del plan en BD | Done | Leo Cano |
+| TUNI-217 | Integrar prompt del Modo Enseñar | Done | Leo Cano |
+| TUNI-218 | Gestión de historial entre momentos/prompts | Todo | Leo Cano |
+| — | Conectar indexación con resúmenes por concepto | Todo | Por definir |
+| — | Implementar framework de testing automatizado | Todo | Francisco |
+| — | Investigar herramientas de evaluación de LLMs | Todo | Francisco |
+
+<AccordionGroup>
+  <Accordion title="TUNI-212: Implementar flujo base del Modo Enseñar">
+    **Módulo:** Tutor conversacional · **Asignado:** Leo Cano · **Estado:** Todo
+
+    **Descripción**
+
+    Implementar el flujo principal del nuevo modo enseñar que se activa cuando no hay contenido pregenerado disponible. El flujo consiste en:
+
+    1. **Fase 1 — Generación del plan:** Al entrar al modo, generar un plan de 3 píldoras/ítems a enseñar.
+    2. **Fase 2 — Loop de enseñanza:** Para cada ítem:
+       - Dar explicación del sub-tema
+       - Hacer pregunta socrática
+       - Evaluar respuesta del alumno
+       - Si no aprendió → re-explicar (sin límite)
+       - Si aprendió → marcar completado y pasar al siguiente
+    3. **Fase 3 — Transición:** Al completar el plan, transicionar a actividades de comprobación.
+
+    **Criterios de aceptación**
+
+    - [ ] El modo se activa correctamente desde Momento 1 (sin conocimiento previo + sin video)
+    - [ ] El modo se activa correctamente desde Momento 3 (falló comprobación + sin video)
+    - [ ] El loop de enseñanza funciona sin límite de re-explicaciones
+    - [ ] Al completar el plan, transiciona correctamente a comprobación
+  </Accordion>
+
+  <Accordion title="TUNI-213: Crear tool call: buildPlan">
+    **Módulo:** Tutor conversacional · **Asignado:** Leo Cano · **Estado:** Done
+
+    **Descripción**
+
+    Crear la tool call `buildPlan` que genera el plan de enseñanza al inicio del modo.
+
+    **Input:**
+    ```json
+    {
+      "concept_id": "string",
+      "student_level": "number (1-4)",
+      "concept_content": "string (del getConceptInfo)",
+      "student_errors": "array (errores de comprobación previa, opcional)"
+    }
+    ```
+
+    **Output:**
+    ```json
+    {
+      "plan_id": "string",
+      "items": [
+        { "id": 1, "topic": "string", "status": "pending" },
+        { "id": 2, "topic": "string", "status": "pending" },
+        { "id": 3, "topic": "string", "status": "pending" }
+      ]
+    }
+    ```
+
+    **Criterios de aceptación**
+
+    - [ ] Genera exactamente 3 ítems por plan
+    - [ ] Los ítems son relevantes al concepto y nivel del estudiante
+    - [ ] Si hay errores previos, el plan los considera para personalizar
+    - [ ] El plan se persiste para consultas posteriores
+  </Accordion>
+
+  <Accordion title="TUNI-214: Crear tool call: updatePlan">
+    **Módulo:** Tutor conversacional · **Asignado:** Leo Cano · **Estado:** Done
+
+    **Descripción**
+
+    Crear la tool call `updatePlan` que marca un ítem del plan como completado.
+
+    **Input:**
+    ```json
+    {
+      "plan_id": "string",
+      "item_id": "number",
+      "status": "completed"
+    }
+    ```
+
+    **Output:**
+    ```json
+    {
+      "success": true,
+      "plan_status": "in_progress | completed",
+      "items_remaining": "number"
+    }
+    ```
+
+    **Criterios de aceptación**
+
+    - [ ] Actualiza correctamente el estado del ítem
+    - [ ] Retorna si el plan completo está terminado
+    - [ ] Si el plan está completo, señaliza para transición a comprobación
+  </Accordion>
+
+  <Accordion title="TUNI-215: Implementar getConceptInfo con contenido indexado">
+    **Módulo:** Tutor conversacional · **Asignado:** Leo Cano · **Estado:** Todo
+
+    **Descripción**
+
+    Implementar la tool `getConceptInfo` que obtiene el contenido indexado de un concepto para que el tutor pueda enseñar.
+
+    **Consideraciones (de la reunión):**
+    - El contenido ya está indexado en el sistema
+    - Se necesita traer contenido de TODAS las fuentes que hablen del concepto
+    - Idealmente incluir identificación de la fuente (importante para Derecho)
+    - El contenido debe estar resumido/comprimido para optimizar tokens (máx 300-400 palabras por fuente)
+
+    **Input:**
+    ```json
+    {
+      "concept_id": "string"
+    }
+    ```
+
+    **Output:**
+    ```json
+    {
+      "concept_name": "string",
+      "content": [
+        {
+          "source": "string (nombre del libro/material)",
+          "text": "string (contenido resumido)"
+        }
+      ]
+    }
+    ```
+
+    **Criterios de aceptación**
+
+    - [ ] Recupera contenido de todas las fuentes indexadas para el concepto
+    - [ ] El contenido está resumido para no exceder límites de tokens
+    - [ ] Incluye identificación de la fuente original
+
+    Nota: Coordinar con José sobre la mejor forma de hacer la búsqueda (query a BD vs embedding).
+  </Accordion>
+
+  <Accordion title="TUNI-216: Diseñar persistencia temporal del plan en BD">
+    **Módulo:** Tutor conversacional · **Asignado:** Leo Cano · **Estado:** Done
+
+    **Descripción**
+
+    Diseñar e implementar la persistencia temporal del plan de enseñanza en base de datos.
+
+    **Requisitos:**
+    - El plan debe persistir durante toda la sesión de enseñanza
+    - Debe permitir consultas (para que el LLM sepa en qué ítem está)
+    - Debe permitir actualizaciones (marcar ítems como completados)
+    - Puede eliminarse al finalizar la sesión o guardarse como material de análisis
+
+    **Consideraciones técnicas (de la reunión):** "Se puede guardar, no es muy complicado. Es una tablita más o una extensión más."
+
+    **Criterios de aceptación**
+
+    - [ ] El plan persiste durante toda la sesión
+    - [ ] Las actualizaciones de estado se guardan correctamente
+    - [ ] El plan puede consultarse en cualquier momento del loop
+  </Accordion>
+
+  <Accordion title="TUNI-217: Integrar prompt del Modo Enseñar">
+    **Módulo:** Tutor conversacional · **Asignado:** Leo Cano · **Estado:** Done
+
+    **Descripción**
+
+    Integrar el nuevo prompt del Modo Enseñar en el sistema de prompts condicionales.
+
+    **Tareas:**
+    1. Agregar el prompt como nuevo momento/estado
+    2. Configurar los triggers de activación:
+       - Desde Momento 1: `!tiene_conocimiento_previo && !hay_videos_disponibles`
+       - Desde Momento 3: `!supero_objetivo && !hay_videos_disponibles`
+    3. Asegurar que el prompt base se incluye correctamente
+    4. Configurar las variables de contexto necesarias (`concept_content`, `teaching_plan`, `student_errors`)
+
+    **Criterios de aceptación**
+
+    - [ ] El prompt se carga correctamente según las condiciones
+    - [ ] Las variables de contexto se inyectan correctamente
+    - [ ] El prompt base se incluye en todos los casos
+  </Accordion>
+
+  <Accordion title="TUNI-218: Gestión de historial entre momentos/prompts">
+    **Módulo:** Tutor conversacional · **Asignado:** Leo Cano · **Estado:** Todo
+
+    **Descripción**
+
+    Asegurar que al cambiar entre momentos (prompts condicionales), el historial de la conversación se pase correctamente al nuevo contexto.
+
+    **Contexto (de la reunión):** "Lo que sí es muy importante, es que si yo pasé del momento uno que tiene este prompt condicional al momento 2, yo le tengo que pasar el historial de la conversación previa igual. Aunque ahora el prompt sea distinto, porque para que no se pierda el contexto."
+
+    **Criterios de aceptación**
+
+    - [ ] Al cambiar de momento, el historial completo se incluye
+    - [ ] El contexto de la conversación no se pierde entre transiciones
+    - [ ] Las respuestas del LLM mantienen coherencia con lo hablado anteriormente
+  </Accordion>
+
+  <Accordion title="Conectar indexación con resúmenes por concepto">
+    **Módulo:** Creación de experiencias educativas · **Asignado:** Por definir (coordinar con José) · **Estado:** Todo
+
+    **Descripción**
+
+    Modificar el proceso de indexación para generar resúmenes comprimidos por concepto que puedan usarse eficientemente en el modo enseñar.
+
+    **Contexto (de la reunión):** "Lo recorrés al documento, te va sacando párrafo o fragmentos crudos y lo empieza a categorizar con conceptos. Una vez tenés finalizado el documento de procesar, tenés un chorizo de código de texto que se lo podés dar al LLM y decirle haceme un resumen con esto que ya hace un resumen predefinido preestablecido."
+
+    **Tareas:**
+    1. Al indexar, generar resumen por concepto (máx 300-400 palabras)
+    2. Almacenar resúmenes de forma que sean recuperables por `concept_id`
+    3. Incluir metadata de fuente original
+
+    **Criterios de aceptación**
+
+    - [ ] Los resúmenes se generan automáticamente durante indexación
+    - [ ] Son recuperables eficientemente por concepto
+    - [ ] No exceden el límite de tokens definido
+  </Accordion>
+
+  <Accordion title="Implementar framework de testing automatizado">
+    **Módulo:** Equipo y mejora continua · **Asignado:** Francisco · **Estado:** Todo
+
+    **Descripción**
+
+    Diseñar e implementar un framework de testing automatizado para validar el comportamiento del tutor, similar a cómo Eleven Labs evalúa sus agentes.
+
+    **Contexto (de la reunión):** "Cuando nosotros terminemos esto vos digas, hey tienes listo. Bueno, miren, haz clic en algo y empieza a correr y no salga: Modo comprobación pasó la prueba, modo enseñar falló, qué pasó?"
+
+    **Objetivos:**
+    1. Poder validar que los flujos funcionan correctamente después de cambios de prompts
+    2. Poder validar después de cambios de modelo
+    3. Automatizar la ejecución antes de deploys a producción
+
+    **Tareas:**
+    1. Investigar cómo implementar evaluación de conversaciones de LLM
+    2. Definir casos de prueba por modo/momento
+    3. Crear estructura de tests que puedan correrse automáticamente
+    4. Reportar resultados de forma clara
+
+    **Criterios de aceptación**
+
+    - [ ] Framework básico funcionando
+    - [ ] Al menos 5 casos de prueba por modo principal
+    - [ ] Reporte de resultados claro (pasó/falló con detalle)
+    - [ ] Puede integrarse en pipeline de CI/CD
+  </Accordion>
+
+  <Accordion title="Investigar herramientas de evaluación de LLMs">
+    **Módulo:** Equipo y mejora continua · **Asignado:** Francisco · **Estado:** Todo
+
+    **Descripción**
+
+    Investigar herramientas y metodologías existentes para evaluar el comportamiento de LLMs, adaptables al caso de uso de TUNI.
+
+    Fran está tomando un curso sobre evaluación de LLMs. Investigar:
+    - Herramientas como la que ofrece Eleven Labs para sus agentes
+    - Metodologías de benchmark personalizados
+    - Cómo medir "veracidad" para los casos específicos de TUNI
+
+    **Entregables:**
+    - Documento con opciones evaluadas
+    - Recomendación de approach a seguir
+    - POC si es posible
+
+    **Criterios de aceptación**
+
+    - [ ] Al menos 3 herramientas/metodologías evaluadas
+    - [ ] Pros y contras documentados
+    - [ ] Recomendación clara para nuestro caso
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Orden de prioridad sugerido (Enseñar)
+
+**Sprint actual (prioridad alta):**
+- TUNI-212: Flujo base (Leonardo)
+- TUNI-213: buildPlan (Leonardo)
+- TUNI-214: updatePlan (Leonardo)
+- TUNI-215: getConceptInfo (Leonardo)
+- TUNI-217: Integrar prompt (Leonardo)
+- Framework testing (Francisco)
+
+**Siguiente sprint:**
+- TUNI-216: Persistencia del plan
+- TUNI-218: Gestión de historial
+- Resúmenes en indexación
+- Investigación herramientas de evaluación
+
+<Note>
+  **Coordinación:** TUNI-215 y la tarea de resúmenes en indexación requieren coordinación con José sobre la mejor forma de acceder al contenido indexado. Agendar reunión con Emma para el tema de testing.
+</Note>

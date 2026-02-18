@@ -1,0 +1,217 @@
+---
+title: "Especificación Funcional"
+description: "Flujos detallados, pantallas, componentes y configuración por cliente del Onboarding de TUNI."
+icon: "file-text"
+---
+
+## Fuentes
+
+- Transcripción onboarding 2026-01-29
+- Figma: flujo de onboarding (pasos 1-3 y 4-5) — ver imágenes adjuntas en repo.
+
+## Flujos principales
+
+### Flujo 1: Onboarding base (4-5 pasos)
+
+<Steps>
+  <Step title="Paso 1 — Nombre">
+    "¿Cómo preferís que te llamemos?" Campo de texto libre. Una pregunta por pantalla.
+  </Step>
+  <Step title="Paso 2 — Edad">
+    "¿En qué rango de edad estás?" Selector de rango etario (no fecha exacta). Opciones: 18-24, 25-34, 35-44, 45-54, 55+.
+  </Step>
+  <Step title="Paso 3 — Nivel educativo">
+    "¿Cuál es tu nivel educativo?" Opciones predefinidas (secundario, terciario, universitario, posgrado, etc.).
+  </Step>
+  <Step title="Paso 4 — Intereses">
+    "¿Qué temas te interesan?" Multi-select con chips. Se aclara al usuario que esto se usa para crear una experiencia más atrapante y cercana. Opciones: Autos, Trekking, Música, Fútbol, Básquet, Danza, Videojuegos, Redes sociales, Tecnología, Finanzas personales.
+  </Step>
+  <Step title="Paso 5 — Custom por cliente (si aplica)">
+    Paso adicional según configuración del cliente. Ejemplo Betano: "¿Qué te gustaría lograr con TUNI?" con opciones como mejorar mi salario, crecer profesionalmente, aprender por curiosidad, actualizar mis conocimientos, prepararme para nuevos desafíos.
+  </Step>
+</Steps>
+
+### Variante Siglo XXI (4 pasos)
+
+<Note>
+  **Cambios respecto al flujo base:** se elimina el paso 3 (nivel educativo) y el paso custom se convierte en paso 4 con enfoque motivacional.
+</Note>
+
+<Steps>
+  <Step title="Paso 1 — Nombre">
+    "¿Cómo preferís que te llamemos?" Campo de texto con botón de limpiar (X).
+  </Step>
+  <Step title="Paso 2 — Rango etario">
+    "¿En qué rango de edad estás?" Single select. Opciones: 18-24, 25-34, 35-44, 45-54, 55+.
+  </Step>
+  <Step title="Paso 3 — Intereses">
+    "¿Qué temas te interesan?" Subtítulo: "Usamos tus intereses para armar una experiencia más atrapante y cercana a vos." Multi-select con filter chips.
+  </Step>
+  <Step title="Paso 4 — Motivación">
+    "¿Cómo querés que Tuni te ayude?" Subtítulo: "En base a tu objetivo, te vamos a recomendar contenido alineado a lo que querés lograr." Single select. Opciones: Mejorar mi salario, Crecer profesionalmente, Aprender por curiosidad, Actualizar mis conocimientos, Prepararme para nuevos desafíos. CTA: "Comenzar".
+  </Step>
+</Steps>
+
+### Flujo 2: Modal de nivelación (post-onboarding)
+
+<Steps>
+  <Step title="Modal de decisión">
+    Al completar el último paso, se muestra un **modal de decisión**.
+  </Step>
+  <Step title="Opción incentivada: Hacer nivelación">
+    Se comunica que se harán preguntas para conocer su nivel y así personalizar la experiencia desde el día 1.
+  </Step>
+  <Step title="Opción secundaria: Comenzar ya">
+    Menos incentivada visualmente. Salta la nivelación.
+  </Step>
+  <Step title="Resolución">
+    - Si elige nivelación: se ejecuta el flujo de nivelación (pendiente de definición completa).
+    - Si elige comenzar ya: pasa directamente a la primera clase.
+  </Step>
+</Steps>
+
+### Flujo 3: Primera clase con Ada (presentación del tutor)
+
+<Steps>
+  <Step title="Ingreso a la primera clase">
+    El estudiante ingresa a su primera clase.
+  </Step>
+  <Step title="Ada se presenta">
+    Ada dice su nombre, explica qué es TUNI y en qué lo va a ayudar.
+  </Step>
+  <Step title="Presentación de funcionalidades">
+    Ada presenta las funcionalidades principales de la plataforma, permitiendo al usuario navegar a ellas.
+  </Step>
+  <Step title="Consejos de uso">
+    Ada comparte un texto breve de cómo las personas aprovechan más TUNI.
+  </Step>
+  <Step title="Inicio de clase">
+    Inicia el flujo normal de clase (épica Clase).
+  </Step>
+</Steps>
+
+## Pantallas / Módulos
+
+| Pantalla | Descripción | Estado |
+|----------|-------------|--------|
+| Paso 1: Nombre | Campo de texto, una pregunta por pantalla, layout fullscreen | En progreso |
+| Paso 2: Edad | Selector de rango etario | En progreso |
+| Paso 3: Nivel educativo | Opciones predefinidas (radio/select) | En progreso |
+| Paso 4: Intereses | Multi-select con chips, copy explicativo de por qué se pide | En progreso |
+| Paso 5: Custom (ej: Betano) | Pregunta configurable por cliente, opciones predefinidas | En progreso |
+| Modal de nivelación | Modal con dos opciones: hacer nivelación (incentivada) o comenzar ya | En progreso |
+| Primera clase con Ada | Chat inicial donde Ada se presenta, explica TUNI y sus funcionalidades | En progreso |
+
+## Componentes
+
+### Layout fullscreen de onboarding
+
+- Una pregunta por pantalla (minimalismo progresivo).
+- Indicador de progreso (paso actual / total).
+- Botón "Siguiente" / "Continuar" para avanzar.
+- Sin navegación global visible (header, sidebar ocultos durante onboarding).
+
+### Formularios por paso
+
+- **Campo de texto** (Paso 1: nombre).
+- **Selector de rango** (Paso 2: edad).
+- **Radio buttons / select** (Paso 3: nivel educativo).
+- **Multi-select con chips** (Paso 4: intereses; Paso 5: objetivo Betano).
+
+### Modal de decisión de nivelación
+
+- Título explicativo: se harán preguntas para conocer su nivel.
+- Beneficio comunicado: personalizar la experiencia desde el inicio.
+- CTA primario (incentivado): "Hacer nivelación".
+- CTA secundario (desincentivado visualmente): "Comenzar ya".
+
+### Chat inicial con Ada
+
+- Interfaz de chat donde Ada envía mensajes de presentación.
+- Script predefinido con personalidad clara.
+- Links/botones inline a funcionalidades principales de TUNI.
+- Transición al flujo normal de clase.
+
+## Configuración por cliente
+
+El onboarding es configurable por cliente mediante un objeto de configuración:
+
+```js
+const onboardingConfig = {
+  baseSteps: [
+    { id: "name", type: "text", question: "Como te llamas?" },
+    { id: "age", type: "range", question: "Cuantos anos tenes?" },
+    { id: "education", type: "select", question: "Cual es tu nivel educativo?" },
+    { id: "interests", type: "multiselect", question: "Que temas te interesan?" }
+  ],
+  customSteps: [
+    // Ejemplo Betano:
+    { id: "goal", type: "multiselect", question: "Que te gustaria lograr con TUNI?", options: [
+      "Mejorar mi salario",
+      "Crecer profesionalmente",
+      "Aprender por curiosidad",
+      "Actualizar mis conocimientos",
+      "Prepararme para nuevos desafios"
+    ]}
+  ],
+  offerLeveling: true,      // Mostrar modal de nivelacion post-onboarding
+  tutorIntro: true           // Ada se presenta en la primera clase
+};
+```
+
+### Requerimientos no funcionales
+
+<Warning>
+  El onboarding **NO debe aplicar a usuarios con rol supervisor.** Los supervisores deben saltar el flujo completamente.
+</Warning>
+
+### Clientes
+
+| Cliente | Pasos | Detalle | Nivelación | Presentación Ada |
+|---------|-------|---------|------------|------------------|
+| Base (default) | 4 | nombre, edad, nivel educativo, intereses | Sí (modal) | Sí |
+| Siglo XXI | 4 | nombre, edad, intereses, motivación (sin nivel educativo) | Sí (modal) | Sí |
+| Betano | 5 | nombre, edad, nivel educativo, intereses + objetivo | Sí (modal) | Sí |
+
+## Presentación de Ada (script orientativo)
+
+Ada debe cubrir los siguientes puntos en su primera interacción:
+
+<Steps>
+  <Step title="Saludo y nombre">
+    "¡Hola [nombre]! Soy Ada, tu tutora en TUNI."
+  </Step>
+  <Step title="Qué es TUNI">
+    Breve explicación del sistema de tutoría adaptativa.
+  </Step>
+  <Step title="En qué ayuda">
+    Cómo TUNI personaliza el aprendizaje según el nivel y necesidades del estudiante.
+  </Step>
+  <Step title="Cómo aprovechar TUNI">
+    Mencionar las formas principales (clases, consultas, evaluaciones).
+  </Step>
+  <Step title="Presentación de funcionalidades">
+    Permitir al estudiante navegar a las funciones clave.
+  </Step>
+  <Step title="Transición a clase">
+    "En esta primera clase vamos a trabajar en..." e iniciar el flujo de clase.
+  </Step>
+</Steps>
+
+## Consideraciones técnicas
+
+- **Máximo 4-5 pasos** antes de llegar a la acción principal (clase). El onboarding debe ser breve para reducir abandono.
+- **Persistencia de datos (backend — tich-cronos):**
+  - Endpoint `SaveOnboardingData`: guarda `nickname` (string) y `hobbies` ([]string), setea `WasOnboarded = true`.
+  - Endpoint `GetUserOnboardingStatus`: retorna `can_be_onboarded` basado en `!WasOnboarded`.
+  - DB: columnas `nickname VARCHAR(255)` y `hobbies JSONB` en tabla users (migración 000013).
+  - DB: columnas `onboarding_order` y `is_onboarding` en tabla activities (migración 000029).
+  - **Campos faltantes:** no existe campo para `age_range` ni para `motivation`/goal — requiere nueva migración y actualización del use case `SaveOnboardingData`.
+- **Frontend (tuni-ai-webapp):**
+  - Módulo `src/modules/onboarding/` con landing + permisos + presentación ADA.
+  - Store zustand con persist: `useOnboarding`.
+  - Rutas existentes: `/onboarding`, `/onboarding/permissions`, `/onboarding/ada`.
+- **Usuarios que ya completaron onboarding:** `GetUserOnboardingStatus` retorna `can_be_onboarded: false` si `WasOnboarded = true`. Pendiente: definir si se permite re-editar perfil.
+- **Supervisores:** deben saltar el onboarding completamente (NFR).
+- **Nivelación:** flujo completo pendiente de definición (cantidad de preguntas, temas, duración, formato).
+- **Recomendación de primera clase sin nivelación:** si el usuario elige "Comenzar ya", el sistema debe definir un comportamiento default para seleccionar la primera clase. Pendiente de definición.

@@ -1,0 +1,428 @@
+---
+title: "Especificaciones de Actividades"
+description: "Lineamientos de calidad para la creación de experiencias educativas en TUNI: tipos de actividad, criterios de diseño, control de calidad y referencias pedagógicas."
+icon: "puzzle"
+---
+
+# Lineamientos de Calidad para Experiencias Educativas en TUNI
+
+## 1. Introducción
+
+Este documento establece los lineamientos de calidad para la creación de experiencias educativas en TUNI, el tutor adaptativo que personaliza el aprendizaje según las necesidades de cada alumno. El contenido pre-generado se crea a partir de fuentes validadas de cada materia y posteriormente es revisado por docentes.
+
+**Objetivo:** Garantizar que el proceso de generación de contenido produzca experiencias de la más alta calidad posible antes de la revisión docente.
+
+### Tipos de Experiencias
+
+TUNI cuenta con dos tipos principales de experiencias:
+
+<CardGroup cols={2}>
+  <Card title="Experiencias de Comprobación" icon="list-check">
+    Actividades que evalúan el conocimiento adquirido (multiple choice, completar oraciones, construir oraciones, comparar y justificar, preguntas abiertas).
+  </Card>
+  <Card title="Experiencias de Aprendizaje" icon="play">
+    Videos o explicaciones provistas por el tutor a través del LLM (no pre-generadas).
+  </Card>
+</CardGroup>
+
+<Note>
+  Este documento se enfoca en la **primera etapa: lineamientos para actividades de comprobación**.
+</Note>
+
+## 1B. Principios Fundamentales
+
+Todos los lineamientos de este documento están subordinados a un objetivo central: **que la actividad sea simple y clara para el alumno**. Esto significa:
+
+### Simplicidad y claridad
+
+- **Enunciados concisos:** Ir directo al punto. Evitar rodeos, frases subordinadas innecesarias o contexto excesivo que diluya la pregunta.
+- **Longitud acotada:** Preferir formulaciones breves. Si el enunciado requiere contexto, separarlo claramente de la pregunta.
+- **No redundancia:** No repetir la misma idea con distintas palabras. Cada oración debe aportar información nueva.
+- **Contextualización adecuada:** El alumno debe entender qué se le pide sin ambigüedad y sin necesidad de inferir información no proporcionada.
+
+### Fidelidad a la fuente
+
+- Toda actividad debe derivarse **estrictamente** del material bibliográfico o fuente proporcionada.
+- No inventar escenarios, datos o ejemplos que no estén respaldados por la fuente.
+- Si la fuente menciona un tema tangencialmente, no construir actividades centrales sobre esa mención.
+
+### Enfoque disciplinar
+
+- Respetar rigurosamente el contexto de la materia específica para la que se genera la actividad.
+- No mezclar enfoques de otras disciplinas, aunque compartan terminología (ej: no abordar desde derecho privado una actividad de derecho constitucional).
+- Los ejemplos y escenarios deben ser pertinentes al campo disciplinar de la materia.
+
+### Invisibilidad del framework pedagógico
+
+<Warning>
+  **Nunca** exponer al alumno conceptos de diseño instruccional: "taxonomía de Bloom", "objetivo instruccional", "carga cognitiva", "nivel cognitivo", "diseño instruccional", etc. Estos frameworks son herramientas internas para la generación. El alumno solo debe ver contenido de la materia.
+</Warning>
+
+### Localización lingüística
+
+- Usar **español rioplatense/argentino** como variante por defecto.
+- Usar terminología del sistema jurídico, académico e institucional argentino (ej: "Corte Suprema" en lugar de "tribunal constitucional"; "municipio" en lugar de "ayuntamiento").
+- No dejar anglicismos crudos en las actividades (ej: reemplazar "trade-off" por "disyuntiva" o "compromiso entre alternativas").
+- Adaptar cualquier ejemplo o referencia cultural al contexto local.
+
+### Nivel adecuado al destinatario
+
+- Calibrar la complejidad del vocabulario, los escenarios y la profundidad conceptual al nivel académico del alumno (año de cursada, carrera, conocimientos previos esperados).
+- Para materias de primer año: priorizar terminología accesible y evitar tecnicismos avanzados que no se hayan introducido en el material.
+
+### Autosuficiencia de la actividad
+
+- Toda actividad debe ser **autocontenida**: el alumno debe poder responderla con la información proporcionada en la actividad misma y el material de estudio ya cubierto.
+- No referenciar documentos, fallos, casos o fuentes externas sin incluir el extracto o resumen necesario para que el alumno pueda responder.
+
+## 2. Marco Teórico: Taxonomía de Bloom Revisada
+
+La Taxonomía de Bloom Revisada (Anderson & Krathwohl, 2001) organiza los procesos cognitivos en seis niveles progresivos. Para TUNI, alineamos cada tipo de actividad con los niveles cognitivos apropiados según su carga cognitiva:
+
+| Tipo de Actividad | Niveles de Bloom | Carga Cognitiva |
+|---|---|---|
+| Multiple Choice | Recordar, Comprender | Baja |
+| Completar oración con chips | Recordar, Comprender | Baja |
+| Construir oración con chips | Aplicar, Analizar | Media |
+| Comparar y justificar | Analizar, Evaluar | Media-Alta |
+| Pregunta abierta | Evaluar, Crear | Alta |
+
+### Verbos Clave por Nivel
+
+- **Recordar:** identificar, listar, nombrar, reconocer, recordar
+- **Comprender:** clasificar, describir, explicar, resumir, interpretar
+- **Aplicar:** ejecutar, implementar, resolver, usar, demostrar
+- **Analizar:** diferenciar, organizar, comparar, contrastar, examinar
+- **Evaluar:** argumentar, defender, juzgar, justificar, criticar
+- **Crear:** diseñar, construir, producir, formular, proponer
+
+### Equipo pedagógico agrega y resalta lo siguiente:
+
+- **Recordar:** Recuperar, reconocer y evocar conocimientos relevantes de la memoria a largo plazo.
+- **Comprensión:** Construir significado mediante interpretación, ejemplificación, clasificación, resumen, inferencia, comparación y explicación.
+- **Aplicar:** Llevar a cabo o utilizar un procedimiento para ejecutar o implementar.
+- **Analizar:** dividir el material en partes constituyentes y determinar cómo se relacionan las partes entre sí y con una estructura o propósito general mediante la diferenciación, la organización y la atribución.
+- **Evaluar:** Emitir juicios basados en criterios y estándares mediante la comprobación y la crítica.
+- **Crear:** Reunir elementos para formar un todo coherente o funcional; reorganizar elementos en un nuevo patrón o estructura mediante la generación, planificación o producción.
+
+## 3. Lineamientos por Tipo de Actividad
+
+### 3.1 Multiple Choice (Opción Múltiple)
+
+**Nivel cognitivo objetivo:** Recordar y Comprender
+
+**Propósito:** Evaluar el reconocimiento y comprensión de conceptos, terminología y hechos básicos.
+
+#### Lineamientos para los Distractores (Opciones Incorrectas)
+
+1. **Crear 4 opciones totales** (1 correcta + 3 distractores).
+2. **Diseñar distractores plausibles** basados en errores conceptuales comunes o misconceptions típicas.
+3. **Mantener opciones mutuamente excluyentes** - si una es verdadera, las otras deben ser claramente falsas.
+4. **Asegurar consistencia gramatical:** longitud similar, estructura paralela, concordancia con el enunciado.
+5. **No incluir pistas verbales** en la respuesta correcta (ej: la opción más larga o detallada).
+6. **Aleatorizar la posición** de la respuesta correcta.
+
+#### Criterios de Calidad
+
+- Una única respuesta claramente correcta o "mejor respuesta"
+- Alineación directa con los objetivos de aprendizaje del módulo
+- Feedback instructivo para cada opción que explique por qué es correcta o incorrecta
+
+#### Ejemplo
+
+> **Stem:** ¿Cuál es la función principal del Banco Central en una economía?
+>
+> A) Maximizar las ganancias del sector bancario privado
+>
+> B) Regular la política monetaria y mantener la estabilidad de precios
+>
+> C) Otorgar préstamos directos a consumidores individuales
+>
+> D) Determinar las tasas de impuestos nacionales
+>
+> **Respuesta correcta:** B
+>
+> **Feedback opción A:** Incorrecto. El Banco Central es una institución pública cuyo objetivo no es maximizar ganancias privadas, sino el bienestar económico general.
+
+---
+
+### 3.2 Completar la Oración con Chips
+
+**Nivel cognitivo objetivo:** Recordar y Comprender
+
+**Propósito:** Evaluar el recall de términos específicos y la comprensión de su uso en contexto mediante la selección de chips predefinidos.
+
+#### Lineamientos para el Diseño de la Oración
+
+1. **Posicionar múltiples espacios en blanco**
+2. **Omitir únicamente palabras clave significativas** (términos técnicos, conceptos centrales), no palabras funcionales o conectores.
+3. **Asegurar que existe una única respuesta correcta** - el contexto debe desambiguar claramente.
+4. **Usar sintaxis simple y voz activa.** Evitar estructuras complejas o idiomáticas.
+5. **Limitar a 3 blancos por oración** para evitar sobrecarga cognitiva.
+
+#### Lineamientos para los Chips (Opciones)
+
+1. **Incluir 3-5 chips por actividad:** las respuestas correctas más 2-3 distractores.
+2. Los distractores deben ser **términos del mismo campo semántico** o unidad temática.
+3. **Evitar chips gramaticalmente imposibles** en el contexto dado.
+
+#### Criterios de Calidad
+
+- El contexto proporciona pistas suficientes para derivar la respuesta correcta
+- Los distractores representan confusiones conceptuales comunes
+- Instrucciones claras sobre qué se espera del estudiante
+
+#### Ejemplo
+
+> **Oración:** El proceso mediante el cual los _____ tienden a subir de manera generalizada y sostenida en una economía se denomina _______.
+>
+> **Chips disponibles:** `inflación` | `precios` | `devaluación` | `recesión` | `costos`
+>
+> **Respuesta correcta:** precios, inflación
+
+---
+
+### 3.3 [POSTERGADO] Construir la Oración con Chips
+
+<Warning>
+  Este tipo de actividad está **postergado** y no forma parte del alcance MVP.
+</Warning>
+
+**Nivel cognitivo objetivo:** Aplicar y Analizar
+
+**Propósito:** Evaluar la capacidad del estudiante para organizar elementos y demostrar comprensión de relaciones estructurales, secuencias o procesos.
+
+#### Lineamientos para el Diseño
+
+1. **Proporcionar un enunciado claro** que especifique qué tipo de construcción se espera (definición, proceso, relación causal, etc.).
+2. **Diseñar la oración objetivo con estructura lógica clara** que el estudiante debe descubrir.
+3. Los chips deben poder combinarse en un **orden específico** que tenga sentido gramatical y conceptual.
+4. **Incluir chips distractores** que no pertenezcan a la construcción correcta (20-30% adicionales). Estos chips deben apuntar a modificar la lógica (arriba en lugar de abajo), los conceptos (precio en lugar de costos) o algo que apunte al dominio. Se deben evitar los conectores o distractores que no aporten.
+5. **Evitar construcciones donde múltiples ordenamientos sean igualmente válidos**, ya que tendremos solo un orden válido como correcto.
+
+#### Criterios de Calidad
+
+- La tarea requiere comprensión genuina de relaciones, no solo memoria
+- Los chips distractores son plausibles en el contexto temático
+- Existe un criterio de evaluación claro para construcciones parcialmente correctas
+
+#### Ejemplo
+
+> **Prompt:** El precio de equilibrio se determina cuando:
+>
+> **Chips disponibles:** `El` | `La cantidad demandada` | `la cantidad ofrecida` | `precio de equilibrio` | `se encuentra` | `en el mercado` | `maximiza las ganancias` | `del gobierno`
+>
+> **Construcción correcta:** "El precio de equilibrio se determina cuando la cantidad demandada es igual a la cantidad ofrecida en el mercado."
+>
+> **Chips distractores:** "maximiza las ganancias", "del gobierno"
+
+---
+
+### 3.4 Comparar Respuestas y Justificar
+
+**Nivel cognitivo objetivo:** Analizar y Evaluar
+
+**Propósito:** Desarrollar pensamiento crítico mediante la evaluación de múltiples perspectivas, la identificación de fortalezas y debilidades, y la argumentación fundamentada.
+
+#### Lineamientos para el Diseño
+
+1. **Presentar 2 respuestas o posiciones** que tengan mérito pero difieran en aspectos clave.
+2. Las opciones deben representar **perspectivas genuinamente diferentes**, no variaciones triviales.
+3. **Evitar opciones claramente superiores o inferiores** - el objetivo es promover análisis, no identificar lo obvio.
+4. **Incluir contexto suficiente** en una oración breve.
+5. **Especificar criterios de evaluación en el enunciado** cuando sea apropiado (eficiencia, ética, viabilidad, etc.).
+
+#### Estructura de la Actividad
+
+1. **Presentación del escenario o problema**
+2. **Pregunta de análisis** (ej: "¿Cuál consideras más apropiada y por qué?")
+3. **Opciones a comparar** (claramente diferenciadas)
+4. **Espacio para justificación** del estudiante
+
+#### Criterios para Evaluar las Justificaciones
+
+La respuesta del estudiante debe demostrar:
+
+- **Identificación de diferencias clave** entre las opciones
+- **Uso de criterios relevantes** para la evaluación
+- **Argumentación coherente** que conecte evidencia con conclusión
+- **Reconocimiento de implicancias de la decisión** o limitaciones de la opción elegida
+
+#### Criterios de Calidad
+
+- Las opciones presentan dilemas o tensiones genuinas
+- No existe una respuesta "correcta" obvia - ambas posiciones son defendibles
+- Se proporciona rúbrica para evaluar la calidad de la justificación
+
+#### Ejemplo
+
+> **Escenario:** Una empresa enfrenta una caída en ventas del 20%. El equipo directivo propone dos estrategias ¿Cuál recomendarías y por qué? Considera factores como rentabilidad a corto y largo plazo, posicionamiento de marca y recursos necesarios.
+>
+> **Opción A:** Reducir precios un 15%.
+>
+> **Opción B:** Invertir en mejora de calidad.
+>
+> **Rúbrica de evaluación:**
+>
+> - Identifica pros y contras de ambas opciones (2 pts)
+> - Utiliza conceptos económicos relevantes (2 pts)
+> - Presenta argumentación coherente (2 pts)
+> - Reconoce limitaciones de su recomendación (2 pts)
+
+---
+
+### 3.5 Pregunta Abierta
+
+**Nivel cognitivo objetivo:** Evaluar y Crear
+
+**Propósito:** Evaluar la capacidad del estudiante para sintetizar conocimiento, formar opiniones fundamentadas, y generar respuestas originales que demuestren comprensión profunda.
+
+#### Lineamientos para el Diseño de la Pregunta
+
+1. **Usar verbos de acción de alto nivel:** analizar, evaluar, diseñar, proponer, argumentar, crear.
+2. **Formular preguntas que requieran síntesis** de múltiples conceptos o fuentes.
+3. **Evitar preguntas con respuesta única predeterminada** - deben permitir múltiples enfoques válidos.
+4. **Proporcionar contexto suficiente** pero sin dirigir hacia una respuesta específica.
+5. **Especificar extensión esperada** y criterios de evaluación.
+
+#### Tipos de Preguntas Abiertas
+
+| Tipo | Descripción | Ejemplo de inicio |
+|---|---|---|
+| **Evaluativa** | Juzgar valor, mérito o efectividad | "¿Qué tan efectivo es...?", "Evalúa críticamente..." |
+| **Hipotética** | Explorar escenarios alternativos | "¿Qué pasaría si...?", "¿Cómo cambiaría...?" |
+| **De síntesis** | Combinar ideas para crear algo nuevo | "Diseña una propuesta...", "Desarrolla un plan..." |
+| **De aplicación compleja** | Usar conocimiento en situaciones nuevas | "¿Cómo aplicarías... a...?" |
+| **De perspectiva** | Explorar diferentes puntos de vista | "Desde la perspectiva de..., ¿cómo...?" |
+| **Un caso puntual** | Situación que podría resolverse aplicando conceptos | "Un amigo está con un problema…, ¿Cómo..?" |
+
+#### Lineamientos para la Rúbrica de Evaluación
+
+Toda pregunta abierta debe incluir una "respuesta ideal", contra la que se realizará una comparación para definir el puntaje del 1 al 10 a la respuesta del alumno.
+
+#### Criterios de Calidad
+
+- La pregunta no puede responderse con simple memorización
+- Permite demostrar pensamiento original y crítico
+- Se incluye una "respuesta ideal", con la cual se determina el puntaje
+
+#### Ejemplo
+
+> **Pregunta:** Un municipio está evaluando implementar un **precio máximo** sobre el alquiler de viviendas para facilitar el acceso a la vivienda a estudiantes y familias de bajos ingresos. ¿Cómo afectaría al mercado de alquileres en el corto y en el largo plazo? ¿Qué posibles efectos no deseados sobre la oferta, la calidad de las viviendas y la asignación de recursos puede tener esto?
+>
+> **Respuesta ideal:** En el **corto plazo**, los inquilinos que logren acceder a una vivienda se verían beneficiados por pagar un alquiler más bajo. Sin embargo, dado que la cantidad demandada aumenta y la cantidad ofrecida disminuye, es probable que se genere **escasez**, lo que dificulta el acceso efectivo a las viviendas.
+>
+> En el **largo plazo**, los incentivos para los propietarios pueden deteriorarse aún más. Un menor ingreso esperado puede reducir la inversión en mantenimiento y construcción de nuevas viviendas, afectando la **oferta** y profundizando la escasez. Además, el mercado puede volverse menos transparente, favoreciendo mecanismos informales de asignación que no necesariamente benefician a los grupos objetivo.
+>
+> Como efecto no deseado, la política podría terminar excluyendo justamente a quienes pretende ayudar, ya que los propietarios pueden seleccionar inquilinos con menor riesgo percibido, independientemente de su nivel de ingresos.
+
+---
+
+## 4. Lineamientos Generales de Calidad
+
+### 4.1 Accesibilidad y Claridad
+
+- Usar **lenguaje inclusivo** y libre de sesgos
+- Evitar **referencias culturales específicas** que puedan excluir estudiantes
+- Asegurar que las instrucciones sean **claras y unívocas**
+
+### 4.2 Feedback Formativo
+
+Cada actividad debe incluir:
+
+- **Feedback inmediato** tras la respuesta
+- **Explicación del razonamiento correcto**, no solo indicación de acierto/error
+- **Recursos adicionales** para estudiantes que necesiten refuerzo
+- **Conexión con el contenido** del módulo para contextualizar el aprendizaje
+
+### 4.3 Consistencia y Estándares
+
+- Mantener **formato consistente** dentro de cada tipo de actividad
+- Seguir **convenciones de estilo** establecidas para el curso
+
+### 4.4 Reglas de Contenido
+
+<Warning>
+  Las siguientes reglas son **obligatorias** para toda actividad generada:
+</Warning>
+
+1. **Prohibido mencionar frameworks pedagógicos:** No incluir referencias a taxonomía de Bloom, niveles cognitivos, diseño instruccional, objetivos instruccionales medibles, ni ningún concepto de pedagogía o didáctica que sea parte del proceso interno de generación.
+
+2. **Prohibido usar terminología extranjerizada:** No usar anglicismos crudos (trade-off, feedback, approach) ni terminología de otros sistemas (tribunal constitucional, ayuntamiento). Adaptar siempre al español argentino y al sistema institucional local.
+
+3. **Prohibido generar contenido fuera de la disciplina:** Si la materia es derecho constitucional, los ejemplos, escenarios y preguntas deben ser de derecho constitucional. No derivar hacia otras ramas aunque la fuente las mencione tangencialmente.
+
+4. **Prohibido incluir la respuesta en el enunciado:** El enunciado de la pregunta debe estar limpiamente separado de las opciones de respuesta y de la respuesta correcta. El alumno no debe poder deducir la respuesta leyendo solo el enunciado.
+
+5. **Prohibido referenciar material sin contexto:** Si una actividad menciona un caso, fallo, artículo o documento específico, debe incluir el extracto o descripción suficiente para que el alumno pueda trabajar con esa información.
+
+### 4.5 Completitud
+
+- Toda actividad debe tener **todos sus campos completos**: enunciado, opciones (todas las requeridas), respuesta correcta, feedback y/o rúbrica según corresponda.
+- En actividades de comparación, **ambas opciones** deben estar formuladas con igual nivel de detalle y desarrollo.
+- No se aceptan actividades con campos vacíos, opciones faltantes o secciones marcadas como "pendiente".
+
+## 5. Proceso de Control de Calidad
+
+### 5.1 Checklist de Revisión Pre-Docente
+
+Antes de enviar contenido a revisión docente, verificar:
+
+#### Para todas las actividades:
+
+- [ ] Alineación con objetivo de aprendizaje específico
+- [ ] Nivel cognitivo apropiado según taxonomía de Bloom
+- [ ] Lenguaje claro, preciso y libre de errores
+- [ ] Instrucciones completas y unívocas
+- [ ] Feedback formativo incluido
+- [ ] No menciona frameworks pedagógicos internos (Bloom, diseño instruccional, etc.)
+- [ ] Terminología localizada al contexto argentino (sin anglicismos, sin terminología de otros sistemas)
+- [ ] Todos los campos y opciones están completos (sin campos vacíos)
+- [ ] Enunciado separado de la respuesta correcta (no se filtra la respuesta en el enunciado)
+- [ ] No referencia material externo sin incluir contexto suficiente para responder
+- [ ] Nivel de complejidad adecuado al año y perfil del alumno
+- [ ] Contenido derivado estrictamente de la fuente/bibliografía de la materia
+
+#### Para Multiple Choice:
+
+- [ ] Enunciado formulado como pregunta completa
+- [ ] 4 opciones de longitud similar
+- [ ] Distractores plausibles basados en misconceptions
+- [ ] Sin pistas verbales hacia la respuesta correcta
+- [ ] Feedback explicativo para cada opción
+
+#### Para Completar con Chips:
+
+- [ ] Blanco posicionado estratégicamente
+- [ ] Palabra clave omitida (no funcional)
+- [ ] 3-5 chips del mismo campo semántico
+- [ ] Una única respuesta correcta posible
+
+#### [Postergado] Para Construir con Chips:
+
+- [ ] Prompt claro sobre construcción esperada
+- [ ] Chips suficientes para la construcción
+- [ ] Distractores incluidos (20-30%)
+- [ ] Criterio para evaluación parcial definido
+
+#### Para Comparar y Justificar:
+
+- [ ] Opciones con mérito comparable
+- [ ] Criterios de evaluación especificados
+- [ ] Rúbrica para justificaciones incluida
+- [ ] Escenario con contexto suficiente
+
+#### Para Pregunta Abierta:
+
+- [ ] Pregunta requiere síntesis/evaluación/creación
+- [ ] Respuesta ideal para feedback incluida
+
+## 6. Referencias
+
+- Anderson, L. W., & Krathwohl, D. R. (Eds.). (2001). *A Taxonomy for Learning, Teaching, and Assessing: A Revision of Bloom's Taxonomy of Educational Objectives*. Longman.
+- Haladyna, T. M., Downing, S. M., & Rodriguez, M. C. (2002). A review of multiple-choice item-writing guidelines for classroom assessment. *Applied Measurement in Education*, 15(3), 309-333.
+- Butler, A. C. (2018). Multiple-choice testing in education: Are the best practices for assessment also good for learning? *Journal of Applied Research in Memory and Cognition*, 7(3), 323-331.
+
+---
+
+*Documento v2.0 - TUNI Educational Content Quality Assurance*

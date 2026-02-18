@@ -1,87 +1,119 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "TUNI",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#735fe3",
+    "light": "#9787ea",
+    "dark": "#4f36d6"
+  },
+  "font": {
+    "headings": {
+      "family": "Inter"
+    },
+    "body": {
+      "family": "Inter"
+    }
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Inicio",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Bienvenida",
             "pages": [
               "index",
-              "quickstart",
-              "development"
+              "identity"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Técnico",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "mixpanel-tracking"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "Épicas",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Clase (Tutoría Adaptativa)",
             "pages": [
-              "api-reference/introduction"
+              "epicas/clase/overview",
+              "epicas/clase/spec",
+              "epicas/clase/comprobacion",
+              "epicas/clase/ensenar",
+              "epicas/clase/knowledge-tracking",
+              "epicas/clase/prompts",
+              "epicas/clase/historias"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Onboarding",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "epicas/onboarding/overview",
+              "epicas/onboarding/spec"
+            ]
+          },
+          {
+            "group": "Dashboard",
+            "pages": [
+              "epicas/dashboard/overview",
+              "epicas/dashboard/spec",
+              "epicas/dashboard/decisiones",
+              "epicas/dashboard/historias"
+            ]
+          },
+          {
+            "group": "Evaluaciones",
+            "pages": [
+              "epicas/evaluaciones/overview",
+              "epicas/evaluaciones/spec",
+              "epicas/evaluaciones/decisiones",
+              "epicas/evaluaciones/historias"
+            ]
+          },
+          {
+            "group": "Supervisores",
+            "pages": [
+              "epicas/supervisores/overview",
+              "epicas/supervisores/spec"
+            ]
+          },
+          {
+            "group": "Contenido",
+            "pages": [
+              "epicas/contenido/overview",
+              "epicas/contenido/spec",
+              "epicas/contenido/specs-actividades"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Integraciones",
+        "groups": [
+          {
+            "group": "General",
+            "pages": [
+              "integraciones/overview"
+            ]
+          },
+          {
+            "group": "Canvas LMS",
+            "pages": [
+              "integraciones/canvas/overview",
+              "integraciones/canvas/spec",
+              "integraciones/canvas/doc-tecnico",
+              "integraciones/canvas/historias"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",
@@ -90,33 +122,17 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "TUNI",
+        "href": "https://tuni.ai"
       }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
+    ]
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+      "copy",
+      "view",
+      "claude",
+      "chatgpt"
+    ]
   }
 }

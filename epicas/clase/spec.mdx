@@ -1,0 +1,180 @@
+---
+title: "Especificación Funcional"
+description: "Arquitectura de momentos pedagógicos, flujos de decisión, tool calls y reglas de comportamiento del tutor en la épica Clase."
+icon: "file-text"
+---
+
+Para una visión general, ver [Clase - Tutoría Adaptativa](/epicas/clase/overview).
+
+## Fuentes
+
+| Recurso | Link |
+|---------|------|
+| **Flujo general** | [FigJam - Algoritmo TUNI](https://www.figma.com/board/sqbowPtDvypUxfX8HmgNUl/Algoritmo-TUNI?node-id=1-676&t=bb2r1fsWGA5Ojthi-4) |
+| **Flujos con prompts** | [FigJam - Algoritmo TUNI](https://www.figma.com/board/sqbowPtDvypUxfX8HmgNUl/Algoritmo-TUNI?node-id=275-287) |
+| **Flujo Modo Enseñar** | [FigJam - Modo Enseñar](https://www.figma.com/board/sqbowPtDvypUxfX8HmgNUl/Algoritmo-TUNI?node-id=281-1091) |
+| **Diseños en alta** | [Figma - TUNI V3](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=38-8377) |
+| **System Prompt Base** | [System Prompts](/epicas/clase/prompts) |
+
+## Flujos principales
+
+### Arquitectura: Los 4 Momentos del Tutor
+
+El tutor opera con prompts diferenciados según el momento pedagógico. Cada momento tiene su propio contexto, objetivos y restricciones.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    MOMENTO 1: INICIO DE CLASE                   │
+│  Trigger: Primera interacción de la sesión                      │
+│  - Saludo personalizado + gancho motivacional                   │
+│  - Relevamiento: "¿Cómo venís con este tema?"                   │
+│  - Decisión: Alta confianza? -> Comprobación / Baja -> Enseñar  │
+└─────────────────────────────────────────────────────────────────┘
+                              |
+        ┌─────────────────────┴─────────────────────┐
+        v                                           v
+┌───────────────────────┐               ┌───────────────────────┐
+│  -> COMPROBACIÓN       │               │  -> ENSEÑAR            │
+│  (Momento 2)          │               │  (Momento 4)          │
+│  - Muestra actividades│               │  - Explicaciones      │
+│    pregeneradas       │               │    completas          │
+│  - Si el user pregunta│               │  - Videos/contenido   │
+│    da orientación sin │               │  - Conexión con       │
+│    revelar respuestas │               │    errores previos    │
+│  - Método socrático   │               └───────────────────────┘
+│  - NUNCA dar answers  │
+└───────────┬───────────┘
+            v
+┌─────────────────────────────────────────────────────────────────┐
+│                MOMENTO 3: FIN DE COMPROBACIÓN                   │
+│  Trigger: Estudiante completó todas las actividades             │
+│  - Feedback formativo (60% positivo / 40% constructivo)         │
+│  - Análisis de errores conceptuales                             │
+│  - Tool call: getActivities(filter: "lesson")                   │
+│  - Recomendación de experiencias de aprendizaje                 │
+└─────────────────────────────────────────────────────────────────┘
+                              |
+┌─────────────────────────────────────────────────────────────────┐
+│                     CHECK AL PLAN                               │
+│  - ¿Superó objetivo del concepto? -> Actualizar nivel           │
+│  - ¿Ganó algún reconocimiento? -> Entregar                      │
+│  - ¿Terminó el plan? -> Fin de clase / Siguiente concepto       │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Flujo General (Decisiones del Sistema)
+
+```
+Inicio de sesión
+      |
+Backend: Carga perfil + genera plan de conceptos (A cargo de KT)
+      |
+Momento 1: Relevamiento inicial
+      |
+¿Alta confianza en el tema?
+      ├── SÍ -> Comprobación (Tool: GetActivities filter: session)
+      └── NO -> Enseñar
+              ├── ¿Hay contenido pre-generado?
+              │     ├── SÍ -> Mostrar video/material
+              │     └── NO -> Explicación del tutor (loop socrático)
+              └── Volver a Comprobación
+      |
+Fin de comprobación
+      |
+¿Superó objetivo del concepto?
+      ├── SÍ -> Nivel actualizado -> Check al plan
+      └── NO -> Enseñar (refuerzo)
+      |
+¿Terminó el plan?
+      ├── SÍ -> Cierre de clase
+      └── NO -> Siguiente concepto (volver a Momento 1)
+```
+
+## Pantallas / Módulos
+
+| Módulo | Descripción | Sub-épica |
+|--------|-------------|-----------|
+| Chat del tutor | Interfaz conversacional principal donde ocurren los 4 momentos | Clase (raíz) |
+| Actividad de comprobación | Pantalla de quiz/ejercicio embebida en el chat | Comprobación |
+| Experiencia de aprendizaje | Pantalla de video/material/explicación | Enseñar |
+| Plan de sesión | Vista del plan de conceptos con progreso (3 pastillas) | Knowledge Tracking |
+
+### Estructura de archivos de la épica
+
+```
+Clase/
+├── README.md
+├── spec.md
+├── comprobacion/
+│   ├── README.md
+│   └── sistema-puntos.md
+├── ensenar/
+│   ├── README.md
+│   ├── spec.md
+│   └── prompt.md
+├── knowledge-tracking/
+│   └── README.md
+└── prompts/
+    └── system-prompt-base.md
+```
+
+## Componentes
+
+### Tool Calls del Tutor
+
+| Tool | Momento | Descripción |
+|------|---------|-------------|
+| `getActivities(filter: "session")` | M1 | Obtiene actividades de comprobación para la sesión |
+| `getActivities(filter: "lesson")` | M3 | Obtiene experiencias de aprendizaje post-comprobación |
+| `buildPlan` | Inicio | Genera plan de conceptos (3 pastillas) para la sesión |
+| `updatePlan` | Post-comprobación | Actualiza progreso en el plan |
+| `getConceptInfo` | M4 | Obtiene información del concepto desde embeddings indexados |
+| `startSession` | Inicio | Inicializa sesión de teoría o práctica |
+
+### Prompts
+
+| Prompt | Ubicación | Uso |
+|--------|-----------|-----|
+| System Prompt Base | [System Prompts](/epicas/clase/prompts) | Prompt principal con los 4 momentos |
+| Prompt Modo Enseñar | [Enseñar](/epicas/clase/ensenar) | Prompt específico para el loop socrático de enseñanza |
+
+## Consideraciones técnicas
+
+### Matriz de Momentos
+
+| Momento | Trigger | Tools disponibles | Restricción crítica |
+|---------|---------|-------------------|---------------------|
+| **1: Inicio** | Primera interacción de la sesión | `getActivities`, `buildPlan`, `startSession` | No adelantar contenido |
+| **2: Soporte comprobación** | Pregunta del estudiante durante actividad | Ninguna | **NUNCA revelar respuestas**; solo orientación socrática |
+| **3: Fin comprobación** | Estudiante completó todas las actividades | `getActivities(lesson)`, `updatePlan` | Balance 60/40 en feedback (positivo/constructivo) |
+| **4: Soporte enseñanza** | Consulta durante experiencia de aprendizaje | `getConceptInfo` | Conectar con errores previos; explicaciones completas permitidas |
+
+### Reglas de comportamiento por momento
+
+<AccordionGroup>
+  <Accordion title="Momento 2: Soporte Comprobación">
+    - El tutor nunca revela la respuesta correcta bajo ninguna circunstancia.
+    - Usa exclusivamente el método socrático: preguntas guía, pistas indirectas, reformulaciones.
+    - Si el estudiante insiste en pedir la respuesta, el tutor redirige con una nueva pregunta orientadora.
+    - No tiene acceso a tool calls para evitar filtrar información.
+  </Accordion>
+  <Accordion title="Momento 3: Fin Comprobación">
+    - El feedback debe ser 60% positivo (refuerzo de lo bien hecho) y 40% constructivo (áreas de mejora).
+    - Analiza errores conceptuales, no solo respuestas incorrectas.
+    - Recomienda experiencias de aprendizaje específicas basadas en los errores detectados.
+  </Accordion>
+  <Accordion title="Momento 4: Soporte Enseñanza">
+    - Explicaciones completas están permitidas y son esperadas.
+    - Debe conectar la explicación con errores cometidos previamente en comprobación.
+    - En Modo Enseñar, no hay límite de iteraciones para re-explicar un concepto.
+    - Siempre verificar comprensión antes de avanzar al siguiente concepto.
+  </Accordion>
+</AccordionGroup>
+
+### Arquitectura LLM
+
+<Note>
+  - Cada interacción es una llamada independiente al LLM con contexto inyectado (no se mantiene estado en el modelo).
+  - La progresión académica (niveles, puntos, plan) se gestiona en backend, no en el prompt.
+  - El perfil de autorregulación del estudiante (procrastinación, estrategias de estudio, autoeficacia) se inyecta como contexto en cada llamada.
+</Note>

@@ -1,0 +1,147 @@
+---
+title: "Especificación Funcional"
+description: "Especificación detallada de flujos, tipos de actividad, componentes y reglas de contenido del generador de contenido IA."
+icon: "file-text"
+---
+
+# Spec: Contenido (AI Content Generator)
+
+## Fuentes
+
+- [Especificaciones de Actividades (lineamientos de calidad)](/epicas/contenido/specs-actividades)
+- Bibliografía pedagógica: Anderson & Krathwohl (2001), Haladyna, Downing & Rodriguez (2002), Butler (2018).
+
+## Flujos principales
+
+### Flujo 1: Indexación de fuentes
+
+<Steps>
+  <Step title="Carga de fuentes bibliográficas">
+    Se cargan fuentes bibliográficas (PDF/texto) para una materia.
+  </Step>
+  <Step title="Indexación mediante LLM">
+    Se ejecuta el proceso de indexación: el sistema recorre cada párrafo del documento.
+  </Step>
+  <Step title="Asignación a concepto">
+    Cada párrafo es asignado a un **concepto** dentro de la estructura curricular de la materia (módulo > unidad > concepto).
+  </Step>
+  <Step title="Contenido disponible">
+    El contenido indexado queda disponible para generación de actividades.
+  </Step>
+</Steps>
+
+### Flujo 2: Generación de actividades
+
+<Steps>
+  <Step title="Solicitud a demanda">
+    Se solicita la generación de actividades a demanda (por tipo, concepto, nivel cognitivo).
+  </Step>
+  <Step title="Generación siguiendo lineamientos">
+    El generador produce la actividad siguiendo los lineamientos de calidad y el contenido indexado.
+  </Step>
+  <Step title="Control de calidad pre-docente">
+    Se ejecuta el checklist automatizado.
+  </Step>
+  <Step title="Incorporación a la base de datos">
+    Si la actividad pasa el control, se incorpora a la base de datos de TUNI. Opcionalmente, se generan imágenes complementarias.
+  </Step>
+</Steps>
+
+### Flujo 3: Control de calidad
+
+<Steps>
+  <Step title="Checklist automatizado">
+    Cada actividad generada pasa por un checklist automatizado antes de ser aceptada.
+  </Step>
+  <Step title="Verificación de criterios">
+    Se verifican: alineación con objetivo de aprendizaje, nivel cognitivo, claridad, completitud de campos, ausencia de frameworks pedagógicos expuestos, localización lingüística, fidelidad a la fuente.
+  </Step>
+  <Step title="Resultado">
+    Actividades que no pasan el control son marcadas para revisión o regeneración.
+  </Step>
+</Steps>
+
+```
+Carga de fuentes (PDF/texto)
+  --> Indexación (LLM: párrafo --> concepto)
+  --> Contenido indexado (por módulo/unidad/concepto)
+  --> Generación de actividades (a demanda, por tipo)
+  --> Control de calidad pre-docente
+  --> Base de datos TUNI
+```
+
+## Tipos de actividad (inventario)
+
+| Tipo | Descripción | Niveles de Bloom | Carga cognitiva | Estado |
+|------|-------------|------------------|-----------------|--------|
+| Multiple Choice | 1 correcta + 3 distractores plausibles basados en misconceptions. Feedback por opción. | Recordar, Comprender | Baja | En desarrollo |
+| Completar oración con chips | Oración con blancos, chips del mismo campo semántico (3-5). Max 3 blancos. | Recordar, Comprender | Baja | En desarrollo |
+| Construir oración con chips | Ordenar chips para formar una oración/definición correcta. Incluye distractores (20-30%). | Aplicar, Analizar | Media | En desarrollo |
+| Comparar y justificar | Dos posiciones con mérito, el alumno elige y argumenta. Rúbrica de evaluación incluida. | Analizar, Evaluar | Media-Alta | En desarrollo |
+| Pregunta abierta | Pregunta que requiere síntesis/evaluación/creación. Incluye respuesta ideal para scoring. | Evaluar, Crear | Alta | En desarrollo |
+
+## Pantallas / Módulos
+
+<Note>
+  Esta épica no tiene pantallas de usuario final (estudiante). Los componentes son servicios de backend y herramientas internas.
+</Note>
+
+| Módulo | Descripción | Estado |
+|--------|-------------|--------|
+| Indexador | Procesamiento de PDFs, asignación párrafo a concepto via LLM | En desarrollo |
+| Generador de actividades | Creación de actividades por tipo, alineadas a fuente y nivel cognitivo | En desarrollo |
+| Generador de imágenes | Creación de imágenes complementarias para actividades | En desarrollo |
+| Validador (control de calidad) | Checklist automatizado pre-docente | En desarrollo |
+
+## Componentes
+
+### Indexador
+
+- Recibe PDF/texto como input.
+- Utiliza LLM para analizar párrafo por párrafo.
+- Asigna cada párrafo a un concepto de la estructura curricular (módulo > unidad > concepto).
+- Output: contenido indexado disponible para generación.
+
+### Generador de actividades
+
+- Recibe: concepto, tipo de actividad solicitado, contenido indexado relevante.
+- Produce: actividad completa con todos los campos requeridos según el tipo (enunciado, opciones, respuesta correcta, feedback/rúbrica).
+- Respeta los lineamientos de calidad definidos en la [Especificación de Actividades](/epicas/contenido/specs-actividades).
+
+### Generador de imágenes
+
+- Genera imágenes complementarias para actividades que lo requieran.
+- Pendiente de especificación detallada.
+
+### Validador (control de calidad pre-docente)
+
+- Ejecuta checklist automatizado sobre cada actividad generada.
+- Verifica: completitud de campos, ausencia de frameworks pedagógicos, localización lingüística, fidelidad a la fuente, nivel cognitivo adecuado.
+- Marca actividades que no pasan para revisión o regeneración.
+
+## Reglas de contenido obligatorias
+
+<Warning>
+  Toda actividad generada debe cumplir las siguientes reglas (detalle completo en la [Especificación de Actividades](/epicas/contenido/specs-actividades)):
+</Warning>
+
+1. **Prohibido mencionar frameworks pedagógicos:** no incluir referencias a taxonomía de Bloom, niveles cognitivos, diseño instruccional ni conceptos de pedagogía que sean parte del proceso interno de generación.
+2. **Prohibido usar terminología extranjerizada:** no usar anglicismos crudos ni terminología de otros sistemas. Adaptar siempre al español argentino y al sistema institucional local.
+3. **Prohibido generar contenido fuera de la disciplina:** los ejemplos, escenarios y preguntas deben ser estrictamente de la materia correspondiente.
+4. **Prohibido incluir la respuesta en el enunciado:** el enunciado debe estar limpiamente separado de las opciones y la respuesta correcta.
+5. **Prohibido referenciar material sin contexto:** si una actividad menciona un caso, fallo o documento específico, debe incluir el extracto o descripción suficiente para que el alumno pueda responder.
+
+## Consideraciones técnicas
+
+- **Fidelidad a la fuente:** toda actividad se deriva estrictamente del material bibliográfico cargado. No se inventan escenarios, datos ni ejemplos sin respaldo.
+- **Simplicidad y claridad:** enunciados concisos, sin ambigüedad, longitud acotada.
+- **Localización lingüística:** español rioplatense/argentino, terminología del sistema argentino.
+- **Autosuficiencia:** toda actividad es autocontenida, respondible con la información proporcionada.
+- **Invisibilidad del framework pedagógico:** nunca exponer al alumno conceptos como "Bloom", "carga cognitiva" o "diseño instruccional".
+- **Nivel adecuado al destinatario:** calibrar complejidad al año de cursada y perfil del alumno.
+
+## Bibliografía pedagógica
+
+- Anderson, L. W., & Krathwohl, D. R. (Eds.). (2001). *A Taxonomy for Learning, Teaching, and Assessing: A Revision of Bloom's Taxonomy of Educational Objectives*. Longman.
+- Haladyna, T. M., Downing, S. M., & Rodriguez, M. C. (2002). A review of multiple-choice item-writing guidelines for classroom assessment. *Applied Measurement in Education*, 15(3), 309-333.
+- Butler, A. C. (2018). Multiple-choice testing in education: Are the best practices for assessment also good for learning? *Journal of Applied Research in Memory and Cognition*, 7(3), 323-331.

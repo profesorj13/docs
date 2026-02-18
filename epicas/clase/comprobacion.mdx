@@ -1,0 +1,205 @@
+---
+title: "Comprobación (Assessment)"
+description: "Actividades de evaluación que miden el dominio del estudiante sobre los conceptos, basadas en la Taxonomía de Bloom."
+icon: "check-circle"
+---
+
+> Actividades de evaluación que miden el dominio del estudiante sobre los conceptos.
+
+## Descripción
+
+El modo Comprobación presenta actividades basadas en la Taxonomía de Bloom para evaluar el nivel de comprensión del estudiante. El tutor puede asistir durante estas actividades (Momento 2) pero **nunca revela respuestas**. Las actividades son generadas por el AI Content Generator (épica Contenido) a partir de fuentes indexadas y validadas por docentes.
+
+## Principios clave
+
+- **Simplicidad y claridad:** enunciados concisos, sin redundancia.
+- **Fidelidad a la fuente:** toda actividad deriva estrictamente del material bibliográfico.
+- **Autosuficiencia:** actividades autocontenidas, respondibles con la información proporcionada.
+- **Localización:** español rioplatense/argentino, terminología del sistema argentino.
+- **Invisibilidad del framework:** el alumno solo ve contenido de la materia, nunca términos como "Taxonomía de Bloom" o "carga cognitiva".
+
+## Flujos principales
+
+### Flujo general de comprobación
+
+<Steps>
+  <Step title="Selección de actividades">
+    El sistema selecciona actividades según el nivel de dominio del estudiante y la Taxonomía de Bloom.
+  </Step>
+  <Step title="Respuesta del estudiante">
+    El estudiante responde cada actividad.
+  </Step>
+  <Step title="Soporte del tutor (Momento 2)">
+    El tutor asiste durante la actividad sin revelar respuestas.
+  </Step>
+  <Step title="Feedback formativo">
+    Se entrega feedback formativo tras cada respuesta.
+  </Step>
+  <Step title="Pantalla de cierre">
+    Al finalizar la sesión, se muestra la pantalla de cierre con métricas y puntos.
+  </Step>
+</Steps>
+
+### Activación
+
+El modo comprobación se activa cuando el sistema necesita evaluar el dominio del estudiante sobre un concepto. Puede activarse después de una sesión de enseñanza o directamente si el alumno ya tiene conocimiento previo.
+
+## Pantallas / Módulos
+
+### Pantalla de actividad
+
+Presenta la actividad según su tipo (multiple choice, chips, comparación, pregunta abierta) con el enunciado, las opciones y el área de respuesta.
+
+### Pantalla de cierre
+
+Al completar la sesión de comprobación se muestra:
+
+| Métrica | Descripción |
+|---------|-------------|
+| % de aciertos | Porcentaje de respuestas correctas en la sesión |
+| Aumento de dominio | Variación del nivel de dominio del concepto |
+| Puntos obtenidos | Puntos base + bonus por racha |
+
+## Tipos de actividades
+
+| Tipo | Niveles Bloom | Carga Cognitiva | Estado |
+|------|---------------|-----------------|--------|
+| Multiple Choice | Recordar, Comprender | Baja | Activo |
+| Completar con Chips | Recordar, Comprender | Baja | Activo |
+| Construir con Chips | Aplicar, Analizar | Media | Postergado |
+| Comparar y Justificar | Analizar, Evaluar | Media-Alta | Activo |
+| Pregunta Abierta | Evaluar, Crear | Alta | Activo |
+
+## Taxonomía de Bloom (marco teórico)
+
+La Taxonomía de Bloom Revisada (Anderson & Krathwohl, 2001) organiza los procesos cognitivos en seis niveles progresivos. Cada tipo de actividad se alinea con los niveles apropiados:
+
+| Nivel | Descripción | Verbos clave |
+|-------|-------------|--------------|
+| Recordar | Recuperar, reconocer y evocar conocimientos de la memoria a largo plazo | identificar, listar, nombrar, reconocer, recordar |
+| Comprender | Construir significado mediante interpretación, ejemplificación, clasificación, resumen, inferencia, comparación y explicación | clasificar, describir, explicar, resumir, interpretar |
+| Aplicar | Llevar a cabo o utilizar un procedimiento para ejecutar o implementar | ejecutar, implementar, resolver, usar, demostrar |
+| Analizar | Dividir el material en partes constituyentes y determinar cómo se relacionan entre sí | diferenciar, organizar, comparar, contrastar, examinar |
+| Evaluar | Emitir juicios basados en criterios y estándares mediante comprobación y crítica | argumentar, defender, juzgar, justificar, criticar |
+| Crear | Reunir elementos para formar un todo coherente o funcional | diseñar, construir, producir, formular, proponer |
+
+## Especificaciones por tipo de actividad
+
+<AccordionGroup>
+  <Accordion title="Multiple Choice (Opción Múltiple)">
+    **Niveles Bloom:** Recordar, Comprender | **Carga cognitiva:** Baja | **Estado:** Activo
+
+    - 4 opciones totales (1 correcta + 3 distractores).
+    - Distractores plausibles basados en errores conceptuales comunes (misconceptions).
+    - Opciones mutuamente excluyentes, con consistencia gramatical (longitud similar, estructura paralela).
+    - Sin pistas verbales en la respuesta correcta (no debe ser la opción más larga o detallada).
+    - Posición de la respuesta correcta aleatorizada.
+    - Feedback explicativo para cada opción.
+  </Accordion>
+  <Accordion title="Completar con Chips (Fill the Blanks)">
+    **Niveles Bloom:** Recordar, Comprender | **Carga cognitiva:** Baja | **Estado:** Activo
+
+    - Máximo 3 espacios en blanco por oración (para evitar sobrecarga cognitiva).
+    - Solo se omiten palabras clave significativas (términos técnicos, conceptos centrales), no conectores.
+    - 3 a 5 chips por actividad (respuestas correctas + 2-3 distractores del mismo campo semántico).
+    - Una única respuesta correcta por blanco; el contexto debe desambiguar claramente.
+    - Sintaxis simple, voz activa.
+  </Accordion>
+  <Accordion title="Construir con Chips (POSTERGADO)">
+    **Niveles Bloom:** Aplicar, Analizar | **Carga cognitiva:** Media | **Estado:** Postergado
+
+    - El estudiante organiza chips para construir una oración o definición.
+    - Se incluyen chips distractores (20-30% adicionales) que modifican la lógica o los conceptos.
+    - Los distractores deben apuntar al dominio; se evitan conectores o distractores irrelevantes.
+    - Un único orden válido como correcto.
+    - Enunciado claro que especifica qué tipo de construcción se espera (definición, proceso, relación causal).
+  </Accordion>
+  <Accordion title="Comparar y Justificar">
+    **Niveles Bloom:** Analizar, Evaluar | **Carga cognitiva:** Media-Alta | **Estado:** Activo
+
+    - Se presentan 2 respuestas o posiciones con mérito comparable.
+    - Las opciones representan perspectivas genuinamente diferentes, no variaciones triviales.
+    - Se evitan opciones claramente superiores o inferiores.
+    - Se especifican criterios de evaluación en el enunciado cuando corresponda (eficiencia, ética, viabilidad).
+    - Estructura: escenario/problema, pregunta de análisis, opciones, espacio para justificación.
+    - La justificación del estudiante se evalúa por: identificación de diferencias clave, uso de criterios relevantes, argumentación coherente, reconocimiento de implicancias.
+  </Accordion>
+  <Accordion title="Pregunta Abierta">
+    **Niveles Bloom:** Evaluar, Crear | **Carga cognitiva:** Alta | **Estado:** Activo
+
+    - Verbos de acción de alto nivel: analizar, evaluar, diseñar, proponer, argumentar, crear.
+    - Preguntas que requieran síntesis de múltiples conceptos.
+    - Múltiples enfoques válidos (no respuesta única predeterminada).
+    - Toda pregunta abierta incluye una "respuesta ideal" contra la cual se compara la respuesta del alumno para asignar un puntaje del 1 al 10.
+
+    **Tipos de preguntas abiertas:**
+
+    | Tipo | Descripción | Ejemplo de inicio |
+    |------|-------------|-------------------|
+    | Evaluativa | Juzgar valor, mérito o efectividad | "¿Qué tan efectivo es...?", "Evaluá críticamente..." |
+    | Hipotética | Explorar escenarios alternativos | "¿Qué pasaría si...?", "¿Cómo cambiaría...?" |
+    | De síntesis | Combinar ideas para crear algo nuevo | "Diseñá una propuesta...", "Desarrollá un plan..." |
+    | De aplicación compleja | Usar conocimiento en situaciones nuevas | "¿Cómo aplicarías... a...?" |
+    | De perspectiva | Explorar diferentes puntos de vista | "Desde la perspectiva de..., ¿cómo...?" |
+    | Un caso puntual | Situación que podría resolverse aplicando conceptos | "Un amigo está con un problema..., ¿cómo...?" |
+  </Accordion>
+</AccordionGroup>
+
+## Feedback formativo
+
+Cada actividad incluye:
+
+- **Feedback inmediato** tras la respuesta del estudiante.
+- **Explicación del razonamiento correcto**, no solo indicación de acierto/error.
+- **Conexión con el contenido** del módulo para contextualizar el aprendizaje.
+
+## Sistema de puntos
+
+**Puntos base por actividad:** 50 puntos.
+
+**Bonus por racha (actividades consecutivas correctas):**
+
+| Racha | Bonus | Total acumulado |
+|-------|-------|-----------------|
+| 1 | 0 | 50 |
+| 2 | 75 | 175 |
+| 3 | 175 | 400 |
+| 4 | 300 | 750 |
+| 5 | 450 | 1.250 |
+| 6 | 575 | 1.875 |
+| 7+ | 715 | 2.640+ |
+
+## Comportamiento del tutor (Momento 2)
+
+Durante las actividades de comprobación, el tutor opera bajo restricciones estrictas:
+
+| Hace | NO hace |
+|------|---------|
+| Reformula preguntas para clarificar | Revelar respuestas |
+| Conecta con conocimientos previos | Descartar opciones incorrectas |
+| Usa método socrático | Confirmar si una respuesta es correcta |
+| Valida frustración manteniendo límites | Dar pistas directas |
+
+**Respuestas típicas del tutor en Momento 2:**
+
+<Tip>
+  - Ante duda: "¿Qué recordás sobre [concepto relacionado]?"
+  - Ante frustración: "Es normal que cueste, intentemos pensar desde otro ángulo..."
+  - Ante pedido de respuesta: "No puedo decirte la respuesta, pero pensemos juntos..."
+</Tip>
+
+Al cerrar la sesión, el tutor realiza un comentario personalizado: reconoce logros, propone desafíos y mantiene tono motivacional.
+
+## Consideraciones técnicas
+
+- Las actividades son generadas por el AI Content Generator (épica Contenido) a partir de fuentes indexadas y validadas por docentes.
+- Toda actividad debe ser autocontenida y respondible con la información proporcionada.
+- Se aplican principios de simplicidad, fidelidad a la fuente y localización (español rioplatense/argentino).
+- El framework pedagógico es una herramienta interna para la generación; el alumno solo ve contenido de la materia.
+
+## Referencias
+
+- **Épica relacionada:** [Contenido](/epicas/contenido/overview) (genera las actividades)
+- **Historias de usuario:** [Historias de Usuario](/epicas/clase/historias)
+- **Figma (experiencia de puntos V2):** [Figma](https://www.figma.com/design/Il5HLiGC0Y6SCrLso88D5i/TICH-AI--%3E-Tuni-V2?node-id=6002-144039)
+- **Figma (diseños clase V3):** [Figma](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=38-8377)

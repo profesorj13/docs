@@ -1,0 +1,69 @@
+---
+title: "Integraciones"
+description: "Conexiones con sistemas externos (LMS, APIs) para que TUNI funcione dentro del ecosistema tecnológico de las instituciones educativas."
+icon: "plug"
+---
+
+# Integraciones
+
+> Conexiones con sistemas externos (LMS, APIs) para que TUNI funcione dentro del ecosistema tecnológico de las instituciones educativas.
+
+## Problema
+
+Los estudiantes ya tienen un entorno de estudio principal (Canvas LMS). Si TUNI vive únicamente como plataforma separada, la fricción de adopción es alta y se pierde el contexto de lo que el alumno está estudiando en cada momento. Se necesita integrar TUNI en los sistemas que los alumnos ya usan.
+
+## Objetivos
+
+<CardGroup cols={2}>
+  <Card title="Reducir fricción de adopción" icon="arrow-down">
+    Integrar TUNI donde los estudiantes ya estudian.
+  </Card>
+  <Card title="Obtener contexto académico" icon="graduation-cap">
+    Materias, progreso y contenido actual del alumno desde el LMS.
+  </Card>
+  <Card title="Sincronizar datos" icon="arrows-rotate">
+    Entre TUNI y los sistemas institucionales.
+  </Card>
+  <Card title="Arquitectura extensible" icon="layer-group">
+    Soportar múltiples integraciones con diseño escalable.
+  </Card>
+</CardGroup>
+
+## Alcance MVP
+
+### Incluye
+
+- Integración con **Canvas LMS** (widget flotante, autenticación LTI/OAuth, sincronización de cursos).
+- Piloto con 3 materias de Siglo 21.
+
+### No incluye
+
+<Warning>
+  Los siguientes elementos están fuera del alcance MVP:
+  - Otros LMS (Moodle, Blackboard, etc.).
+  - Integración bidireccional de calificaciones.
+  - Sincronización con Calendar o Assignments API de Canvas.
+</Warning>
+
+## Principios de diseño
+
+- **Integración no invasiva:** TUNI se adapta al entorno existente del alumno, sin alterar la experiencia del LMS.
+- **Registro diferido:** permitir interacción inicial sin autenticación para maximizar engagement.
+- **Contexto automático:** detectar materia, módulo y contenido actual sin intervención del usuario.
+- **Arquitectura extensible:** diseñar para Canvas hoy, pero con capacidad de agregar otros LMS mañana.
+
+## Sub-épicas
+
+| Integración | Descripción | Estado |
+|-------------|-------------|--------|
+| [Canvas](/integraciones/canvas/overview) | Widget flotante de Ada embebido en Canvas LMS | En desarrollo |
+
+## Decisiones abiertas
+
+- Definir si se soportarán otros LMS además de Canvas en el mediano plazo.
+- Estrategia de sincronización de datos (tiempo real vs batch).
+- Manejo de cambios de IDs de curso entre turnos en Canvas.
+
+## Referencias
+
+- **Épicas relacionadas:** [Contenido](/epicas/contenido/overview), [Dashboard](/epicas/dashboard/overview)

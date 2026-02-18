@@ -1,0 +1,94 @@
+---
+title: "Dashboard"
+description: "Panel de control para que el estudiante visualice progreso y acceda a la próxima acción útil."
+icon: "layout-dashboard"
+---
+
+## Problema
+
+El estudiante necesita un punto de entrada claro para elegir materia, entender su progreso y decidir qué estudiar a continuación. Sin un panel centralizado, el acceso a clases, consultas y evaluaciones resulta fragmentado y genera fricción.
+
+## Objetivos
+
+- **Reducir fricción** para iniciar una clase (CTA claro).
+- **Hacer visible el progreso** (dominio + métricas semanales).
+- **Guiar la decisión** "qué estudiar ahora" (clase recomendada por dominio / unidad).
+- **Habilitar consultas** rápidas sin romper el flujo.
+- Mantener **evaluaciones** como práctica **optativa** (no bloqueante en MVP).
+
+## Alcance MVP
+
+<CardGroup cols={2}>
+  <Card title="Incluye" icon="check">
+    - **Materias**: selección de materia (cards).
+    - **Dashboard de materia**:
+      - Banner "Clase recomendada" (aprendizaje adaptativo) + CTA "Empezar a estudiar".
+      - Card "Progreso de la materia" (con data / empty) + "Unidades con mayor progreso".
+      - Métricas "Esta semana": clases realizadas, horas estudiadas, avance semanal.
+      - Contenidos por módulo/unidad con acciones: "Estudiar" y "Ver detalle" (side sheet).
+      - Entrada a "Tengo una consulta" (side panel).
+      - Acceso a "Evaluación" por módulo.
+    - **Evaluaciones (MVP)**:
+      - Optativas, a nivel módulo, sin feedback en tiempo real.
+      - Historial (side panel) + cierre de evaluación con comparativa.
+    - **Racha diaria**:
+      - Visible en header y en cierre de clase (no durante chat ni evaluación).
+  </Card>
+  <Card title="No incluye" icon="x">
+    - Notificaciones (postergadas para MVP).
+    - Parte social.
+    - Identidad visual definitiva (paleta/imágenes/banner final).
+    - Flujo de nivelación completo (pendiente).
+  </Card>
+</CardGroup>
+
+## Principios de diseño
+
+<CardGroup cols={3}>
+  <Card title="Claridad por sobre densidad" icon="eye">
+    Priorizar CTA principal + progreso + contenidos. Evitar features "ruidosas" en MVP (notificaciones/social).
+  </Card>
+  <Card title="Progreso accionable" icon="arrow-right">
+    Cada bloque debe disparar una acción (empezar, estudiar unidad, ver detalle). Los estados "empty" deben invitar a **comenzar** (desbloquear métricas).
+  </Card>
+  <Card title="Copy consistente" icon="text">
+    Nomenclatura: "**Tema**" (antes "Concepto"), "**Evaluación**" (antes "Diagnóstico").
+  </Card>
+</CardGroup>
+
+## Decisiones abiertas
+
+- Estado "sin data" vs "nivelación": definición final de UX/copy.
+- Flujo completo de nivelación (triggers + pantallas).
+- Cuándo sugerir evaluación (no hay fechas de parcial en el sistema).
+- Consultas ambiguas: determinar materia (preguntar vs deducir).
+- Detalle UX de consulta a clase (microcopy + confirmaciones).
+- Identidad visual final.
+
+## Referencias
+
+- [Spec funcional](/epicas/dashboard/spec) — flujos, pantallas, componentes y reglas de UI/estados.
+- [Decisiones de UX (Enero 2026)](/epicas/dashboard/decisiones) — banner compacto, progreso con mayor visibilidad, diferenciación dominio materia vs unidad, métricas, nomenclatura, consultas como side panel, racha diaria.
+- [Historias de usuario](/epicas/dashboard/historias)
+
+### Figma
+
+| Recurso | Link |
+|---------|------|
+| Tablero general / materias | [Figma](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=38-14986&t=ZwBxoxPYtsRbqjQP-4) |
+| Dashboard clase | [Figma](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=227-11628&t=ZwBxoxPYtsRbqjQP-4) |
+| Link desde tickets | [Figma](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=216-1205&t=tyfdgg8ZxBSUPM7y-1) |
+
+### Épicas relacionadas
+
+<CardGroup cols={3}>
+  <Card title="Clase" icon="chalkboard" href="/epicas/clase">
+    Flujo de clase con el tutor.
+  </Card>
+  <Card title="Contenido" icon="book" href="/epicas/contenido">
+    Contenido de las materias.
+  </Card>
+  <Card title="Integraciones / Canvas" icon="plug" href="/integraciones/canvas">
+    Integración con Canvas y otros sistemas externos.
+  </Card>
+</CardGroup>

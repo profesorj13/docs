@@ -1,0 +1,142 @@
+---
+title: "Especificación Funcional"
+description: "Flujos, pantallas, componentes y consideraciones técnicas de la épica Evaluaciones."
+icon: "file-text"
+---
+
+## Fuentes
+
+- [Decisiones de Diseño](/epicas/evaluaciones/decisiones)
+- [Historias de Usuario](/epicas/evaluaciones/historias)
+
+## Flujos principales
+
+### Flujo 1: Dashboard → Evaluación → Cierre
+
+<Steps>
+  <Step title="Accede al Dashboard de materia">
+    El estudiante accede al **Dashboard de materia**.
+  </Step>
+  <Step title="Selecciona la evaluación">
+    En la lista de contenidos, selecciona "Evaluación Módulo N" (entry point por módulo).
+  </Step>
+  <Step title="Pantalla de inicio">
+    Se carga la pantalla **Iniciar evaluación** con descripción del módulo, cantidad de preguntas y tiempo estimado.
+  </Step>
+  <Step title="Confirma e inicia">
+    El estudiante confirma e inicia la evaluación.
+  </Step>
+  <Step title="Responde las preguntas">
+    Se presentan las preguntas **sin feedback en tiempo real** (simulación de examen real).
+  </Step>
+  <Step title="Confirma entrega">
+    El estudiante responde todas las preguntas y confirma entrega.
+  </Step>
+  <Step title="Pantalla de cierre">
+    Se muestra la **pantalla de cierre** con:
+    - Nota obtenida.
+    - Gráfico por unidad (puntaje desglosado por cada unidad del módulo).
+    - Áreas fuertes / Áreas de mejora.
+    - Comparación con evaluación anterior (si existe).
+  </Step>
+  <Step title="Acciones post-evaluación">
+    Desde el cierre, el estudiante puede:
+    - **"Ver detalle"** → navegación pregunta por pregunta con feedback.
+    - **"Aprender de mis errores"** → deriva a clase de refuerzo específica (épica Clase).
+    - **"Ir a mi materia"** → cierra y vuelve al Dashboard de materia.
+  </Step>
+</Steps>
+
+### Flujo 2: Historial de evaluaciones
+
+<Steps>
+  <Step title="Accede al historial">
+    Desde el Dashboard de materia, el estudiante selecciona "Ver evaluaciones".
+  </Step>
+  <Step title="Side panel con historial">
+    Se abre un **side panel** con el historial agrupado por módulo.
+  </Step>
+  <Step title="Vista de intentos">
+    Cada entrada muestra: fecha, nota obtenida y comparativa con intento anterior.
+  </Step>
+  <Step title="Navega al detalle">
+    Al seleccionar un intento, se navega al cierre de esa evaluación con sus resultados completos.
+  </Step>
+</Steps>
+
+## Pantallas / Módulos
+
+| Pantalla | Descripción | Estado |
+|----------|-------------|--------|
+| Iniciar evaluación | Descripción del módulo, cantidad de preguntas, CTA para comenzar | En progreso |
+| Evaluación (preguntas) | Flujo de preguntas sin feedback, indicador de progreso, botón de entrega | En progreso |
+| Cierre de evaluación | Nota, gráfico por unidad, áreas fuertes/mejora, comparativa, CTAs de acción | En progreso |
+| Ver detalle (pregunta por pregunta) | Navegación secuencial con controles "Siguiente"/"Atrás", feedback por pregunta | En progreso |
+| Historial (side panel) | Panel lateral con intentos agrupados por módulo, fecha y nota por intento | En progreso |
+
+## Componentes
+
+### EvaluationClosingScreen
+
+Pantalla de cierre post-evaluación. Contiene:
+
+- Indicador de nota obtenida (valor numérico o porcentaje).
+- Gráfico de barras/radar por unidad del módulo.
+- Sección "Áreas fuertes" con listado de unidades con mejor desempeño.
+- Sección "Áreas de mejora" con listado de unidades con peor desempeño.
+- Comparativa visual con evaluación anterior (si existe): diferencial de nota, mejora/retroceso por unidad.
+- Tres CTAs: "Ver detalle", "Aprender de mis errores", "Ir a mi materia".
+
+### QuestionReviewNavigator
+
+Componente de navegación pregunta por pregunta para la revisión post-evaluación. Contiene:
+
+- Enunciado de la pregunta.
+- Respuesta del estudiante (marcada como correcta o incorrecta).
+- Respuesta correcta (si difiere).
+- Feedback explicativo por pregunta.
+- Controles de navegación: "Siguiente" / "Atrás".
+- Indicador de posición (ej: "Pregunta 3 de 15").
+
+### EvaluationHistorySidePanel
+
+Panel lateral que muestra el historial de evaluaciones. Contiene:
+
+- Agrupación por módulo.
+- Por cada intento: fecha, nota obtenida, indicador de mejora respecto al intento anterior.
+- CTA para acceder al detalle completo de cada intento.
+- Scroll interno si hay múltiples intentos.
+
+## Consideraciones técnicas
+
+<Accordion title="Simulación de examen real">
+  Durante la evaluación no se muestra ningún tipo de feedback, pista ni indicador de acierto/error. El estudiante responde todas las preguntas y recibe resultados únicamente al finalizar.
+</Accordion>
+
+<Accordion title="Evaluaciones optativas">
+  No bloquean el avance del estudiante. Son una herramienta de práctica y medición voluntaria.
+</Accordion>
+
+<Accordion title="Nivel módulo">
+  En el MVP, las evaluaciones se generan a nivel de módulo completo (no por unidad individual).
+</Accordion>
+
+<Accordion title="Repetibles">
+  El estudiante puede realizar múltiples evaluaciones del mismo módulo. Cada intento queda registrado en el historial.
+</Accordion>
+
+<Accordion title="Comparativa entre intentos">
+  Al cerrar una evaluación, se muestra el diferencial respecto al intento anterior (si existe), tanto en nota global como en desglose por unidad.
+</Accordion>
+
+<Accordion title="Pool de preguntas">
+  Pendiente de definición (contenido + backend). Las preguntas provienen de la épica Contenido.
+</Accordion>
+
+<Accordion title="Derivación a clase de refuerzo">
+  "Aprender de mis errores" debe comunicarse con la épica Clase para iniciar una sesión de refuerzo centrada en las unidades/conceptos con peor desempeño.
+</Accordion>
+
+<Accordion title="Sugerencia de evaluación">
+  Actualmente no existe mecanismo para sugerir cuándo evaluar (no hay fechas de parcial en el sistema). Pendiente de definición.
+</Accordion>

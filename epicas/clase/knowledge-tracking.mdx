@@ -1,0 +1,72 @@
+---
+title: "Knowledge Tracking"
+description: "Modelo del estudiante: seguimiento de niveles de dominio, progresión, puntos y plan de la sesión."
+icon: "brain"
+---
+
+> Modelo del estudiante: seguimiento de niveles de dominio, progresión, puntos y plan de la sesión.
+
+<Warning>
+  **Documentación en desarrollo.** @alejo debe complementar con los detalles de implementación actuales del sistema de niveles y progresión.
+</Warning>
+
+## Descripción
+
+Knowledge Tracking es el sistema que mantiene el **modelo del estudiante** en TUNI. Gestiona:
+
+1. **Niveles de dominio** por concepto (1-4, desde "sin conocimiento" hasta "dominio completo").
+2. **Progresión** (subida/bajada de nivel según desempeño en comprobación).
+3. **Plan de la sesión** (conceptos a trabajar, generado con `buildPlan` y actualizado con `updatePlan`).
+4. **Sistema de puntos** y rachas (50 pts base por acierto + bonus por racha).
+5. **Reconocimientos/Insignias** (por progreso, racha, consistencia — pendiente de diseño UX).
+
+## Sistema de niveles
+
+| Nivel | Significado | Actividades Bloom |
+|-------|-------------|-------------------|
+| 1 | Sin conocimiento | Recordar |
+| 2 | Conocimiento básico | Comprender |
+| 3 | Comprensión aplicada | Aplicar/Analizar |
+| 4 | Dominio completo | Evaluar/Crear |
+
+- **Subida:** al superar objetivo de comprobación del nivel actual.
+- **Bajada:** tras N respuestas incorrectas consecutivas.
+
+## Sistema de puntos
+
+**Puntos base por actividad:** 50 puntos por cada respuesta correcta.
+
+**Bonus por racha (actividades consecutivas correctas):**
+
+| Racha | Puntos extra | Total acumulado |
+|-------|-------------|-----------------|
+| 1 | 0 | 50 |
+| 2 | 75 | 175 |
+| 3 | 175 | 400 |
+| 4 | 300 | 750 |
+| 5 | 450 | 1.250 |
+| 6 | 575 | 1.875 |
+| 7+ | 715 | 2.640+ |
+
+## Plan de la sesión
+
+El plan de la sesión es generado por `buildPlan` al inicio de cada sesión y actualizado con `updatePlan` a medida que el estudiante completa ítems. Contiene los conceptos a trabajar con su estado de progresión.
+
+Para el detalle técnico de los tool calls, ver [Enseñar](/epicas/clase/ensenar) y [Especificación Funcional](/epicas/clase/spec).
+
+## Componentes futuros
+
+<Note>
+  Los siguientes componentes están planificados pero aún en desarrollo:
+
+  - **Dashboard del estudiante:** vista agregada de niveles por concepto, avance en la unidad, historial de sesiones.
+  - **Preconceptos:** modelar dependencias entre conceptos para redirigir al alumno si falla. Estado: En desarrollo.
+  - **Spec detallada:** incluirá JSON schemas, tickets detallados y modelo de datos completo.
+</Note>
+
+## Referencias
+
+- **Flujo general de clase:** [Clase - Tutoría Adaptativa](/epicas/clase/overview)
+- **Sistema de puntos detallado:** [Comprobación](/epicas/clase/comprobacion)
+- **Tool calls del plan:** [Enseñar](/epicas/clase/ensenar)
+- **Figma:** [Dashboard materia (V3)](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=216-1205)

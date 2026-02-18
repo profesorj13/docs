@@ -1,0 +1,467 @@
+---
+title: "Historias de Usuario"
+description: "Historias de usuario de la épica Dashboard (DASH-001 a DASH-011)."
+icon: "list"
+---
+
+Todas las historias de usuario de la épica Dashboard consolidadas. Cada historia incluye descripción, criterios de aceptación, notas técnicas y eventos analíticos.
+
+<AccordionGroup>
+
+<Accordion title="DASH-001 · Banner clase recomendada + CTA «Empezar a estudiar»" icon="megaphone">
+
+**Épica:** Dashboard · **Prioridad:** alta · **Estado:** backlog
+
+### Historia de usuario
+
+**Como** estudiante en el dashboard de una materia,
+**quiero** ver un banner destacado con la clase recomendada por el sistema,
+**para** comenzar a estudiar la unidad que más necesito con un solo click.
+
+### Descripción
+
+Banner superior dentro del dashboard de materia que muestra:
+
+- Badge "Aprendizaje adaptativo".
+- Título: "Clase recomendada".
+- Descripción: "Diseñada para ayudarte a dar el próximo paso."
+- CTA primario: "Empezar a estudiar".
+
+Al hacer click en el CTA, el usuario es redirigido a una clase con el tutor sobre la unidad priorizada por el sistema según su nivel de dominio.
+
+### Criterios de aceptación
+
+- [ ] El banner se muestra en la parte superior del dashboard de materia.
+- [ ] Contiene badge, título, descripción y CTA.
+- [ ] Click en "Empezar a estudiar" inicia clase en la unidad priorizada por dominio.
+- [ ] El banner es compacto (sin imagen por ahora, según decisión de diseño).
+- [ ] Si no hay clase recomendable (edge case), definir comportamiento (ej. mostrar igualmente con unidad por defecto).
+
+### Notas técnicas
+
+- Figma: [Dashboard clase](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=227-11628&t=ZwBxoxPYtsRbqjQP-4)
+
+### Eventos analíticos
+
+- `subject_dashboard_viewed`
+- `start_studying_clicked`
+
+</Accordion>
+
+<Accordion title="DASH-002 · Card de progreso de materia" icon="chart-pie">
+
+**Épica:** Dashboard · **Prioridad:** alta · **Estado:** backlog
+
+### Historia de usuario
+
+**Como** estudiante,
+**quiero** ver mi nivel de dominio general de la materia y las unidades con mayor progreso,
+**para** entender dónde estoy y motivarme a seguir.
+
+### Descripción
+
+Card `SubjectProgressCard` con dos estados:
+
+**Con data**
+
+- Donut de "Dominio" (porcentaje general de la materia).
+- Lista "Unidades con mayor progreso" (`TopUnitsProgressList`).
+
+**Empty state**
+
+- Título: "Descubrí tu progreso".
+- Copy: "Empezá a estudiar para desbloquear tus métricas y ver tu avance".
+- CTA: "Empezar a estudiar".
+- Iconografía: variantes visuales (candado / reloj / gráfico) según diseño.
+
+### Criterios de aceptación
+
+- [ ] Si el estudiante tiene datos de dominio, se muestra donut + lista de unidades top.
+- [ ] El donut diferencia visualmente dominio de materia vs dominio de unidad (ver spec).
+- [ ] Si no hay datos, se muestra empty state con CTA que lleva a estudiar.
+- [ ] La card se posiciona en la sección superior del dashboard (decisión de diseño: mayor visibilidad).
+
+### Notas técnicas
+
+- La distinción visual materia vs unidad (donut) es un punto de diseño a validar con UX.
+- Figma: [Dashboard clase](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=227-11628&t=ZwBxoxPYtsRbqjQP-4)
+
+</Accordion>
+
+<Accordion title="DASH-003 · Side panel «Tengo una consulta»" icon="message-circle">
+
+**Épica:** Dashboard · **Prioridad:** media · **Estado:** backlog
+
+### Historia de usuario
+
+**Como** estudiante,
+**quiero** abrir un panel de consultas rápidas desde el dashboard,
+**para** hacer preguntas sin salir del contexto de mi materia.
+
+### Descripción
+
+Botón secundario "Tengo una consulta" en el dashboard de materia. Al clickear, abre un side panel (`ConsultSidePanel`).
+
+**Comportamiento del side panel**
+
+- Al abrir: muestra el **último chat** de consulta (si existe).
+- Botón "Nueva consulta" para iniciar una nueva.
+- **No** muestra historial de consultas anteriores (decisión de diseño).
+
+**Derivación a clase**
+
+- Durante la consulta, el sistema puede preguntar: "¿Querés hacer una clase sobre esto?"
+- Si el usuario acepta, se deriva al flujo de clase con ese tema.
+- Si la materia no es clara, el sistema puede preguntar (pendiente definir: preguntar vs deducir).
+
+### Criterios de aceptación
+
+- [ ] Botón "Tengo una consulta" visible en el dashboard de materia.
+- [ ] Click abre side panel (no ventana nueva).
+- [ ] Se muestra último chat si existe; sino, estado inicial para escribir.
+- [ ] Botón "Nueva consulta" inicia un chat limpio.
+- [ ] No se muestra historial de consultas.
+- [ ] La derivación consulta → clase funciona (pregunta + confirmación + redirección).
+
+### Notas técnicas
+
+- Pendiente: UX exacta de derivación consulta → clase (microcopy, confirmaciones).
+- Pendiente: detección de materia en consultas ambiguas.
+
+### Eventos analíticos
+
+- `consult_opened`
+- `consult_new_clicked`
+- `consult_to_class_prompted`
+- `consult_to_class_accepted` / `consult_to_class_declined`
+
+</Accordion>
+
+<Accordion title="DASH-004 · Layout global (Header + Sidebar + Navegación)" icon="layout-template">
+
+**Épica:** Dashboard · **Prioridad:** alta · **Estado:** backlog
+
+### Historia de usuario
+
+**Como** estudiante de TUNI,
+**quiero** ver un layout consistente con header, sidebar y área de contenido,
+**para** navegar entre materias y secciones sin perder contexto.
+
+### Descripción
+
+Implementar la estructura base de layout que envuelve todas las pantallas del estudiante:
+
+- **Header**: logo/brand, racha diaria (widget), indicadores XP/moneda (según diseño), avatar/menú de usuario.
+- **Sidebar**: iconos de navegación global (materias, etc.). Colapsable o fija según breakpoint.
+- **Área de contenido**: contenedor principal donde se renderizan las pantallas.
+
+### Criterios de aceptación
+
+- [ ] El header se muestra en todas las pantallas autenticadas.
+- [ ] La sidebar permite navegar entre secciones principales.
+- [ ] El layout es responsive (desktop-first; mobile pendiente de definición).
+- [ ] El avatar/menú de usuario muestra al menos la opción de cerrar sesión.
+- [ ] El header tiene el slot reservado para el widget de racha diaria (ver DASH-008).
+
+### Notas técnicas
+
+- Identidad visual no es final; usar placeholders donde no haya diseño definitivo.
+- Notificaciones quedan fuera del MVP.
+- Figma: [Tablero general](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=38-14986&t=ZwBxoxPYtsRbqjQP-4)
+
+</Accordion>
+
+<Accordion title="DASH-005 · Lista de contenidos por módulo/unidad" icon="list">
+
+**Épica:** Dashboard · **Prioridad:** alta · **Estado:** backlog
+
+### Historia de usuario
+
+**Como** estudiante,
+**quiero** ver los contenidos de la materia organizados por módulo y unidad,
+**para** elegir qué estudiar o ver el detalle de una unidad específica.
+
+### Descripción
+
+Sección `ContentsModuleList` dentro del dashboard de materia. Muestra:
+
+- Módulos agrupados (`ModuleSection`).
+- Dentro de cada módulo: unidades (`UnitRow`).
+- Al final de cada módulo: fila de evaluación (`EvaluationModuleRow`, ej. "Evaluación Módulo 1").
+
+**Comportamiento hover en `UnitRow`**
+
+- Al hacer hover sobre una unidad, aparecen dos botones alineados a la derecha:
+  - **"Estudiar"**: redirige a clase con el tutor sobre esa unidad.
+  - **"Ver detalle"**: abre el side sheet de detalle de unidad.
+- El título de la unidad se trunca con `...` si excede una línea.
+
+### Criterios de aceptación
+
+- [ ] Se listan todos los módulos de la materia con sus unidades.
+- [ ] Cada unidad muestra título (truncado si excede 1 línea).
+- [ ] Hover sobre unidad muestra botones "Estudiar" y "Ver detalle".
+- [ ] "Estudiar" inicia clase en esa unidad.
+- [ ] "Ver detalle" abre el side sheet (ver DASH-010).
+- [ ] Al final de cada módulo aparece la fila "Evaluación Módulo X" (navega a evaluación).
+- [ ] Estado loading/skeleton al cargar contenidos.
+
+### Notas técnicas
+
+- Figma: [Dashboard clase](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=227-11628&t=ZwBxoxPYtsRbqjQP-4)
+
+### Eventos analíticos
+
+- `unit_panel_opened` (al abrir detalle)
+
+</Accordion>
+
+<Accordion title="DASH-006 · Pantalla de login" icon="lock">
+
+**Épica:** Dashboard · **Prioridad:** alta · **Estado:** backlog
+
+### Historia de usuario
+
+**Como** estudiante,
+**quiero** iniciar sesión con correo y contraseña,
+**para** acceder a mi panel de materias.
+
+### Descripción
+
+Pantalla de autenticación con campos correo + contraseña y CTA "Iniciar sesión". Post-login exitoso redirige a la pantalla de Materias.
+
+<Note>
+  Si el entorno usa SSO/Canvas, esta pantalla puede ser reemplazada por el flujo de integración. Esta historia cubre el login propio de TUNI.
+</Note>
+
+### Criterios de aceptación
+
+- [ ] Campos: correo electrónico (validación de formato) + contraseña.
+- [ ] CTA "Iniciar sesión" habilitado solo con ambos campos completos.
+- [ ] Login exitoso redirige a pantalla de Materias.
+- [ ] Login fallido muestra mensaje de error claro (credenciales inválidas).
+- [ ] Estado de loading mientras se procesa la autenticación.
+
+### Fuera de alcance
+
+- Recuperar contraseña (definir si entra en MVP).
+- Registro de cuenta nueva.
+- SSO / integración Canvas (ver épica Integraciones).
+
+### Eventos analíticos
+
+- `auth_login_success`
+
+</Accordion>
+
+<Accordion title="DASH-007 · Métricas semanales («Esta semana»)" icon="bar-chart">
+
+**Épica:** Dashboard · **Prioridad:** media · **Estado:** backlog
+
+### Historia de usuario
+
+**Como** estudiante,
+**quiero** ver cuántas clases hice, horas estudié y cuánto avancé esta semana,
+**para** tener noción de mi ritmo de estudio y mantener la motivación.
+
+### Descripción
+
+Card `WeeklyMetricsCard` con tres métricas:
+
+- **Clases realizadas** (`ClassesCompletedMetric`) — ej. 5.
+- **Horas estudiadas** (`HoursStudiedMetric`) — ej. 3.
+- **Avance semanal** (`WeeklyProgressMetric`) — ej. 10%.
+
+### Criterios de aceptación
+
+- [ ] Se muestran las tres métricas con sus valores actuales de la semana en curso.
+- [ ] Si no hay actividad en la semana, mostrar "0" (no empty state aparte).
+- [ ] La semana se calcula de lunes a domingo (o definir criterio con producto).
+- [ ] Los datos se obtienen del backend (endpoint de métricas del estudiante).
+
+### Notas técnicas
+
+- Figma: [Dashboard clase](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=227-11628&t=ZwBxoxPYtsRbqjQP-4)
+
+</Accordion>
+
+<Accordion title="DASH-008 · Racha diaria (gamificación mínima)" icon="flame">
+
+**Épica:** Dashboard · **Prioridad:** media · **Estado:** backlog
+
+### Historia de usuario
+
+**Como** estudiante,
+**quiero** ver mi racha diaria de estudio en el header y al cerrar una clase,
+**para** sentir motivación por mantener mi hábito de estudio.
+
+### Descripción
+
+Widget de racha diaria (estilo Duolingo) con dos puntos de aparición:
+
+**1. Header (persistente)**
+
+- Visible en todas las pantallas autenticadas.
+- Muestra número de días consecutivos de actividad.
+
+**2. Cierre de clase**
+
+- Al finalizar una clase, se muestra la racha actualizada como refuerzo motivacional.
+- No se muestra durante el chat ni durante evaluaciones.
+
+### Criterios de aceptación
+
+- [ ] El widget de racha es visible en el header en todo momento (post-login).
+- [ ] Muestra el número de días consecutivos de estudio.
+- [ ] Al cerrar una clase, se muestra la racha (actualizada si corresponde).
+- [ ] Si la racha se rompe (día sin actividad), vuelve a 0 o 1 según regla definida.
+- [ ] No se muestra racha durante evaluaciones ni dentro del chat de clase.
+
+### Notas técnicas
+
+- Definir qué cuenta como "actividad" para la racha (completar clase, cualquier sesión, etc.).
+- Diseño visual pendiente de identidad final.
+
+</Accordion>
+
+<Accordion title="DASH-009 · Selección de materia (Home)" icon="grid-2x2">
+
+**Épica:** Dashboard · **Prioridad:** alta · **Estado:** backlog
+
+### Historia de usuario
+
+**Como** estudiante autenticado,
+**quiero** ver mis materias en cards y seleccionar una,
+**para** acceder al dashboard de esa materia y empezar a estudiar.
+
+### Descripción
+
+Pantalla post-login que muestra un saludo personalizado ("¡Hola, [nombre]!") y la pregunta "¿Con qué materia comenzamos?". Debajo, cards por cada materia inscripta.
+
+**Contenido de cada `MateriaCard`**
+
+- Nombre de la materia.
+- Próximo parcial (ej. "en 10 días") — si existe el dato.
+- Etiqueta "Recomendada" (`RecommendedBadge`) si corresponde.
+- Unidad actual (nombre de la unidad en curso).
+- Indicador de progreso/dominio (porcentaje o visual).
+
+### Criterios de aceptación
+
+- [ ] Se muestra saludo con nombre del usuario.
+- [ ] Se listan todas las materias del estudiante como cards.
+- [ ] Cada card muestra: nombre, progreso, unidad actual.
+- [ ] Si existe dato de próximo parcial, se muestra pill con días restantes.
+- [ ] La materia recomendada tiene badge visible.
+- [ ] Click en una card navega al Dashboard de materia.
+- [ ] Estado loading/skeleton mientras carga.
+- [ ] Si el estudiante no tiene materias, mostrar empty state adecuado.
+
+### Notas técnicas
+
+- Figma: [Tablero general / materias](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=38-14986&t=ZwBxoxPYtsRbqjQP-4)
+
+### Eventos analíticos
+
+- `subjects_list_viewed`
+- `subject_selected`
+
+</Accordion>
+
+<Accordion title="DASH-010 · Side sheet detalle de unidad" icon="panel-right">
+
+**Épica:** Dashboard · **Prioridad:** alta · **Estado:** backlog
+
+### Historia de usuario
+
+**Como** estudiante,
+**quiero** ver el detalle de una unidad (dominio por temas, descripción, clases),
+**para** entender mi nivel en esa unidad y decidir si estudiarla.
+
+### Descripción
+
+Overlay `UnitDetailSideSheet` que se despliega de derecha a izquierda al clickear "Ver detalle" en una unidad.
+
+**Contenido**
+
+- Contexto de módulo (ej. "1. Fundamentos y metodología...").
+- Título y breve descripción de la unidad.
+- Donut "Dominio de la unidad" (porcentaje).
+- Sección "Dominio de temas": lista de temas con barra de progreso + porcentaje.
+- Sección "Clases de la unidad" (antes "Tus chats"): lista de clases realizadas.
+- CTA primario: "Estudiar esta unidad".
+
+**Comportamiento**
+
+- Background overlay oscuro.
+- Cierre: click fuera del panel o ícono "X".
+- CTA "Estudiar esta unidad" inicia clase con el tutor en esa unidad.
+
+### Criterios de aceptación
+
+- [ ] Se abre como overlay de derecha a izquierda.
+- [ ] Muestra módulo, título, descripción, donut de dominio, lista de temas con progreso.
+- [ ] Muestra sección "Clases de la unidad" con historial de clases.
+- [ ] CTA "Estudiar esta unidad" inicia clase.
+- [ ] Se cierra con click fuera o ícono X.
+- [ ] No tiene botón "Repasar unidad" (eliminado por decisión de diseño).
+
+### Notas técnicas
+
+- Figma: [Detalle unidad](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=216-1205&t=tyfdgg8ZxBSUPM7y-1)
+
+### Eventos analíticos
+
+- `unit_panel_opened`
+
+</Accordion>
+
+<Accordion title="DASH-011 · Modal de Instalación de Web App" icon="smartphone">
+
+**Épica:** Dashboard · **Prioridad:** media · **Estado:** backlog
+
+### Historia de usuario
+
+**Como** estudiante que accede desde el navegador móvil,
+**quiero** ver un modal con instrucciones para instalar la aplicación en mi inicio,
+**para** poder acceder más rápido y tener una experiencia similar a una app nativa.
+
+### Descripción
+
+Modal que guía al usuario en 3 pasos para agregar la aplicación a la pantalla de inicio (PWA).
+
+**Contenido del Modal**
+
+- **Título:** "Instalá la App"
+- **Cuerpo (Pasos visuales):**
+
+<Steps>
+  <Step title="Tocá el ícono de compartir">
+    Icono/Imagen de share de iOS/Android.
+  </Step>
+  <Step title="Bajá y buscá «Agregar a Inicio»">
+    Icono/Imagen de la acción.
+  </Step>
+  <Step title="Confirmá y listo">
+    Imagen del resultado final.
+  </Step>
+</Steps>
+
+- **CTA:** "Entendido" / "Cerrar"
+
+### Criterios de aceptación
+
+- [ ] **Trigger:** El modal se puede activar desde un botón "Instalar App" (ubicación a definir: sidebar o header) o automáticamente si se detecta uso frecuente en web.
+- [ ] **Pasos:** Debe mostrar claramente los 3 pasos solicitados con imágenes/iconografía representativa.
+- [ ] **Adaptabilidad:** Idealmente mostrar instrucciones pertinentes al SO (iOS vs Android), pero el MVP puede enfocarse en el flujo "Compartir → Agregar a Inicio" (común en iOS Safari).
+- [ ] **Persistencia:** Si el usuario cierra el modal ("Entendido"), este se cierra y vuelve al dashboard.
+- [ ] **PWA Check:** Si la app ya está corriendo en modo *standalone* (instalada), la opción de instalar no debería aparecer o debería indicar "Ya instalada".
+
+### Eventos analíticos
+
+- `install_app_modal_opened`
+- `install_app_modal_closed`
+
+</Accordion>
+
+</AccordionGroup>

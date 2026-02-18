@@ -1,0 +1,739 @@
+---
+title: "Documento Técnico de Integración"
+description: "Arquitectura técnica del widget de chat flotante de Ada en Canvas LMS: estado del proyecto, flujos de autenticación, opciones de implementación y tareas pendientes."
+icon: "code"
+---
+
+# TUNI - Documento Técnico de Integración
+
+## Widget de Chat Flotante para Canvas LMS
+
+**Versión:** 1.0
+**Fecha:** Enero 2026
+**Equipo:** Educabot
+
+---
+
+## 1. Resumen Ejecutivo
+
+Este documento describe la arquitectura técnica para integrar un widget de chat flotante (**Ada**, la tutora IA de TUNI) dentro de Canvas LMS de Universidad Siglo 21. El objetivo es proporcionar a los estudiantes acceso contextual a un tutor IA mientras navegan el contenido del curso, sin interrumpir su experiencia de aprendizaje.
+
+### Objetivos Principales
+
+1. Integrar un botón flotante en las páginas de lectura de Canvas
+2. Conectar el widget con el backend de TUNI para identificación de usuarios y materias
+3. Implementar registro diferido (delayed sign-up) para maximizar engagement
+4. Obtener access_token de Canvas para sincronizar cursos del usuario
+5. Proporcionar contexto de la lectura actual a la IA
+
+### Alcance Inicial
+
+- **Materias piloto:** Introducción a la Filosofía (bimestral), Historia del Derecho (bimestral), Derecho Constitucional (cuatrimestral)
+- **Estructura de contenido:** 4 módulos por materia, 4 lecturas por módulo
+
+---
+
+## 2. Estado Actual del Proyecto
+
+### 2.1 Lo que tenemos
+
+| Componente | Estado | Descripción |
+|------------|--------|-------------|
+| **Componente React del Chat** | Completo (placeholder) | Widget funcional disponible en TypeScript y JavaScript |
+| **Flujo LTI 1.3** | Funcional | Integración base con Canvas siguiendo especificación OIDC |
+| **Endpoint login** | Funcional | `POST /cronos/v1/auth/canvas/login` |
+| **Endpoint launch** | Funcional | `POST /cronos/v1/auth/canvas/launch` |
+| **Base de datos TUNI** | Establecida | Sistema de usuarios, materias y cursos |
+
+### 2.2 Lo que falta
+
+- Obtención del `access_token` del usuario de Canvas
+- Lógica de comunicación con backend en el componente de chat
+- Flujo de registro diferido con consentimiento del usuario
+- Inyección del widget en páginas de Canvas
+- Endpoint de Odin para actividades
+- Mecanismo para obtener contexto de la lectura actual (contenido RISE)
+
+---
+
+## 3. Análisis de Canvas LMS
+
+Canvas LMS de Instructure ofrece múltiples mecanismos para integrar aplicaciones de terceros.
+
+### 3.1 Mecanismos de Integración Disponibles
+
+| Mecanismo | Descripción | Alcance | Complejidad |
+|-----------|-------------|---------|-------------|
+| **Custom JavaScript/CSS** | Inyección de código via Theme Editor | Global o Sub-cuenta | Baja |
+| **LTI 1.3** | Estándar de interoperabilidad para tools educativas | Por curso o global | Media |
+| **Canvas API** | REST API con OAuth2 para acceso a datos | Según scopes | Media |
+| **LTI Advantage** | Extensiones de LTI 1.3 (Deep Linking, AGS, NRPS) | Por integración | Alta |
+
+### 3.2 Custom JavaScript en Canvas
+
+Canvas permite subir archivos JS y CSS personalizados a nivel de cuenta a través del Theme Editor. Esta funcionalidad **debe ser habilitada por el Customer Success Manager** de Instructure.
+
+**Consideraciones importantes:**
+
+- El código se aplica globalmente o a nivel de sub-cuenta (no a nivel de curso específico)
+- Las modificaciones al DOM pueden entrar en conflicto con actualizaciones futuras de Canvas
+- El administrador es responsable de mantener accesibilidad y compatibilidad
+- Los archivos se cargan en cada página de Canvas
+
+**Referencia:** [Instructure Community - Custom JS/CSS](https://community.canvaslms.com/t5/Admin-Guide/How-do-I-upload-custom-JavaScript-and-CSS-files-to-an-account/ta-p/253)
+
+### 3.3 LTI Placements Relevantes
+
+Canvas soporta diferentes "placements" para tools LTI:
+
+| Placement | Descripción | Uso recomendado |
+|-----------|-------------|-----------------|
+| **Course Navigation** | Aparece en el menú lateral del curso | Apps de curso completo |
+| **Global Navigation** | Aparece en la barra de navegación principal | Herramientas transversales |
+| **Top Navigation** | Se muestra en un drawer junto al contenido | Asistentes contextuales |
+| **Editor Button** | Botón en el editor de contenido | Inserción de contenido |
+
+**Referencia:** [Instructure Developer Docs - Navigation Tools](https://developerdocs.instructure.com/services/canvas/external-tools/lti/placements/file.navigation_tools)
+
+### 3.4 Variables de Entorno en Canvas
+
+Según la información de Denis (Siglo 21), Canvas expone variables de entorno en el navegador que contienen información del usuario y curso. Estas se pueden acceder desde JavaScript:
+
+```javascript
+// Variables disponibles (a confirmar documentación exacta)
+ENV.current_user_id
+ENV.current_user.display_name
+ENV.current_user.email
+ENV.COURSE_ID
+ENV.context_asset_string // formato: "course_123456"
+```
+
+<Warning>
+  **Pendiente:** Denis nos enviará documentación específica sobre las variables disponibles.
+</Warning>
+
+---
+
+## 4. Componente de Chat Existente
+
+El equipo ha desarrollado un componente React (`ChatWidget`) que sirve como placeholder visual para el widget de Ada.
+
+### 4.1 Especificaciones Técnicas
+
+| Aspecto | Detalle |
+|---------|---------|
+| **Archivos** | `Chat.tsx` (TypeScript) y `Chat.jsx` (JavaScript) |
+| **Framework** | React con Hooks (useState, useEffect, useRef) |
+| **Posición** | Absoluta, esquina inferior derecha (bottom: 20px, right: 20px) |
+| **Dimensiones del Chat** | 300px de ancho, max-height 300px para mensajes |
+| **Estado** | Placeholder visual - sin lógica de backend |
+
+### 4.2 Funcionalidades Actuales
+
+- Botón flotante con ícono de sparkles (Lucide icons)
+- Panel de chat con animación de apertura/cierre
+- Área de mensajes con scroll automático
+- Input de texto con soporte para Enter
+- Estado de "escribiendo..." simulado
+- Estilos inline con colores de la marca (púrpura: `#735FE3`)
+
+### 4.3 Ubicación de Inserción
+
+Según las instrucciones del equipo de MECA, el componente debe insertarse como hijo directo del elemento con clases:
+
+```
+"page-view page-view--visible"
+```
+
+En la ruta: `/courses/{course_id}/pages/modulos#{lectura}`
+
+### 4.4 Snippet de Integración (LearnWise reference)
+
+Denis mencionó que otros proveedores (ej: LearnWise) utilizan un snippet similar a:
+
+```html
+<script>
+  // Snippet simplificado - 4 líneas aproximadamente
+  // Carga JS desde servidores del proveedor
+  // El ID del bot y configuración están en el script externo
+</script>
+```
+
+---
+
+## 5. Flujo de Autenticación Actual (LTI 1.3)
+
+El flujo actual sigue la especificación OpenID Connect (OIDC) de IMS Global para LTI 1.3.
+
+### 5.1 Diagrama del Flujo
+
+![OIDC Flow](https://www.imsglobal.org/sites/default/files/specs/images/security/1p0/fig5p2-oidcflowv1.jpg)
+
+**Referencia:** [IMS Global Security Framework](https://www.imsglobal.org/spec/security/v1p0/)
+
+### 5.2 Endpoints Actuales
+
+#### POST /cronos/v1/auth/canvas/login
+
+- Corresponde a "GET/POST init login request" en la especificación
+- Inicia el flujo de autenticación OIDC
+
+#### POST /cronos/v1/auth/canvas/launch
+
+- Corresponde a "POST auth response" en la especificación
+- Realiza la redirección final a `https://siglo21.educabot.com/login`
+
+### 5.3 Limitación Actual
+
+<Warning>
+  **IMPORTANTE:** El flujo actual **NO** obtiene el `access_token` del usuario de Canvas, el cual es necesario para consultar la API de Canvas y obtener los cursos del usuario.
+</Warning>
+
+---
+
+## 6. Nuevos Pasos de Autenticación
+
+El objetivo es extender el flujo actual para obtener el `access_token` de Canvas **sin modificar los endpoints existentes**.
+
+### 6.1 Flujo Propuesto
+
+```
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Canvas    │    │   Frontend  │    │   Backend   │    │  Canvas API │
+│    LMS      │    │    TUNI     │    │   Cronos    │    │   OAuth2    │
+└──────┬──────┘    └──────┬──────┘    └──────┬──────┘    └──────┬──────┘
+       │                  │                  │                  │
+       │ 1. LTI Launch    │                  │                  │
+       │─────────────────>│                  │                  │
+       │                  │ 2. /canvas/launch│                  │
+       │                  │─────────────────>│                  │
+       │                  │                  │                  │
+       │                  │ 3. Redirect con token + redirect URL│
+       │                  │<─────────────────│                  │
+       │                  │                  │                  │
+       │ 4. Redirect a OAuth                 │                  │
+       │<─────────────────│                  │                  │
+       │                  │                  │                  │
+       │ 5. Popup autorización               │                  │
+       │─────────────────>│                  │                  │
+       │                  │                  │                  │
+       │ 6. Redirect con code                │                  │
+       │─────────────────>│                  │                  │
+       │                  │                  │                  │
+       │                  │ 7. POST code     │                  │
+       │                  │─────────────────>│                  │
+       │                  │                  │ 8. Exchange code │
+       │                  │                  │─────────────────>│
+       │                  │                  │                  │
+       │                  │                  │ 9. access_token  │
+       │                  │                  │<─────────────────│
+       │                  │                  │                  │
+       │                  │ 10. Success      │                  │
+       │                  │<─────────────────│                  │
+       │                  │                  │                  │
+```
+
+### 6.2 Detalle de los Pasos
+
+#### Paso 1-3: Flujo LTI existente (modificado)
+
+En lugar de redirigir a:
+```
+https://siglo21.educabot.com/login?token=<TOKEN>
+```
+
+Redirigir a:
+```
+https://siglo21.educabot.com/login?token=<TOKEN>&redirect=<OAUTH_URL>
+```
+
+#### Paso 4-6: Autorización OAuth2 de Canvas
+
+**URL de autorización:**
+```
+https://siglo21.instructure.com/login/oauth2/auth
+  ?client_id=72740000000000246
+  &response_type=code
+  &redirect_uri=https://siglo21.educabot.com/login
+  &scope=url:GET|/api/v1/courses
+```
+
+El usuario ve un popup de Canvas pidiendo autorización:
+
+> "LearnWise/TUNI está solicitando acceso a su cuenta. ¿Autorizar?"
+
+Después de aceptar, Canvas redirige a:
+```
+https://siglo21.educabot.com/login?code=<CODE>
+```
+
+#### Paso 7-10: Intercambio de code por access_token
+
+**Backend hace POST a Canvas:**
+
+```http
+POST https://siglo21.instructure.com/login/oauth2/token
+
+Content-Type: application/x-www-form-urlencoded
+
+client_id=72740000000000246
+&client_secret=<SECRET>
+&grant_type=authorization_code
+&code=<CODE>
+```
+
+**Referencia:** [Canvas OAuth2 Documentation](https://canvas.instructure.com/doc/api/file.oauth.html)
+
+### 6.3 Procesamiento Post-Autenticación
+
+Una vez obtenido el `access_token`, el backend debe:
+
+1. **Obtener cursos:** `GET /api/v1/courses?access_token=<TOKEN>`
+2. **Filtrar cursos:** Según whitelist configurada (materias piloto)
+3. **Crear registros:**
+   - `course_inscriptions`
+   - `degree_inscriptions`
+   - `subject_objectives`
+4. **Crear objetivos:** `user_weekly_objectives`
+5. **Onboarding y flush:**
+   - `defer was_onboarded = false`
+   - Para `user_activities`, obtener de `weekly_objective_activities`
+   - Obtener datos de Odin
+   - Contemplar `external_activities`
+
+**Nota sobre duplicados:**
+```sql
+INSERT ... ON CONFLICT (unique_key) DO NOTHING
+```
+
+---
+
+## 7. Opciones de Implementación del Widget Flotante
+
+Se presentan tres opciones para implementar el botón flotante de TUNI en Canvas LMS.
+
+### 7.1 OPCIÓN A: JavaScript Global via Theme Editor
+
+**Descripción:** Inyectar el widget como script global que se carga en todas las páginas de Canvas.
+
+#### Implementación
+
+<Steps>
+  <Step title="Compilar bundle">
+    Compilar el componente React como bundle standalone (UMD/IIFE).
+  </Step>
+  <Step title="Subir a Canvas">
+    Subir el JS compilado a la carpeta "public" de Canvas.
+  </Step>
+  <Step title="Configurar Theme Editor">
+    Configurar en Admin Settings > Theme Editor la referencia al archivo.
+  </Step>
+  <Step title="Detección automática">
+    El script detecta si está en página de contenido y renderiza.
+  </Step>
+</Steps>
+
+#### Lógica de detección de curso
+
+```javascript
+// Detectar si estamos en un curso habilitado
+const materiasCodigos = ['MPR-027', 'ABC-123']; // códigos de materias piloto
+const cursoActual = ENV.context_asset_string; // o levantar de URL
+
+// El código de materia son los primeros 6 caracteres del identificador
+const codigoMateria = obtenerCodigoMateria(cursoActual);
+
+if (materiasCodigos.includes(codigoMateria)) {
+  renderizarWidget();
+}
+```
+
+#### Ventajas y Desventajas
+
+| Ventajas | Desventajas |
+|----------|-------------|
+| Menor complejidad de desarrollo | Depende del DOM de Canvas (puede romperse con updates) |
+| No requiere configuración LTI adicional | Se carga en TODAS las páginas (overhead) |
+| Control total sobre el widget | Requiere acceso admin al Theme Editor |
+| Rápido de implementar | Canvas no soporta esto oficialmente |
+| Botón siempre visible | Mantenimiento de código fuera de npm |
+
+**Esfuerzo estimado:** 2-3 días de desarrollo
+
+---
+
+### 7.2 OPCIÓN B: LTI 1.3 con Top Navigation Placement
+
+**Descripción:** Usar el placement "Top Navigation" de LTI que renderiza en un drawer lateral.
+
+#### Implementación
+
+<Steps>
+  <Step title="Configurar Developer Key">
+    Configurar nuevo Developer Key con placement `top_navigation`.
+  </Step>
+  <Step title="Ícono en barra superior">
+    El tool se muestra como ícono en la barra superior.
+  </Step>
+  <Step title="Drawer con iframe">
+    Al hacer clic, abre drawer con iframe de TUNI.
+  </Step>
+  <Step title="Contexto LTI">
+    El iframe recibe contexto LTI (user, course, etc.).
+  </Step>
+</Steps>
+
+#### Ventajas y Desventajas
+
+| Ventajas | Desventajas |
+|----------|-------------|
+| Solución soportada oficialmente por Canvas | No es un botón flotante sobre el contenido |
+| Recibe contexto LTI automáticamente | Requiere clic para abrir (no siempre visible) |
+| Actualización independiente del widget | Drawer puede ser limitado en UX |
+| Integración limpia sin hackear DOM | El drawer se cierra al navegar |
+
+**Esfuerzo estimado:** 1 semana de desarrollo
+
+---
+
+### 7.3 OPCIÓN C: Híbrido - LTI + JavaScript Global (RECOMENDADA)
+
+**Descripción:** Combinar ambos enfoques: LTI para autenticación y contexto, JS global para el widget flotante.
+
+#### Implementación
+
+<Steps>
+  <Step title="Mantener flujo LTI">
+    Mantener flujo LTI actual para autenticación inicial.
+  </Step>
+  <Step title="Widget flotante">
+    JavaScript global renderiza el botón flotante.
+  </Step>
+  <Step title="Verificar sesión">
+    Al hacer clic, verifica si hay sesión TUNI activa.
+  </Step>
+  <Step title="Sin sesión">
+    Si no hay sesión: mostrar modal de consentimiento y trigger flujo OAuth.
+  </Step>
+  <Step title="Con sesión">
+    Si hay sesión: comunicación directa con backend vía API.
+  </Step>
+</Steps>
+
+#### Diagrama de Flujo
+
+```
+Usuario abre página de Canvas
+         │
+         ▼
+┌─────────────────────────┐
+│ JS Global se carga      │
+│ Detecta curso habilitado│
+└───────────┬─────────────┘
+            │
+            ▼
+┌─────────────────────────┐
+│ Renderiza botón flotante│
+└───────────┬─────────────┘
+            │
+     Usuario hace click
+            │
+            ▼
+┌─────────────────────────┐
+│ ¿Tiene sesión TUNI?     │
+└───────────┬─────────────┘
+       ┌────┴────┐
+       │         │
+      SÍ        NO
+       │         │
+       ▼         ▼
+┌──────────┐  ┌──────────────────┐
+│ Abre chat│  │ Modal de         │
+│ conectado│  │ consentimiento   │
+└──────────┘  └────────┬─────────┘
+                       │
+                Usuario acepta
+                       │
+                       ▼
+              ┌──────────────────┐
+              │ Flujo OAuth      │
+              │ (popup/redirect) │
+              └────────┬─────────┘
+                       │
+                       ▼
+              ┌──────────────────┐
+              │ Usuario          │
+              │ autenticado      │
+              └──────────────────┘
+```
+
+#### Ventajas y Desventajas
+
+| Ventajas | Desventajas |
+|----------|-------------|
+| UX óptima con botón siempre visible | Mayor complejidad de implementación |
+| Autenticación robusta via LTI/OAuth | Dos puntos de mantenimiento |
+| Permite registro diferido | Coordinar estado entre sistemas |
+| Flexibilidad máxima | Testing más complejo |
+
+**Esfuerzo estimado:** 2-3 semanas de desarrollo
+
+---
+
+### 7.4 Matriz de Decisión
+
+| Criterio | Opción A | Opción B | Opción C |
+|----------|----------|----------|----------|
+| Tiempo de implementación | Alto | Medio | Bajo |
+| UX (botón flotante) | Alto | Bajo | Alto |
+| Soporte oficial Canvas | Bajo | Alto | Medio |
+| Mantenibilidad | Bajo | Alto | Medio |
+| Contexto automático | Bajo | Alto | Alto |
+| Registro diferido | Alto | Bajo | Alto |
+
+### 7.5 Recomendación
+
+<Tip>
+  **RECOMENDACIÓN: Opción C (Híbrido)**
+
+  Ofrece la mejor experiencia de usuario mientras mantiene la robustez de autenticación LTI. El esfuerzo adicional se justifica por la calidad de la experiencia final y la posibilidad de implementar registro diferido.
+</Tip>
+
+---
+
+## 8. Estrategia de Engagement y Registro Diferido
+
+Para maximizar la adopción de TUNI, se propone un flujo de "registro diferido" que permite al usuario interactuar antes de requerir la creación de cuenta.
+
+### 8.1 Flujo de Usuario Propuesto
+
+#### Fase 1: Primera interacción (sin cuenta)
+
+- Usuario ve el botón flotante de Ada
+- Puede hacer click y hacer **3-4 preguntas** sin registrarse
+- Las respuestas pueden ser genéricas o basadas en contexto visible
+
+#### Fase 2: Trigger de registro
+
+Después de X interacciones (configurable), mostrar prompt de beneficios:
+
+> *"¡Me encanta ayudarte! Para darte respuestas más personalizadas sobre TUS materias, necesito conocerte mejor..."*
+
+#### Fase 3: Pantalla de consentimiento
+
+Modal explicando qué permisos se solicitan:
+
+```
+┌─────────────────────────────────────────────┐
+│  ¡Desbloquea todo el poder de Ada!          │
+│                                             │
+│  Al crear tu cuenta TUNI, obtendrás:        │
+│                                             │
+│  Respuestas específicas para TUS materias   │
+│  Objetivos semanales personalizados         │
+│  Seguimiento de tu progreso                 │
+│  Recomendaciones según tu rendimiento       │
+│                                             │
+│  Para esto, necesitamos acceder a:          │
+│  • Tu información básica de Canvas          │
+│  • La lista de cursos en los que estás      │
+│                                             │
+│  ┌──────────┐    ┌──────────┐               │
+│  │ Autorizar│    │ Más tarde│               │
+│  └──────────┘    └──────────┘               │
+└─────────────────────────────────────────────┘
+```
+
+#### Fase 4: Flujo OAuth
+
+- Redirección a Canvas para autorización
+- Canvas muestra popup de permisos
+- Usuario acepta y vuelve al chat
+
+#### Fase 5: Post-registro
+
+- Mensaje de bienvenida personalizado
+- Ada conoce los cursos del usuario
+- Respuestas contextuales basadas en objetivos
+
+---
+
+## 9. Insights de la Reunión con Siglo 21
+
+### 9.1 Participantes
+
+- **Denis** (Siglo 21 - Equipo técnico Canvas)
+- **Pablo, Alejo** (Educabot)
+- **Lucas, Tomás Campos** (MECA - Desarrollo de contenido)
+- **José** (Educabot)
+
+### 9.2 Puntos Clave Discutidos
+
+#### Estructura de Cursos en Canvas
+
+> **Denis:** "Tenemos dos sub-cuentas: desarrollo (donde MECA construye contenido) y producción. Cada apertura de turno cursado nuevo se crea una cápsula nueva y se importa el contenido. El identificador del curso es nuevo cada vez."
+
+**Implicación:** No podemos hardcodear IDs de curso. Necesitamos detectar dinámicamente si estamos en una materia habilitada.
+
+#### Identificadores de Curso
+
+> **Denis:** "El identificador de curso tiene los primeros seis dígitos que son siempre el código de la materia, después guión medio y el ID del turno de cursado."
+
+**Ejemplo:** `MPR027-12345` donde `MPR027` es el código de materia.
+
+**Solución propuesta:**
+```javascript
+const urlCurso = window.location.pathname; // /courses/MPR027-12345/...
+const codigoMateria = extraerCodigoMateria(urlCurso);
+const materiasHabilitadas = ['MPR027', 'ABC123', 'XYZ789'];
+
+if (materiasHabilitadas.includes(codigoMateria)) {
+  mostrarWidget();
+}
+```
+
+#### Autenticación del Widget Flotante
+
+> **Denis:** "En los que hemos utilizado como chat flotante, en la variable de entorno `ENV` está toda la información del usuario y la capturan desde ahí."
+
+> **José:** "¿Tiene algún mecanismo donde por ahí levantamos un token y le pegamos un endpoint de ustedes para validar que ese token sea real?"
+
+> **Denis:** "He visto uno que dentro del chat, antes de validártelo, te pide autenticación, te lleva a otra URL y bueno, es el token del usuario..."
+
+**Referencia de LearnWise:** Denis mostró cómo LearnWise maneja esto:
+1. Usuario hace click en el chat
+2. Se abre popup de autorización de Canvas
+3. Usuario autoriza
+4. Se genera token automáticamente
+5. Usuario vuelve al chat ya autenticado
+
+#### Contexto de Lectura (RISE)
+
+> **Denis:** "Lo único que queda en Canvas es en la URL. Dentro del path de la URL tenés la lectura: m1 (módulo 1), lectura 3, 2, 1..."
+
+> **Denis:** "Desde Canvas yo también lo he intentado escrapear [RISE] y no he logrado nada. Solamente tenés la URL de RISE pero nada más."
+
+**Implicación:**
+- Podemos obtener módulo/lectura de la URL (ej: `modulos#m1l3`)
+- El contenido de RISE no es fácilmente scrapeable
+- Necesitamos mapeo interno de qué contenido tiene cada lectura
+
+#### Materias Piloto
+
+| Materia | Modalidad |
+|---------|-----------|
+| Introducción a la Filosofía | Bimestral |
+| Historia del Derecho | Bimestral |
+| Derecho Constitucional | Cuatrimestral |
+
+### 9.3 Acciones Pendientes de Siglo 21
+
+1. **Denis:**
+   - [ ] Habilitar widget LearnWise en ambiente de prueba para que podamos analizar flujo
+   - [ ] Enviar documentación de variables de entorno de Canvas
+   - [ ] Crear curso de prueba y pasar identificador
+
+2. **Lucas/Tomás (MECA):**
+   - [ ] Enviar análisis de viabilidad de integración desde MECA
+
+### 9.4 URLs de Ambientes
+
+| Ambiente | URL | Notas |
+|----------|-----|-------|
+| Test | `siglo21.test.instructure.com` | Usado para pruebas LTI |
+| Beta | `siglo21.beta.instructure.com` | Ambiente de pruebas alternativo |
+| Producción | `siglo21.instructure.com` | No tocar |
+
+---
+
+## 10. Tareas Pendientes
+
+### 10.1 Backend (Cronos)
+
+| Tarea | Descripción | Prioridad |
+|-------|-------------|-----------|
+| Endpoint Odin actividades | Crear endpoint para levantar actividades del usuario | Alta |
+| Actualizar /canvas/launch | Modificar para devolver redirect con URL OAuth | Alta |
+| Nuevo endpoint para code | Recibir code de OAuth y obtener access_token | Alta |
+| Flush de actividades | Implementar lógica de onboarding y user_activities | Media |
+| Manejo INSERT ON CONFLICT | Usar DO NOTHING para evitar duplicados | Media |
+
+### 10.2 Frontend
+
+| Tarea | Descripción | Prioridad |
+|-------|-------------|-----------|
+| Soportar redirect param | Lógica para guardar token y redirigir a OAuth | Alta |
+| Manejo de code | Recibir code de Canvas y enviarlo al backend | Alta |
+| Lógica de chat | Conectar widget con API de TUNI | Alta |
+| Modal de consentimiento | UI para explicar beneficios y solicitar permisos | Media |
+| Estado de sesión | Detectar si usuario tiene sesión activa | Media |
+| Bundle standalone | Compilar React para inyección global | Media |
+| Detección de materia | Lógica para detectar código de materia de URL | Alta |
+| Extracción de contexto | Obtener módulo/lectura de URL para contexto | Media |
+
+### 10.3 Coordinación con Siglo 21
+
+- [ ] Confirmar acceso al Theme Editor de Canvas
+- [ ] Validar que CSS/JS custom está habilitado
+- [ ] Obtener documentación de variables de entorno
+- [ ] Recibir curso de prueba con identificador
+- [ ] Acordar proceso de deploy y actualización del widget
+- [ ] Analizar widget de LearnWise cuando esté disponible
+
+---
+
+## 11. Próximos Pasos
+
+### Corto Plazo (1-2 semanas)
+
+1. **Reunión de definición:** Revisar este documento con el equipo y seleccionar opción de implementación
+2. **Análisis LearnWise:** Cuando Denis habilite el widget, analizar flujo de autenticación
+3. **PoC del widget:** Crear prueba de concepto del botón flotante en Canvas de prueba
+
+### Mediano Plazo (2-4 semanas)
+
+4. **Desarrollo backend:** Implementar nuevos endpoints de autenticación
+5. **Desarrollo frontend:** Bundle standalone + lógica de detección
+6. **Integración:** Conectar widget con backend y probar flujo completo
+
+### Largo Plazo (1-2 meses)
+
+7. **Testing con usuarios:** Validar UX del flujo de registro diferido
+8. **Deploy gradual:** Lanzar en cursos piloto antes de rollout completo
+9. **Publicación npm:** Migrar widget a librería npm para facilitar mantenimiento
+
+---
+
+## Anexo A: Referencias
+
+### Canvas / Instructure
+
+- [OAuth2 Overview](https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth)
+- [Navigation Tools / Placements](https://developerdocs.instructure.com/services/canvas/external-tools/lti/placements/file.navigation_tools)
+- [Custom JS/CSS Upload](https://community.canvaslms.com/t5/Admin-Guide/How-do-I-upload-custom-JavaScript-and-CSS-files-to-an-account/ta-p/253)
+- [Developer Keys](https://developerdocs.instructure.com/services/canvas/oauth2/file.developer_keys)
+
+### LTI
+
+- [IMS Security Framework](https://www.imsglobal.org/spec/security/v1p0/)
+- [LTI 1.3 Canvas Integration Example](https://doldsimo.github.io/lti-1.3-canvas-lms/)
+
+### Herramientas de Desarrollo
+
+- [canvas-lms-app (GitHub)](https://github.com/artevelde-uas/canvas-lms-app) - App para building custom JS & CSS
+- [canvas-lms Wiki](https://github.com/instructure/canvas-lms/wiki)
+
+---
+
+## Anexo B: Código del Componente Actual
+
+El componente actual (`Chat.tsx`) está disponible en los archivos adjuntos. Características principales:
+
+- **Estado local:** `isOpen`, `inputValue`, `isWaiting`, `messages`
+- **Auto-scroll:** `useRef` + `scrollIntoView`
+- **Colores de marca:** Púrpura (`#735FE3`), gris claro para fondo
+- **Responsive:** Posición absoluta adaptable
+
+---
+
+*Documento preparado por el equipo de Educabot - Enero 2026*

@@ -1,0 +1,305 @@
+---
+title: "Especificación Funcional"
+description: "Flujos, pantallas, componentes y reglas de UI/estados del Dashboard del estudiante."
+icon: "file-text"
+---
+
+## Objetivo
+
+El **Dashboard** es el panel principal del estudiante para:
+
+- Acceder rápidamente a las funcionalidades clave: **Clase**, **Consultas** y **Evaluaciones**.
+- **Visualizar progreso** y reforzar motivación mediante métricas simples.
+
+## Fuentes
+
+- **Figma (tablero general / materias)**: [node-id=38-14986](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=38-14986&t=ZwBxoxPYtsRbqjQP-4)
+- **Figma (dashboard clase)**: [node-id=227-11628](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=227-11628&t=ZwBxoxPYtsRbqjQP-4)
+- **Figma (link desde tickets)**: [node-id=216-1205](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=216-1205&t=tyfdgg8ZxBSUPM7y-1)
+- **Decisiones**: [decisiones-reu-ro](/epicas/dashboard/decisiones)
+- **Transcripción**: dashboard-2026-01-29
+
+<Note>
+  Algunos links de Figma pueden requerir sesión y/o permisos.
+</Note>
+
+## Alcance (MVP)
+
+<CardGroup cols={2}>
+  <Card title="Dentro de alcance" icon="check">
+    - **Login** (si aplica al entorno; puede existir SSO/Canvas en integraciones).
+    - **Selección de materia** (home de materias con cards).
+    - **Dashboard de materia** con banner compacto, progreso, métricas y accesos a clase, consulta y evaluaciones.
+    - **Side panel de unidad** (detalle de módulo/unidad + lista de clases).
+    - **Side panel de consultas** ("Tengo una consulta") sin historial visible.
+    - **Gamificación mínima**: racha diaria visible en header + en cierre de clase.
+    - **Cierre de clase** con opción "Revisar desafío" (navegación pregunta por pregunta).
+  </Card>
+  <Card title="Fuera de alcance" icon="x">
+    - Notificaciones (postergadas para MVP).
+    - Social / comunidad.
+    - Identidad visual final (imágenes, paleta, banner definitivo).
+    - Nivelación completa (flujo y diseño).
+    - Reglas de cuándo sugerir evaluación (pendiente; hoy no hay "fecha" de parcial en sistema).
+  </Card>
+</CardGroup>
+
+## Reglas de nomenclatura (UX copy)
+
+- "**Concepto**" → "**Tema**"
+- "**Diagnóstico**" → "**Evaluación**"
+
+## Flujos principales
+
+### 1) Acceso → Materias
+
+**Pantalla: Login**
+
+- Campos: correo + contraseña.
+- CTA: "Iniciar sesión".
+
+**Pantalla: Materias**
+
+- Saludo ("¡Hola, [nombre]!") + pregunta ("¿Con qué materia comenzamos?").
+- Cards por materia con:
+  - Nombre de materia.
+  - Próximo parcial (ej. "en 10 días / 20 días / 28 días") si existe el dato.
+  - Etiqueta "Recomendada" si corresponde.
+  - Unidad actual (ej. "Principios del Derecho", "Teoría del Delito", etc.).
+  - Indicador de progreso/dominio (porcentaje o visual).
+
+**Resultado del flujo**
+
+- Seleccionar una materia navega al **Dashboard de materia**.
+
+### 2) Dashboard de materia → Empezar a estudiar
+
+- El dashboard de la materia se accede desde la **sidebar** al seleccionar una materia específica y muestra únicamente información asociada a ella.
+- También puede accederse desde el **CTA de cierre de una clase** ("Ir a mi materia").
+
+**Entry point principal**
+
+- Banner superior "**Clase recomendada**" (badge "Aprendizaje adaptativo") con CTA "**Empezar a estudiar**".
+
+**Comportamiento**
+
+- Al click, el usuario es redirigido a una **clase con el tutor** correspondiente a la **unidad priorizada por el sistema**, determinada según su **nivel de dominio**.
+
+### 3) Dashboard de materia → "Tengo una consulta"
+
+**Entry point**
+
+- Botón secundario en la home, junto a "Empezar a estudiar".
+
+**Comportamiento**
+
+- Abre un **side panel** (no ventana nueva).
+- No muestra historial de consultas anteriores.
+- Al abrir: se muestra el **último chat** + botón "Nueva consulta".
+
+**Derivación a clase**
+
+- La consulta puede transformarse en clase:
+  - El sistema pregunta: "¿Querés hacer una clase sobre esto?"
+  - Si el usuario acepta, deriva al flujo de clase con ese tema.
+- Si la materia no es clara:
+  - El sistema puede preguntar la materia (pendiente exactitud: preguntar vs deducir).
+
+### 4) Dashboard de materia → Unidad (detalle / side sheet)
+
+**Entry points**
+
+- En cada unidad (ítem dentro de "Contenidos"), en estado hover aparecen botones: **"Estudiar"** y **"Ver detalle"**.
+
+**Reglas de UI (según diseño)**
+
+- El título de la unidad admite un **máximo de una línea**.
+- Si excede el límite, se **trunca con puntos suspensivos** (`…`).
+- Los botones **"Estudiar"** y **"Ver detalle"**:
+  - Se muestran al hacer **hover** sobre la unidad.
+  - Permanecen **alineados a la derecha** y **centrados verticalmente** dentro del contenedor.
+
+**Acción: Estudiar**
+
+- Redirige a una **clase con el tutor** sobre dicha unidad.
+
+**Acción: Ver detalle**
+
+- Abre un **side sheet** (overlay) que se despliega **de derecha a izquierda** ocupando el espacio de los módulos/métricas.
+- Debe aplicar un **background** (overlay oscuro) y permitir cierre:
+  - Click por fuera del side sheet.
+  - Click en el ícono **"X"**.
+
+**Contenido del side sheet (Detalle unidad)**
+
+- Contexto de módulo (ej. "1. Fundamentos y metodología…").
+- Título y breve descripción de la unidad.
+- Indicador de progreso: donut "**Dominio de la unidad**".
+- Sección "**Dominio de temas**" (lista de temas con barra + porcentaje).
+- CTA primario: "**Estudiar esta unidad**".
+
+**Decisiones de UX**
+
+- Se elimina el botón "Repasar unidad".
+- "Tus chats" pasa a llamarse "Clases de la unidad".
+
+### 5) Cierre de clase → "Revisar desafío"
+
+- En cierre de clase aparece CTA "Revisar desafío".
+- Navega a revisión pregunta por pregunta con feedback.
+- Controles: "Siguiente" / "Atrás".
+
+## Evaluaciones (MVP redefinido)
+
+### Principios
+
+- **No bloquean el avance** → son **optativas**.
+- Se mantienen **solo a nivel módulo** (no por unidad) para MVP.
+- Se pueden realizar múltiples evaluaciones del mismo módulo.
+- Durante evaluación: **sin feedback en tiempo real** (simula examen real).
+
+### Cierre de evaluación (pantalla)
+
+- Nota obtenida.
+- Gráfico por unidad (puntaje por unidad del módulo).
+- "Áreas fuertes" / "Áreas de mejora".
+- Comparación vs evaluación anterior (si existe).
+- CTAs:
+  - "Ver detalle" → navegar pregunta por pregunta con feedback.
+  - "Aprender de mis errores" → derivar a clase de refuerzo específica.
+  - "Ir a mi materia" → cerrar.
+
+### Historial
+
+- Sección "Ver evaluaciones" con historial (side panel), agrupado por módulo.
+
+## Pantallas / Módulos
+
+- **Login** (si aplica al entorno; puede existir SSO/Canvas en integraciones).
+- **Materias** (home con cards por materia).
+- **Dashboard de materia** (home dentro de una materia: banner, progreso, métricas, contenidos).
+- **Side panel de unidad** (detalle de módulo/unidad + lista de clases).
+- **Side panel de consultas** ("Tengo una consulta").
+- **Cierre de clase** (métricas + revisión de desafío).
+- **Evaluación** (flujo de evaluación + cierre + historial).
+
+---
+
+## Componentes
+
+### Global / Layout
+
+- Header con:
+  - Racha diaria (persistente, estilo Duolingo).
+  - Indicadores de moneda/XP (según diseño).
+  - Avatar/menú de usuario.
+- Sidebar (iconos) para navegación global.
+
+### Materias
+
+- `MateriaCard`
+  - `RecommendedBadge`
+  - `NextExamPill` (si existe dato)
+  - `CurrentUnitRow`
+  - `ProgressIndicator` (dominio)
+
+### Dashboard de materia
+
+- `SubjectHeader` (título materia)
+- `RecommendedClassBanner`
+  - Badge "Aprendizaje adaptativo"
+  - Título: "Clase recomendada"
+  - Descripción: "Diseñada para ayudarte a dar el próximo paso."
+  - CTA: "Empezar a estudiar"
+
+- `SubjectProgressCard`
+  - **Con data**: donut "Dominio" + lista "Unidades con mayor progreso"
+  - **Empty state**: ver sección "Estados" (cta "Empezar a estudiar")
+
+- `TopUnitsProgressList` (unidades con mayor progreso)
+- `WeeklyMetricsCard` ("Esta semana")
+  - `ClassesCompletedMetric` (ej. 5)
+  - `HoursStudiedMetric` (ej. 3)
+  - `WeeklyProgressMetric` (ej. 10%)
+
+- `ContentsModuleList`
+  - `ModuleSection` (por módulo/materia)
+  - `UnitRow` (default/hover)
+  - `EvaluationModuleRow` (ej. "Evaluación Módulo 1")
+
+- (Legacy) `SubjectBanner` (compacto, sin imagen por ahora)
+- (Legacy) `SubjectProgressChart` (se mueve arriba por visibilidad)
+- `MasteryDonutSubject` vs `MasteryDonutUnit` (diferenciación visual)
+- `MetricsRow`
+  - `ClassesCompletedMetric`
+  - `HoursStudiedMetric`
+  - `WeeklyProgressMetric`
+- `PrimaryCTAStartStudying`
+- `SecondaryCTAConsult`
+
+### Side panels
+
+- `UnitDetailSideSheet` (overlay "Detalle unidad")
+- `ConsultSidePanel`
+- `EvaluationHistorySidePanel`
+
+### Cierres
+
+- `ClassClosingScreen` + `StreakWidget` + `ReviewChallengeCTA`
+- `EvaluationClosingScreen` + `QuestionReviewNavigator`
+
+## Estados a contemplar
+
+<CardGroup cols={2}>
+  <Card title="Progreso de la materia — Empty" icon="lock">
+    - Título: "**Descubrí tu progreso**"
+    - Copy: "Empezá a estudiar para desbloquear tus métricas y ver tu avance"
+    - CTA: "**Empezar a estudiar**"
+    - Iconografía (variantes visuales): candado / reloj / gráfico
+  </Card>
+  <Card title="Otros estados" icon="circle-alert">
+    - **Sin data / sin progreso (nivelación)**: pendiente de diseñar.
+    - **Loading / Skeleton** (al entrar a materias / dashboard de materia).
+    - **Error** (fallo de red / sin permisos).
+    - **Materia no definida en consulta** (preguntar materia vs deducir: pendiente).
+  </Card>
+</CardGroup>
+
+## Analíticas / eventos (mínimo sugerido)
+
+```
+auth_login_success
+subjects_list_viewed
+subject_selected
+subject_dashboard_viewed
+start_studying_clicked
+consult_opened
+consult_new_clicked
+consult_to_class_prompted
+consult_to_class_accepted / consult_to_class_declined
+unit_panel_opened
+class_closed
+challenge_review_started
+challenge_review_next / challenge_review_prev
+evaluation_started
+evaluation_completed
+evaluation_history_opened
+evaluation_detail_opened
+learn_from_errors_clicked
+```
+
+## Consideraciones técnicas
+
+- Las reglas de nomenclatura UX definen: "Concepto" se muestra como "Tema", "Diagnóstico" como "Evaluación".
+- La gamificación mínima (racha diaria) es persistente en header y en cierre de clase.
+- Las evaluaciones no bloquean avance (optativas), solo a nivel módulo para MVP, sin feedback en tiempo real (simula examen).
+- Se contemplan estados: empty (sin progreso), loading/skeleton, error (fallo de red / sin permisos).
+
+## Pendientes de definición (para iterar)
+
+- Estado sin data / nivelación: diseño final.
+- Flujo de nivelación completo: triggers, UX y copy.
+- Cuándo sugerir evaluación (sin fecha de parcial en el sistema).
+- Detección de materia en consultas ambiguas: preguntar vs deducir.
+- UX exacta de derivación consulta → clase (momentos, copy, confirmación).
+- Identidad visual final (banner, paleta, imágenes).

@@ -1,0 +1,277 @@
+---
+title: "Historias de Usuario"
+description: "Historias de usuario de la integración Canvas LMS (INT-001 a INT-009): widget flotante, detección de contexto, autenticación, engagement y derivación a clase."
+icon: "list"
+---
+
+# Historias de Usuario — Integración Canvas
+
+Todas las historias de usuario de la sub-épica Canvas LMS (INT-001 a INT-009).
+
+<AccordionGroup>
+
+  <Accordion title="INT-001 — Widget flotante de Ada en Canvas" icon="window-restore">
+
+    **Épica:** Integraciones / Canvas · **Prioridad:** media · **Estado:** backlog
+
+    ## Historia de usuario
+
+    **Como** alumno de Siglo 21 navegando Canvas,
+    **quiero** ver un botón flotante de Ada en las páginas de lectura,
+    **para** poder acceder al tutor sin salir de Canvas.
+
+    ## Descripción
+
+    Widget flotante inyectado en las páginas de Canvas que permite al estudiante interactuar con Ada directamente desde el LMS.
+
+    ## Criterios de aceptación
+
+    - [ ] Botón flotante en esquina inferior derecha.
+    - [ ] Tres estados: colapsado (botón), expandido (panel chat), escribiendo.
+    - [ ] Bundle standalone (IIFE) sin dependencias CSS externas.
+    - [ ] Se renderiza solo en materias habilitadas (whitelist).
+    - [ ] Se inserta como hijo de `.page-view.page-view--visible`.
+    - [ ] URL fija: `educabot.com/widget/chat-widget.js`.
+
+    ## Notas técnicas
+
+    - Área: Frontend.
+
+  </Accordion>
+
+  <Accordion title="INT-002 — Detección de contexto de Canvas" icon="location-dot">
+
+    **Épica:** Integraciones / Canvas · **Prioridad:** media · **Estado:** backlog
+
+    ## Historia de usuario
+
+    **Como** el widget de Ada,
+    **quiero** detectar automáticamente la materia, módulo y lectura actual,
+    **para** enviar contexto relevante al backend en cada interacción.
+
+    ## Descripción
+
+    El widget extrae información contextual de la página de Canvas activa y la envía junto con cada mensaje al backend para personalizar las respuestas.
+
+    ## Criterios de aceptación
+
+    - [ ] Extraer código de materia desde URL (`/courses/MPR027-xxx/`).
+    - [ ] Extraer módulo y lectura desde hash (`#m1l3`).
+    - [ ] Leer `ENV.userId` y `ENV.courseId` del objeto global de Canvas.
+    - [ ] Obtener `pageTitle` y fragmento de `pageContent` (max 2000 chars).
+    - [ ] Enviar contexto completo en cada mensaje al backend.
+
+    ## Notas técnicas
+
+    - Área: Frontend.
+
+  </Accordion>
+
+  <Accordion title="INT-003 — Chat anónimo con límite de mensajes" icon="comment">
+
+    **Épica:** Integraciones / Canvas · **Prioridad:** media · **Estado:** backlog
+
+    ## Historia de usuario
+
+    **Como** alumno que aún no tiene cuenta TUNI,
+    **quiero** poder chatear con Ada sin registrarme (3-4 mensajes),
+    **para** probar el servicio antes de comprometerme.
+
+    ## Descripción
+
+    Modo de uso anónimo del widget que permite al estudiante interactuar con Ada durante un número limitado de mensajes antes de requerir registro.
+
+    ## Criterios de aceptación
+
+    - [ ] Permitir N mensajes sin autenticación (N configurable, default 3-4).
+    - [ ] Ada se presenta en primer mensaje: quién es, qué hace, por qué sirve.
+    - [ ] Respuestas basadas en contexto de la página actual.
+    - [ ] Después de N mensajes, disparar trigger de registro (mostrar modal).
+    - [ ] Sin historial persistente en modo anónimo.
+
+    ## Notas técnicas
+
+    - Área: Frontend + Backend.
+
+  </Accordion>
+
+  <Accordion title="INT-004 — Modal de consentimiento y registro diferido" icon="shield">
+
+    **Épica:** Integraciones / Canvas · **Prioridad:** media · **Estado:** backlog
+
+    ## Historia de usuario
+
+    **Como** alumno que mostró engagement con Ada,
+    **quiero** ver un modal claro que me explique los beneficios de crear cuenta,
+    **para** tomar una decisión informada sobre autorizar acceso a mis datos.
+
+    ## Descripción
+
+    Modal que aparece tras alcanzar el límite de mensajes anónimos, explicando los beneficios de registrarse y los datos que se accederán.
+
+    ## Criterios de aceptación
+
+    - [ ] Modal con beneficios: respuestas personalizadas, objetivos semanales, seguimiento de progreso, recomendaciones.
+    - [ ] Explica qué datos se acceden: info básica de Canvas + lista de cursos.
+    - [ ] Dos botones: "Autorizar" y "Más tarde".
+    - [ ] "Autorizar" abre popup de OAuth2 de Canvas.
+    - [ ] "Más tarde" cierra modal y permite seguir chateando (sin personalización).
+
+    ## Notas técnicas
+
+    - Área: Frontend + UX.
+
+  </Accordion>
+
+  <Accordion title="INT-005 — Flujo OAuth2 de Canvas para obtener access_token" icon="key">
+
+    **Épica:** Integraciones / Canvas · **Prioridad:** media · **Estado:** backlog
+
+    ## Historia de usuario
+
+    **Como** el backend de TUNI,
+    **quiero** intercambiar el code de OAuth2 por un access_token de Canvas,
+    **para** acceder a los datos del usuario con su consentimiento.
+
+    ## Descripción
+
+    Endpoint backend que recibe el código de autorización OAuth2 de Canvas y lo intercambia por tokens de acceso para consumir la API de Canvas en nombre del usuario.
+
+    ## Criterios de aceptación
+
+    - [ ] Nuevo endpoint para recibir `code` desde redirect de Canvas.
+    - [ ] Exchange code por token via `POST /login/oauth2/token` de Canvas.
+    - [ ] Almacenar `access_token` y `refresh_token` del usuario.
+    - [ ] Scope mínimo: `url:GET|/api/v1/courses`.
+    - [ ] Redirect URI: `siglo21.educabot.com/login`.
+    - [ ] Manejo de errores (code expirado, usuario rechaza).
+
+    ## Notas técnicas
+
+    - Área: Backend (Cronos).
+
+  </Accordion>
+
+  <Accordion title="INT-006 — Sincronización de cursos del usuario desde Canvas" icon="arrows-rotate">
+
+    **Épica:** Integraciones / Canvas · **Prioridad:** media · **Estado:** backlog
+
+    ## Historia de usuario
+
+    **Como** el backend de TUNI,
+    **quiero** obtener y sincronizar los cursos del usuario autenticado,
+    **para** crear las inscripciones y objetivos correspondientes.
+
+    ## Descripción
+
+    Proceso que consume la API de Canvas con el access_token del usuario para obtener sus cursos, filtrarlos según la whitelist de materias piloto y crear los registros necesarios en la base de datos de TUNI.
+
+    ## Criterios de aceptación
+
+    - [ ] Con access_token, obtener cursos: `GET /api/v1/courses`.
+    - [ ] Filtrar según whitelist de materias piloto (MPR027, etc.).
+    - [ ] Crear registros: `course_inscriptions`, `degree_inscriptions`, `subject_objectives`, `user_weekly_objectives`.
+    - [ ] `INSERT ... ON CONFLICT DO NOTHING` para duplicados.
+    - [ ] Flush de actividades desde Odin.
+    - [ ] Materias piloto: Intro Filosofía, Historia del Derecho, Derecho Constitucional.
+
+    ## Notas técnicas
+
+    - Área: Backend (Cronos).
+
+  </Accordion>
+
+  <Accordion title="INT-007 — Actualizar flujo LTI 1.3 para soportar redirect OAuth" icon="rotate">
+
+    **Épica:** Integraciones / Canvas · **Prioridad:** media · **Estado:** backlog
+
+    ## Historia de usuario
+
+    **Como** el sistema de autenticación de TUNI,
+    **quiero** que el flujo LTI existente soporte redirect al flujo OAuth,
+    **para** integrar la autenticación LTI con la obtención de permisos de Canvas.
+
+    ## Descripción
+
+    Actualización del flujo de autenticación LTI 1.3 existente para que, tras el launch, pueda redirigir al usuario al flujo OAuth2 de Canvas cuando sea necesario obtener permisos adicionales.
+
+    ## Criterios de aceptación
+
+    - [ ] Actualizar `/cronos/v1/auth/canvas/launch` para incluir redirect OAuth.
+    - [ ] Frontend soporta parámetro `redirect` en login.
+    - [ ] Manejo de `code` OAuth desde Canvas en frontend.
+    - [ ] Detección de sesión activa en el widget.
+
+    ## Notas técnicas
+
+    - Área: Backend + Frontend.
+
+  </Accordion>
+
+  <Accordion title="INT-008 — Copy y reglas de engagement de Ada en Canvas" icon="pen">
+
+    **Épica:** Integraciones / Canvas · **Prioridad:** media · **Estado:** backlog
+
+    ## Historia de usuario
+
+    **Como** equipo de producto,
+    **quiero** definir el copy y las reglas de comportamiento de Ada en el widget,
+    **para** asegurar una experiencia consistente y efectiva.
+
+    ## Descripción
+
+    Definición de todos los textos y reglas de comportamiento que Ada utiliza dentro del widget de Canvas, incluyendo presentación, consentimiento, derivación y umbrales de engagement.
+
+    ### Definiciones requeridas
+
+    - Copy de presentación de Ada (primer mensaje).
+    - Copy del modal de consentimiento.
+    - Copy del CTA para derivar a clase.
+    - Umbral de mensajes para trigger de registro (default: 3-4).
+    - Reglas de cuándo sugerir clase completa.
+    - Tono y estilo de Ada en contexto Canvas.
+
+    ## Criterios de aceptación
+
+    - [ ] Copy de presentación de Ada definido.
+    - [ ] Copy del modal de consentimiento definido.
+    - [ ] Copy del CTA de derivación a clase definido.
+    - [ ] Umbral de mensajes para trigger de registro configurado.
+    - [ ] Reglas de sugerencia de clase completa documentadas.
+    - [ ] Tono y estilo de Ada en Canvas especificado.
+
+    ## Notas técnicas
+
+    - Área: UX/Producto.
+
+  </Accordion>
+
+  <Accordion title="INT-009 — Derivación a clase TUNI desde widget" icon="arrow-right">
+
+    **Épica:** Integraciones / Canvas · **Prioridad:** media · **Estado:** backlog
+
+    ## Historia de usuario
+
+    **Como** alumno chateando con Ada en Canvas,
+    **quiero** que Ada me sugiera tomar una clase completa cuando sea relevante,
+    **para** profundizar en el tema con una experiencia de aprendizaje guiada.
+
+    ## Descripción
+
+    Funcionalidad que permite a Ada detectar el momento oportuno para sugerir al estudiante iniciar una clase completa en TUNI, ofreciendo una transición fluida desde el widget de Canvas.
+
+    ## Criterios de aceptación
+
+    - [ ] Ada detecta cuándo es apropiado sugerir clase (según reglas de INT-008).
+    - [ ] CTA con dos opciones: "Empezar clase" / "Continuar aquí".
+    - [ ] "Empezar clase" redirige a interfaz TUNI en la unidad correspondiente.
+    - [ ] Relaciona beneficios de la clase con la consulta actual.
+    - [ ] No insiste si usuario elige "Continuar aquí".
+
+    ## Notas técnicas
+
+    - Área: Frontend + Backend.
+
+  </Accordion>
+
+</AccordionGroup>

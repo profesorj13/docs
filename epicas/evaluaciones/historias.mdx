@@ -1,0 +1,171 @@
+---
+title: "Historias de Usuario"
+description: "Historias de usuario de la épica Evaluaciones (EVAL-001 a EVAL-004)."
+icon: "list"
+---
+
+<Accordion title="EVAL-001 — Pantalla de cierre de evaluación" defaultOpen={false}>
+
+**Épica:** Evaluaciones · **Prioridad:** media · **Estado:** backlog
+
+### Historia de usuario
+
+**Como** estudiante que terminó una evaluación,
+**quiero** ver mi nota, desglose por unidad y áreas de mejora,
+**para** entender mi nivel y decidir qué reforzar.
+
+### Descripción
+
+Pantalla de cierre post-evaluación con:
+
+- **Nota obtenida** (resultado general).
+- **Gráfico por unidad**: puntaje desglosado por cada unidad del módulo.
+- **Áreas fuertes** / **Áreas de mejora**.
+- **Comparación vs evaluación anterior** (si existe un intento previo del mismo módulo).
+
+#### CTAs
+
+- **"Ver detalle"**: navega a revisión pregunta por pregunta con feedback.
+- **"Aprender de mis errores"**: deriva a una clase de refuerzo específica sobre los temas fallados.
+- **"Ir a mi materia"**: cierra y vuelve al dashboard.
+
+### Criterios de aceptación
+
+- [ ] Se muestra nota general de la evaluación.
+- [ ] Gráfico por unidad con puntaje individual.
+- [ ] Secciones "Áreas fuertes" y "Áreas de mejora" basadas en resultados.
+- [ ] Si existe evaluación anterior del mismo módulo, se muestra comparativa.
+- [ ] CTA "Ver detalle" abre navegación pregunta por pregunta (ver EVAL-004).
+- [ ] CTA "Aprender de mis errores" deriva a clase de refuerzo.
+- [ ] CTA "Ir a mi materia" vuelve al dashboard.
+
+### Eventos analíticos
+
+- `evaluation_detail_opened`
+- `learn_from_errors_clicked`
+
+</Accordion>
+
+<Accordion title="EVAL-002 — Historial de evaluaciones" defaultOpen={false}>
+
+**Épica:** Evaluaciones · **Prioridad:** media · **Estado:** backlog
+
+### Historia de usuario
+
+**Como** estudiante,
+**quiero** ver un historial de mis evaluaciones anteriores agrupadas por módulo,
+**para** revisar mi progreso a lo largo del tiempo.
+
+### Descripción
+
+Side panel `EvaluationHistorySidePanel` accesible desde una sección "Ver evaluaciones" en el dashboard. Muestra intentos anteriores agrupados por módulo, con fecha y nota de cada intento.
+
+### Criterios de aceptación
+
+- [ ] Accesible desde el dashboard de materia (sección o botón "Ver evaluaciones").
+- [ ] Se abre como side panel.
+- [ ] Lista agrupada por módulo.
+- [ ] Cada entrada muestra: fecha, nota obtenida.
+- [ ] Click en una entrada abre el detalle/cierre de esa evaluación.
+- [ ] Si no hay evaluaciones, mostrar empty state.
+
+### Eventos analíticos
+
+- `evaluation_history_opened`
+
+</Accordion>
+
+<Accordion title="EVAL-003 — Iniciar evaluación por módulo" defaultOpen={false}>
+
+**Épica:** Evaluaciones · **Prioridad:** media · **Estado:** backlog
+
+### Historia de usuario
+
+**Como** estudiante,
+**quiero** realizar una evaluación optativa de un módulo,
+**para** medir mi dominio antes de un parcial o examen.
+
+### Descripción
+
+Desde la fila "Evaluación Módulo X" en la lista de contenidos del dashboard, el estudiante puede iniciar una evaluación.
+
+#### Reglas
+
+- Las evaluaciones son **optativas** y **no bloquean** el avance.
+- Se realizan a **nivel módulo** (no por unidad) en MVP.
+- Se pueden realizar **múltiples** evaluaciones del mismo módulo.
+- Durante la evaluación: **sin feedback en tiempo real** (simula examen real).
+
+#### Flujo
+
+<Steps>
+  <Step title="Click en la evaluación">
+    Click en "Evaluación Módulo X".
+  </Step>
+  <Step title="Inicia la evaluación">
+    Se inicia la evaluación con preguntas del pool del módulo.
+  </Step>
+  <Step title="Responde las preguntas">
+    El estudiante responde pregunta por pregunta.
+  </Step>
+  <Step title="Cierre">
+    Al finalizar, navega a pantalla de cierre de evaluación.
+  </Step>
+</Steps>
+
+### Criterios de aceptación
+
+- [ ] Se puede iniciar evaluación desde la fila del módulo en el dashboard.
+- [ ] Las preguntas se presentan sin feedback inmediato (sin indicar correcto/incorrecto).
+- [ ] El estudiante puede completar todas las preguntas y enviar.
+- [ ] Al finalizar, se navega a la pantalla de cierre de evaluación.
+- [ ] Se puede realizar más de una evaluación del mismo módulo.
+
+### Eventos analíticos
+
+- `evaluation_started`
+- `evaluation_completed`
+
+</Accordion>
+
+<Accordion title="EVAL-004 — Revisión pregunta por pregunta" defaultOpen={false}>
+
+**Épica:** Evaluaciones · **Prioridad:** media · **Estado:** backlog
+
+### Historia de usuario
+
+**Como** estudiante,
+**quiero** revisar las preguntas de un desafío o evaluación una por una con feedback,
+**para** entender qué respondí bien, qué mal, y aprender de mis errores.
+
+### Descripción
+
+Navegador de preguntas (`QuestionReviewNavigator`) accesible desde:
+
+1. **Cierre de clase** → CTA "Revisar desafío".
+2. **Cierre de evaluación** → CTA "Ver detalle".
+
+#### Comportamiento
+
+- Muestra una pregunta a la vez con:
+  - Enunciado.
+  - Respuesta del estudiante (marcada como correcta/incorrecta).
+  - Respuesta correcta (si aplica).
+  - Feedback explicativo.
+- Navegación: botones "Siguiente" / "Atrás".
+- Al llegar a la última pregunta, opción de cerrar/volver.
+
+### Criterios de aceptación
+
+- [ ] Se accede desde cierre de clase ("Revisar desafío") y desde cierre de evaluación ("Ver detalle").
+- [ ] Muestra una pregunta por vez con respuesta del estudiante y feedback.
+- [ ] Navegación "Siguiente" / "Atrás" funcional.
+- [ ] Indica visualmente si la respuesta fue correcta o incorrecta.
+- [ ] Al terminar la revisión, permite volver al contexto anterior (dashboard o cierre).
+
+### Eventos analíticos
+
+- `challenge_review_started`
+- `challenge_review_next` / `challenge_review_prev`
+
+</Accordion>

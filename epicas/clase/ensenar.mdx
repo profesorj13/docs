@@ -1,0 +1,236 @@
+---
+title: "Enseñar (Teaching Mode)"
+description: "Experiencias de aprendizaje donde el estudiante adquiere o refuerza conocimientos mediante contenido pregenerado o explicaciones dinámicas del tutor con un loop socrático de 3 píldoras."
+icon: "lightbulb"
+---
+
+> Experiencias de aprendizaje donde el estudiante adquiere o refuerza conocimientos mediante contenido pregenerado o explicaciones dinámicas del tutor.
+
+## Descripción
+
+El Modo Enseñar se activa cuando el estudiante necesita aprender un concepto (no tiene conocimiento previo) o reforzar un área donde mostró debilidades en comprobación.
+
+**Dos modalidades:**
+
+<CardGroup cols={2}>
+  <Card title="Con contenido pregenerado" icon="play">
+    Videos y materiales existentes que el tutor presenta y sobre los que responde dudas.
+  </Card>
+  <Card title="Sin contenido pregenerado" icon="message-square">
+    El tutor genera explicaciones dinámicas usando un loop socrático de 3 píldoras.
+  </Card>
+</CardGroup>
+
+## Activación
+
+| Escenario | Trigger | Condición | Acción |
+|-----------|---------|-----------|--------|
+| Desde Momento 1 | Relevamiento detecta sin conocimiento previo | `!tiene_conocimiento_previo && !hay_videos_disponibles` | Si hay video, mostrarlo. Si no, loop socrático |
+| Desde Momento 3 | No superó objetivo en comprobación | `!supero_objetivo && !hay_videos_disponibles` | Refuerzo con video o explicación |
+
+## Flujo general
+
+```
+Relevamiento: alumno sin conocimiento previo
+  -> ¿Hay video disponible?
+    SÍ -> Mostrar video -> Tutor responde dudas -> Comprobación
+    NO -> Generar plan de 3 píldoras (startSession + buildPlan)
+       -> Loop por cada píldora: Explicar -> Preguntar -> Evaluar
+          -> NO aprendió: volver a explicar (sin límite)
+          -> SÍ aprendió: updatePlan, siguiente píldora
+       -> Transición a Comprobación (getActivities)
+```
+
+## Fases del Modo Enseñar
+
+### Fase 1: Generación del plan
+
+Al entrar al modo, el sistema genera un plan de 3 píldoras/ítems a enseñar. El plan se personaliza según:
+
+- El concepto a enseñar (`concept_id`).
+- El nivel del estudiante (1-4).
+- Los errores previos de comprobación (si existen).
+
+**Estructura JSON del plan:**
+
+```json
+{
+  "plan_id": "string",
+  "items": [
+    { "id": 1, "topic": "string", "status": "pending" },
+    { "id": 2, "topic": "string", "status": "pending" },
+    { "id": 3, "topic": "string", "status": "pending" }
+  ]
+}
+```
+
+Cada ítem tiene tres estados posibles: `pending`, `in_progress`, `completed`.
+
+### Fase 2: Loop de enseñanza
+
+Para cada ítem del plan:
+
+<Steps>
+  <Step title="Explicar">
+    El tutor da una explicación del sub-tema usando contenido indexado. Estructura: definición simple → ejemplo concreto → conexión con lo previo.
+  </Step>
+  <Step title="Preguntar">
+    El tutor hace una pregunta socrática para verificar comprensión. Una sola pregunta por turno, que busque elaboración (no sí/no).
+  </Step>
+  <Step title="Evaluar">
+    El tutor evalúa la respuesta del alumno.
+
+    - Si **no aprendió**: re-explicar (sin límite de iteraciones) usando otra analogía, desglosando en partes más pequeñas o partiendo de lo que sí entendió.
+    - Si **aprendió**: llamar a `updatePlan` con `status: "completed"` y pasar al siguiente ítem.
+  </Step>
+</Steps>
+
+### Fase 3: Transición a comprobación
+
+Al completar los 3 ítems del plan, el sistema transiciona automáticamente a actividades de comprobación mediante `getActivities(filter: "all")`.
+
+## Tool calls
+
+| Tool call | Propósito | Input | Output |
+|-----------|-----------|-------|--------|
+| `startSession` | Inicializar sesión de teoría | `{ concept_id, session_type: "theory" }` | Sesión creada con ID |
+| `buildPlan` | Generar plan de 3 píldoras al inicio del modo | `{ concept_id, student_level, concept_content, student_errors? }` | `{ plan_id, items: [{id, topic, status}] }` |
+| `updatePlan` | Marcar ítem como completado | `{ plan_id, item_id, status: "completed" }` | `{ success, plan_status, items_remaining }` |
+| `getConceptInfo` | Obtener contenido indexado del concepto | `{ concept_id }` | `{ concept_name, content: [{source, text}] }` |
+| `getActivities` | Obtener actividades de comprobación para transición | `{ concept_id, student_level }` | Actividades generadas |
+
+### Detalle de `buildPlan`
+
+**Input:**
+```json
+{
+  "concept_id": "string",
+  "student_level": "number (1-4)",
+  "concept_content": "string (del getConceptInfo)",
+  "student_errors": "array (errores de comprobación previa, opcional)"
+}
+```
+
+**Output:**
+```json
+{
+  "plan_id": "string",
+  "items": [
+    { "id": 1, "topic": "string", "status": "pending" },
+    { "id": 2, "topic": "string", "status": "pending" },
+    { "id": 3, "topic": "string", "status": "pending" }
+  ]
+}
+```
+
+Reglas: genera exactamente 3 ítems por plan; si hay errores previos, el plan los considera para personalizar; el plan se persiste en BD para consultas posteriores.
+
+### Detalle de `updatePlan`
+
+**Input:**
+```json
+{
+  "plan_id": "string",
+  "item_id": "number",
+  "status": "completed"
+}
+```
+
+**Output:**
+```json
+{
+  "success": true,
+  "plan_status": "in_progress | completed",
+  "items_remaining": "number"
+}
+```
+
+Si `plan_status` es `completed`, se señaliza para transición a comprobación.
+
+### Detalle de `getConceptInfo`
+
+**Input:**
+```json
+{
+  "concept_id": "string"
+}
+```
+
+**Output:**
+```json
+{
+  "concept_name": "string",
+  "content": [
+    {
+      "source": "string (nombre del libro/material)",
+      "text": "string (contenido resumido, max 300-400 palabras por fuente)"
+    }
+  ]
+}
+```
+
+Trae contenido de TODAS las fuentes indexadas que hablen del concepto, incluyendo identificación de la fuente original (importante para materias como Derecho).
+
+## Modelo SQL
+
+```sql
+-- Tabla de sesiones de teoría (plan de enseñanza)
+CREATE TABLE theory_sessions (
+  id UUID PRIMARY KEY,
+  session_id UUID REFERENCES sessions(id),
+  concept_id UUID NOT NULL,
+  plan JSONB NOT NULL,         -- estructura del plan con items y estados
+  status VARCHAR(20) DEFAULT 'in_progress',  -- in_progress | completed
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+El plan persiste durante toda la sesión de enseñanza. Permite consultas (para que el LLM sepa en qué ítem está) y actualizaciones (marcar ítems como completados).
+
+## Comportamiento del tutor (Momento 4)
+
+Durante enseñanza, el tutor tiene **libertad completa** (a diferencia del Momento 2):
+
+| Hace | NO hace |
+|------|---------|
+| Da explicaciones completas sin restricción | Mencionar el "plan", las "píldoras" o la estructura interna |
+| Conecta con errores previos del alumno | Decir "correcto/incorrecto" de forma tajante |
+| Usa ejemplos y analogías adaptados al perfil | Avanzar sin verificar comprensión |
+| Verifica comprensión con preguntas socráticas | Abrumar con demasiada información de golpe |
+| Promueve autorregulación ("Explicame con tus palabras qué entendiste") | Usar jerga técnica sin explicarla |
+| Re-explica sin límite hasta que el alumno demuestre comprensión | — |
+
+**Longitud de respuestas:**
+- Explicaciones: 4-8 líneas
+- Preguntas socráticas: 1-2 líneas
+- Feedback positivo: 1-2 líneas
+- Re-explicaciones: 3-6 líneas
+
+## Prompt del Modo Enseñar
+
+El prompt del Modo Enseñar incluye las fases descritas arriba con plantillas de mensajes para cada situación. Ver el contenido completo del prompt en [System Prompts](/epicas/clase/prompts).
+
+**Activación desde otros momentos:**
+- **Momento 1:** cuando `available_learning_experiences.length == 0` y el alumno no tiene conocimiento previo.
+- **Momento 3:** cuando el alumno no superó el objetivo y `available_learning_experiences.length == 0`.
+
+**Transición hacia:**
+- **Actividades de Comprobación:** siempre al finalizar los 3 ítems del plan.
+
+## Consideraciones técnicas
+
+<Note>
+  - **Sin límite de iteraciones:** El loop de re-explicación no tiene límite. El tutor sigue intentando hasta que el alumno demuestre comprensión.
+  - **Extended thinking:** Se recomienda activar extended thinking del LLM para la evaluación de respuestas del alumno, ya que requiere razonamiento complejo.
+  - **Persistencia del plan:** El plan se almacena en BD como JSONB. Se consulta en cada turno del loop para que el LLM mantenga contexto.
+  - **Gestión de historial entre momentos:** Al cambiar de momento/prompt, el historial completo de la conversación se pasa al nuevo contexto. El alumno no debe percibir corte de continuidad.
+  - **Contenido indexado:** `getConceptInfo` trae contenido resumido (max 300-400 palabras por fuente) para optimizar tokens.
+  - **Sin optimización prematura:** El loop de enseñanza no tiene límite de tokens por ahora; se optimizará después.
+</Note>
+
+## Referencias
+
+- **Tickets de implementación:** [Historias de Usuario](/epicas/clase/historias)
+- **Figma (flujo Modo Enseñar):** [FigJam](https://www.figma.com/board/sqbowPtDvypUxfX8HmgNUl/Algoritmo-TUNI?node-id=281-1091)
+- **Reunión de referencia:** 13/01/2026 (Juan M., Francisco Conte, Leonardo Cano)

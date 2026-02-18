@@ -1,0 +1,77 @@
+---
+title: "Canvas LMS"
+description: "Widget flotante de Ada (TUNI) embebido en páginas de lectura de Canvas LMS para asistencia contextual durante el estudio."
+icon: "school"
+---
+
+# Sub-épica: Integración Canvas
+
+> Widget flotante de Ada (TUNI) embebido en páginas de lectura de Canvas LMS para asistencia contextual durante el estudio.
+
+## Descripción
+
+La integración de TUNI en Canvas permite que los estudiantes accedan a Ada, su tutora IA, mientras navegan el contenido de sus cursos en Canvas LMS. Representa el **primer punto de contacto** de la mayoría de los usuarios con TUNI. El tutor aparece como un botón flotante en las páginas de lectura, con un flujo de registro diferido (delayed sign-up) para maximizar engagement.
+
+<img src="/images/canvas-widget.png" alt="Ejemplo de inyección del widget de Ada en Canvas LMS" />
+
+## Objetivos
+
+<CardGroup cols={2}>
+  <Card title="Reducir fricción" icon="bolt">
+    Primer contacto disponible sin registro.
+  </Card>
+  <Card title="Asistencia contextual" icon="message">
+    Ayuda en el momento de estudio del contenido.
+  </Card>
+  <Card title="Maximizar conversión" icon="chart-line">
+    Onboarding progresivo hacia clase completa.
+  </Card>
+  <Card title="Contexto automático" icon="location-dot">
+    Detectar cursos, página actual y lectura para respuestas personalizadas.
+  </Card>
+</CardGroup>
+
+## Alcance MVP
+
+### Incluye
+
+- **Widget flotante:** botón en esquina inferior derecha, panel de chat, estados colapsado/expandido.
+- **Flujo de autenticación:** interacción sin cuenta (3-4 mensajes), modal de consentimiento, OAuth2 de Canvas, sincronización de cursos.
+- **Detección de contexto:** código de materia desde URL, módulo/lectura desde hash, whitelist de materias habilitadas.
+- **Integración LTI 1.3:** flujo OIDC, información de usuario y curso.
+- **Materias piloto:** Introducción a la Filosofía, Historia del Derecho, Derecho Constitucional (4 módulos por materia, 4 lecturas por módulo).
+
+### No incluye
+
+<Warning>
+  Los siguientes elementos están fuera del alcance MVP:
+  - Scraping de contenido RISE (limitaciones técnicas).
+  - Historial persistente de conversaciones sin autenticación.
+  - Notificaciones push desde Canvas.
+  - Integración con Canvas Calendar o Assignments API.
+  - Soporte para otras modalidades de contenido (videos, quizzes).
+</Warning>
+
+## Principios de diseño
+
+- **Primera impresión cuenta:** Ada se presenta claramente, respuesta inmediata sin pedir permisos.
+- **Registro diferido:** permitir 3-4 interacciones sin autenticación, trigger tras detectar engagement.
+- **Contexto es clave:** detectar automáticamente materia, módulo y lectura actual.
+- **Call-to-action progresivo:** venta natural de "tomar una clase" cuando sea apropiado.
+
+## Decisiones abiertas
+
+- Variables ENV de Canvas: documentación pendiente de Siglo 21.
+- Acceso a ambiente de pruebas (staging Siglo 21).
+- Umbral de mensajes para trigger de registro.
+- Reglas de cuándo sugerir clase completa.
+- Manejo de IDs de curso que cambian cada turno.
+
+## Referencias
+
+- **Spec detallada:** [Especificación Funcional](/integraciones/canvas/spec)
+- **Documento técnico:** [Documento Técnico de Integración](/integraciones/canvas/doc-tecnico)
+- **Historias de usuario:** [Historias de Usuario (INT-001 a INT-009)](/integraciones/canvas/historias)
+- **Canvas docs:** [OAuth2](https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth) | [Navigation Tools](https://developerdocs.instructure.com/services/canvas/external-tools/lti/placements/file.navigation_tools) | [Custom JS/CSS](https://community.canvaslms.com/t5/Admin-Guide/How-do-I-upload-custom-JavaScript-and-CSS-files-to-an-account/ta-p/253)
+- **LTI:** [IMS Security Framework](https://www.imsglobal.org/spec/security/v1p0/) | [LTI 1.3 Canvas Example](https://doldsimo.github.io/lti-1.3-canvas-lms/)
+- **Épicas relacionadas:** [Contenido](/epicas/contenido/overview), [Dashboard](/epicas/dashboard/overview)

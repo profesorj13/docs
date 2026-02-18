@@ -1,0 +1,94 @@
+---
+title: "Contenido"
+description: "Generación y gestión de experiencias educativas a partir de fuentes bibliográficas indexadas."
+icon: "file-plus"
+---
+
+# Contenido (AI Content Generator)
+
+> Generación y gestión de experiencias educativas a partir de fuentes bibliográficas indexadas.
+
+## Problema
+
+TUNI necesita actividades de comprobación de calidad, alineadas al material bibliográfico de cada materia y a niveles cognitivos progresivos. Generar este contenido manualmente no escala. Se requiere un sistema automatizado que produzca actividades fieles a la fuente y listas para revisión docente.
+
+## Objetivos
+
+<CardGroup cols={2}>
+  <Card title="Indexar contenido bibliográfico" icon="book">
+    Procesamiento automático sobre la estructura curricular de cada materia.
+  </Card>
+  <Card title="Generar actividades de comprobación" icon="list-check">
+    Alineadas a niveles cognitivos (Bloom) y fieles a la fuente.
+  </Card>
+  <Card title="Garantizar calidad pre-docente" icon="shield-check">
+    Actividades claras, autocontenidas, localizadas al contexto argentino.
+  </Card>
+  <Card title="Soportar múltiples tipos de actividad" icon="puzzle-piece">
+    Con carga cognitiva progresiva y generación de imágenes como complemento.
+  </Card>
+</CardGroup>
+
+## Alcance MVP
+
+### Incluye
+
+- **Indexación de fuentes:** procesamiento de PDFs, asignación párrafo a concepto.
+- **Tipos de actividades:** Multiple Choice, Completar oración con chips, Comparar y justificar, Pregunta abierta.
+- **Feedback formativo** por actividad.
+- **Generación de imágenes** como complemento.
+- **Control de calidad pre-docente** (checklist automatizado).
+
+### No incluye
+
+<Warning>
+  Los siguientes elementos están fuera del alcance MVP:
+  - Construir oración con chips (postergado).
+  - Experiencias de aprendizaje en tiempo real (épica Clase).
+  - Flujo de revisión docente (UI/herramientas para el docente revisor).
+</Warning>
+
+## Principios de diseño
+
+- **Fidelidad a la fuente:** toda actividad se deriva estrictamente del material bibliográfico cargado.
+- **Simplicidad y claridad:** enunciados concisos, sin ambigüedad.
+- **Invisibilidad del framework pedagógico:** nunca exponer al alumno conceptos como "Bloom" o "carga cognitiva".
+- **Localización lingüística:** español rioplatense/argentino, terminología del sistema argentino.
+- **Autosuficiencia:** toda actividad es autocontenida, respondible con la información proporcionada.
+
+## Flujo general
+
+<Steps>
+  <Step title="Carga de fuentes">
+    Se cargan fuentes bibliográficas en formato PDF o texto para una materia.
+  </Step>
+  <Step title="Indexación">
+    El LLM recorre cada párrafo y lo asigna a un concepto dentro de la estructura curricular (módulo > unidad > concepto).
+  </Step>
+  <Step title="Contenido indexado">
+    El contenido queda disponible organizado por módulo, unidad y concepto.
+  </Step>
+  <Step title="Generación de actividades">
+    Se generan actividades a demanda, por tipo y nivel cognitivo.
+  </Step>
+  <Step title="Control de calidad pre-docente">
+    Checklist automatizado que verifica calidad antes de aceptar la actividad.
+  </Step>
+  <Step title="Base de datos TUNI">
+    Las actividades aprobadas se incorporan a la base de datos de TUNI.
+  </Step>
+</Steps>
+
+## Decisiones abiertas
+
+- Definición del flujo de revisión docente (UI/herramientas).
+- Activación de "Construir oración con chips" (actualmente postergado).
+- Criterios de evaluación parcial para actividades de construcción.
+- Integración con el flujo de evaluaciones del Dashboard.
+
+## Referencias
+
+- **Spec de actividades:** [Especificaciones de Actividades](/epicas/contenido/specs-actividades)
+- **Spec detallada:** [Especificación Funcional](/epicas/contenido/spec)
+- **Bibliografía pedagógica:** Anderson & Krathwohl (2001), Haladyna, Downing & Rodriguez (2002), Butler (2018).
+- **Épicas relacionadas:** Clase (consume actividades), [DashBoard](/epicas/dashboard/overview) (evaluaciones)

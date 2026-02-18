@@ -1,0 +1,112 @@
+---
+title: "Onboarding"
+description: "Primera experiencia del usuario al ingresar a TUNI: recolección de datos básicos, configuración personalizada y presentación del tutor."
+icon: "user-plus"
+---
+
+## Problema
+
+El estudiante que llega por primera vez a TUNI no tiene contexto sobre la plataforma ni ha proporcionado datos de personalización. Sin un onboarding claro, la experiencia inicial resulta genérica, el tutor no puede adaptar su comunicación y el riesgo de abandono temprano es alto.
+
+## Objetivos
+
+- **Personalizar la experiencia** desde el inicio mediante datos del usuario.
+- **Reducir abandono temprano** con un flujo simple y motivador.
+- **Comunicar valor** de la plataforma antes de la primera clase.
+- **Permitir customización** por cliente (ej: objetivos específicos de Betano).
+- **Facilitar nivelación** para usuarios que buscan experiencia más personalizada desde el día 1.
+
+## Alcance MVP
+
+<CardGroup cols={2}>
+  <Card title="Incluye" icon="check">
+    - **Flujo base** (común para todos los clientes): nombre, rango etario, nivel educativo, intereses (4 pasos).
+    - **Configuración customizable por cliente**: pasos adicionales o modificaciones según cliente.
+      - **Siglo XXI**: elimina paso de nivel educativo, agrega paso motivacional "¿Cómo querés que Tuni te ayude?" (4 pasos totales).
+      - **Betano**: agrega paso "Objetivo" con opciones profesionales (5 pasos totales).
+    - **Post-onboarding — decisión de nivelación**: modal con opción de hacer nivelación (incentivada) o comenzar ya.
+    - **Primera clase con presentación del tutor**: Ada se presenta, explica TUNI y entra al flujo de Clase.
+  </Card>
+  <Card title="No incluye" icon="x">
+    - Selección de materia (ocurre después, en Dashboard).
+    - Configuración de notificaciones.
+    - Integración con calendarios externos.
+    - Onboarding largo con tutorial interactivo.
+    - Gamificación en el onboarding (badges, puntos).
+  </Card>
+</CardGroup>
+
+## Principios de diseño
+
+<CardGroup cols={3}>
+  <Card title="Minimalismo progresivo" icon="minimize">
+    - Una pregunta a la vez (sin abrumar).
+    - Máximo 4-5 pasos antes de llegar a la acción principal.
+    - Copy claro sobre por qué pedimos cada dato.
+  </Card>
+  <Card title="Customización por cliente" icon="sliders">
+    - Base común (nombre, edad, nivel educativo, intereses).
+    - Preguntas opcionales según cliente (ej: objetivos de Betano).
+    - Configuración via admin o variables de entorno.
+  </Card>
+  <Card title="Presentación del tutor como momento clave" icon="sparkles">
+    - Ada debe presentarse con personalidad clara.
+    - Explicar qué es TUNI, cómo funciona y cómo sacarle provecho.
+    - Generar confianza y expectativa positiva.
+  </Card>
+</CardGroup>
+
+## Requerimientos no funcionales
+
+<Warning>
+  El onboarding **NO debe aplicar a usuarios con rol supervisor.** Los supervisores deben saltar el flujo de onboarding completamente.
+</Warning>
+
+## Sub-épicas
+
+| Componente | Descripción |
+|---|---|
+| Flujo base | 4 pasos comunes: nombre, edad, nivel educativo, intereses |
+| Config por cliente | Pasos modificados/adicionales según cliente (ver tabla de clientes abajo) |
+| Decisión nivelación | Modal post-onboarding: nivelación vs comenzar ya |
+| Presentación Ada | Primera clase con intro del tutor y entrada a épica Clase |
+
+## Decisiones abiertas
+
+- ~~Diseño visual definitivo de cada paso (Figma pendiente).~~ Resuelto: [Figma Onboarding](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=394-8499)
+- Copy final de presentación de Ada (iteración con equipo pedagógico).
+- Definir flujo de nivelación completo (cantidad de preguntas, temas, duración).
+- ~~Mecánica de persistencia de datos del onboarding.~~ Resuelto: endpoint `SaveOnboardingData` en tich-cronos (guarda nickname + hobbies, falta age_range y motivation).
+- Manejo de usuarios que ya completaron onboarding (skip o edit profile). Parcialmente resuelto: `GetUserOnboardingStatus` retorna `can_be_onboarded` basado en `WasOnboarded`.
+- Lógica de recomendación de primera clase sin nivelación (default behavior).
+
+## Referencias
+
+- [Spec funcional](/epicas/onboarding/spec) — flujos detallados, pantallas, componentes, configuración por cliente.
+- Decisiones clave (Enero 2026): onboarding configurable, nivelación opcional incentivada, presentación del tutor obligatoria, intereses con propósito comunicado, flujo corto (max 5 pasos).
+
+### Figma
+
+| Recurso | Link |
+|---------|------|
+| Flujo de onboarding completo | [Figma nodo 394:8499](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=394-8499) |
+
+### Tickets Plane
+
+| Ticket | Descripción |
+|--------|-------------|
+| [TUNI-288](https://app.plane.so/educabot/projects/bb12a857-553e-414d-9b4c-d59225c93a4f/work-items/4a1ae50e-434d-4f47-9c43-9696da487a8c) | Implementar Onboarding de recolección de datos del usuario (Siglo XXI) |
+
+### Épicas relacionadas
+
+<CardGroup cols={3}>
+  <Card title="Clase" icon="chalkboard" href="/epicas/clase">
+    Presentación del tutor, flujo de primera clase.
+  </Card>
+  <Card title="Dashboard" icon="layout-dashboard" href="/epicas/dashboard">
+    Punto de llegada post-onboarding.
+  </Card>
+  <Card title="Contenido" icon="book" href="/epicas/contenido">
+    Contenido para nivelación.
+  </Card>
+</CardGroup>

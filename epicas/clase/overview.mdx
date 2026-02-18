@@ -1,0 +1,91 @@
+---
+title: "Clase - Tutoría Adaptativa"
+description: "Experiencia principal de tutoría adaptativa donde el estudiante aprende conceptos a través de un plan personalizado con 4 niveles de dominio."
+icon: "book-open"
+---
+
+> Experiencia principal de tutoría adaptativa donde el estudiante aprende conceptos a través de un plan personalizado.
+
+## Problema
+
+Los estudiantes universitarios enfrentan dificultades para aprender conceptos de forma progresiva y personalizada. No todos parten del mismo nivel ni aprenden al mismo ritmo. Se necesita un tutor que adapte su comportamiento según el perfil de cada estudiante (procrastinación, estrategias de estudio, autoeficacia) y los guíe a través de un plan de aprendizaje con niveles de dominio claros.
+
+## Objetivos
+
+- Guiar al estudiante a través de un plan de aprendizaje basado en conceptos progresivos con 4 niveles de dominio.
+- Adaptar la experiencia según el perfil de autorregulación del estudiante.
+- Alternar entre comprobación (evaluación) y enseñanza según el nivel de confianza y desempeño del estudiante.
+- Proveer feedback formativo que combine refuerzo positivo y orientación constructiva.
+- Gestionar la progresión académica en backend mientras el tutor se enfoca en la interacción pedagógica.
+
+## Alcance MVP
+
+<CardGroup cols={2}>
+  <Card title="Incluye" icon="check">
+    - Flujo de los 4 momentos pedagógicos (inicio, soporte comprobación, fin comprobación, soporte enseñanza)
+    - Plan de conceptos generado por sesión con progresión de niveles
+    - Actividades de comprobación pregeneradas (quiz, ejercicios)
+    - Modo Enseñar con explicaciones completas, videos y contenido pre-generado
+    - Tool calls para obtener actividades, generar/actualizar planes y consultar conceptos
+    - System prompt base con comportamiento diferenciado por momento
+  </Card>
+  <Card title="No incluye" icon="x">
+    - Generación de contenido en tiempo real (depende de la épica Contenido)
+    - Dashboard de progreso del estudiante (épica Dashboard)
+    - Herramientas de supervisión docente (épica Supervisores)
+    - Integración con Canvas LMS (épica Integraciones)
+  </Card>
+</CardGroup>
+
+## Principios de diseño
+
+- **Adaptación al perfil:** El tutor ajusta su comportamiento según el perfil de autorregulación del estudiante.
+- **Método socrático en comprobación (M2):** Durante actividades de evaluación, el tutor nunca revela respuestas. Solo ofrece orientación indirecta.
+- **Explicaciones completas en enseñanza (M4):** En modo enseñar, el tutor puede dar explicaciones detalladas y conectar con errores previos del estudiante.
+- **Feedback 60/40:** Al finalizar comprobación, el feedback es 60% positivo y 40% constructivo.
+- **Llamadas LLM independientes:** Cada interacción es una llamada independiente con contexto inyectado; la progresión se gestiona en backend.
+
+## Sub-épicas
+
+<CardGroup cols={3}>
+  <Card title="Comprobación" icon="check-circle" href="/epicas/clase/comprobacion">
+    Actividades de evaluación (quiz, ejercicios). Estado: En desarrollo.
+  </Card>
+  <Card title="Enseñar" icon="lightbulb" href="/epicas/clase/ensenar">
+    Experiencias de aprendizaje (videos, explicaciones). Estado: En desarrollo.
+  </Card>
+  <Card title="Knowledge Tracking" icon="brain" href="/epicas/clase/knowledge-tracking">
+    Modelo del estudiante, niveles, puntos, plan. Estado: En desarrollo.
+  </Card>
+</CardGroup>
+
+## Decisiones abiertas
+
+<Warning>
+  Las siguientes decisiones de diseño están pendientes de definición:
+
+  - Definir cómo se comporta el sistema cuando no hay contenido pre-generado para un concepto en Modo Enseñar (fallback a explicación del tutor vs. bloqueo).
+  - Criterios exactos para determinar "alta confianza" en el relevamiento inicial del Momento 1.
+  - Cantidad y tipo de actividades mínimas por concepto en comprobación.
+</Warning>
+
+## Referencias
+
+### Figma
+
+| Recurso | Link |
+|---------|------|
+| **Flujo general** | [FigJam - Algoritmo TUNI](https://www.figma.com/board/sqbowPtDvypUxfX8HmgNUl/Algoritmo-TUNI?node-id=1-676&t=bb2r1fsWGA5Ojthi-4) |
+| **Flujos con prompts** | [FigJam - Algoritmo TUNI](https://www.figma.com/board/sqbowPtDvypUxfX8HmgNUl/Algoritmo-TUNI?node-id=275-287) |
+| **Flujo Modo Enseñar** | [FigJam - Modo Enseñar](https://www.figma.com/board/sqbowPtDvypUxfX8HmgNUl/Algoritmo-TUNI?node-id=281-1091) |
+| **Diseños en alta** | [Figma - TUNI V3](https://www.figma.com/design/LBojaTcYAAiFbfE9G6wb7F/TICH-AI--%3E-Tuni-V3?node-id=38-8377) |
+
+### Épicas relacionadas
+
+- **Contenido** — AI Content Generator que alimenta actividades y `getConceptInfo`.
+- **Onboarding** — Captura el perfil de autorregulación que consume Clase.
+
+### Documentación técnica
+
+- [Especificación técnica](/epicas/clase/spec) — Arquitectura de momentos, flujos, tool calls y reglas de comportamiento.
+- [System Prompt Base](/epicas/clase/prompts) — Prompt completo con los 4 momentos.

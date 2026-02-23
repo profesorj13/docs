@@ -48,7 +48,8 @@
               "epicas/clase/ensenar",
               "epicas/clase/knowledge-tracking",
               "epicas/clase/prompts",
-              "epicas/clase/historias"
+              "epicas/clase/historias",
+              "epicas/clase/reportar-actividad"
             ]
           },
           {

@@ -1,0 +1,163 @@
+---
+title: "Reportar Actividad (Alumno)"
+description: "Funcionalidad que permite a los alumnos reportar actividades con problemas durante una clase, seleccionando una causa predefinida."
+icon: "flag"
+---
+
+## Problema
+
+Las actividades de comprobación son generadas por IA y validadas por supervisores, pero pueden contener errores, contenido incorrecto o ser irrelevantes para la materia. Actualmente los supervisores pueden reportar actividades desde su panel de curaduría (ver [Supervisores - Spec](/epicas/supervisores/spec)), pero **los alumnos no tienen forma de señalar problemas** con las actividades que encuentran durante una clase.
+
+Los alumnos son los principales consumidores de estas actividades y los primeros en detectar problemas. Sin un canal de reporte, las actividades defectuosas permanecen activas hasta que un supervisor las revise manualmente.
+
+## Objetivos
+
+<CardGroup cols={2}>
+  <Card title="Canal de feedback rápido" icon="bolt">
+    Permitir al alumno reportar un problema en menos de 3 toques, sin interrumpir el flujo de la clase.
+  </Card>
+  <Card title="Categorización de reportes" icon="tags">
+    Recopilar la causa del reporte de forma estructurada para facilitar la gestión posterior.
+  </Card>
+</CardGroup>
+
+## Alcance MVP
+
+### Incluye
+
+- Botón "Reportar" visible durante la actividad de comprobación.
+- Modal con opciones predefinidas de causa del reporte.
+- Registro del reporte asociado a la actividad, con su causa.
+- Toast de confirmación al alumno.
+
+### No incluye (futuro)
+
+- Lógica de ocultamiento automático de actividades según cantidad/tipo de reportes.
+- Panel de gestión de reportes para supervisores.
+- Posibilidad de agregar texto libre (comentario) al reporte.
+- Notificaciones a supervisores cuando una actividad acumula reportes.
+
+## Usuarios
+
+| Rol | Acción | Contexto |
+|-----|--------|----------|
+| **Alumno** | Reporta una actividad seleccionando una causa | Durante una actividad de comprobación en clase |
+
+## Flujo principal
+
+<Steps>
+  <Step title="Alumno ve una actividad con problemas">
+    Durante una sesión de comprobación, el alumno detecta un problema con la actividad actual (error, contenido incorrecto, actividad no pertinente).
+  </Step>
+  <Step title="Toca 'Reportar'">
+    El alumno toca el botón "Reportar" ubicado debajo de la actividad (misma posición que en la vista de supervisores).
+  </Step>
+  <Step title="Selecciona la causa">
+    Se abre un modal centrado en pantalla con el título **"Reportar actividad"** y un subtítulo: *"¿Qué problema encontraste?"*.
+
+    El modal presenta 3 opciones de selección única:
+
+    | # | Opción | Descripción interna |
+    |---|--------|---------------------|
+    | 1 | Actividad con errores | La actividad tiene errores de formato, ortografía, opciones incorrectas, etc. |
+    | 2 | No es pertinente a la materia | La actividad no se relaciona con los contenidos de la materia o unidad |
+    | 3 | Contenido incorrecto | La información presentada en la actividad es factualmente incorrecta |
+  </Step>
+  <Step title="Se cierra el modal y registra el reporte">
+    Al tocar una opción, el modal se cierra inmediatamente (sin necesidad de confirmar). Se muestra un toast de confirmación: **"Reporte enviado. Gracias por ayudar a mejorar esta actividad."**
+
+    La actividad queda con el reporte registrado, incluyendo:
+    - ID de la actividad
+    - ID del alumno
+    - Causa seleccionada (1, 2 o 3)
+    - Timestamp
+  </Step>
+  <Step title="El alumno continúa con la clase">
+    El flujo de comprobación continúa normalmente. El alumno puede seguir respondiendo la actividad o avanzar a la siguiente.
+  </Step>
+</Steps>
+
+## Pantalla / Componentes
+
+### Botón "Reportar"
+
+- Ubicación: debajo de la actividad, alineado a la izquierda (similar a la vista de supervisores).
+- Estilo: texto + ícono de bandera, estilo terciario/link (baja prominencia para no distraer del flujo principal).
+- Visible durante toda la actividad de comprobación.
+
+### Modal de reporte
+
+| Elemento | Detalle |
+|----------|---------|
+| Título | "Reportar actividad" |
+| Subtítulo | "¿Qué problema encontraste?" |
+| Opciones | 3 radio buttons / lista seleccionable con las causas |
+| Cierre | Al tocar una opción se cierra automáticamente. También se puede cerrar con la X (sin enviar reporte). |
+| Botón de confirmación | **No hay.** La selección de una opción envía el reporte y cierra el modal. |
+
+<Note>
+  **Diferencia con la versión de supervisores:** La versión de supervisores tiene un campo de texto libre (textarea) y botón "Enviar". La versión de alumnos usa opciones predefinidas con cierre automático, priorizando velocidad y mínima fricción sobre detalle del reporte.
+</Note>
+
+### Toast de confirmación
+
+- Mensaje: "Reporte enviado. Gracias por ayudar a mejorar esta actividad."
+- Duración: 3 segundos, auto-dismiss.
+- Posición: inferior de la pantalla.
+
+## Modelo de datos
+
+### ActivityReport
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `id` | UUID | Identificador único del reporte |
+| `activity_id` | UUID | Actividad reportada |
+| `student_id` | UUID | Alumno que reportó |
+| `reason` | enum | `activity_errors` \| `not_relevant` \| `incorrect_content` |
+| `created_at` | timestamp | Fecha y hora del reporte |
+
+<Warning>
+  **Decisión pendiente:** Definir qué sucede cuando una actividad acumula múltiples reportes. Opciones a evaluar:
+  - Ocultar automáticamente tras N reportes del mismo tipo.
+  - Marcar para revisión en el panel de supervisores.
+  - Combinación de ambas según el tipo de error.
+  - Umbral diferente por tipo de causa.
+
+  Esta lógica se definirá en una iteración posterior, una vez que haya datos reales de uso.
+</Warning>
+
+## Reglas de negocio
+
+- Un alumno puede reportar una actividad **una sola vez**. Si ya la reportó, el botón "Reportar" no se muestra o aparece deshabilitado.
+- El reporte **no afecta** el flujo de la clase ni los puntos del alumno.
+- El reporte **no cambia** la actividad para otros alumnos (por ahora).
+- No se requiere autenticación adicional para reportar (el alumno ya está autenticado en la sesión).
+
+## Consideraciones técnicas
+
+<Accordion title="Endpoint">
+  Crear un endpoint `POST /api/activities/{activity_id}/reports` que reciba `{ reason: string }` y persista el reporte. Debe validar que el alumno no haya reportado la misma actividad previamente (409 Conflict si ya existe).
+</Accordion>
+
+<Accordion title="Idempotencia">
+  Si el alumno intenta reportar la misma actividad dos veces (por ejemplo, por un error de red y reintento), el backend debe manejar el caso de forma idempotente y no crear un reporte duplicado.
+</Accordion>
+
+<Accordion title="Relación con curaduría de contenido">
+  Los reportes de alumnos alimentarán la métrica "Actividades pendientes de revisión" en el [dashboard de supervisores](/epicas/supervisores/spec). La integración se realizará en una iteración posterior.
+</Accordion>
+
+## Métricas
+
+| Métrica | Descripción | Uso |
+|---------|-------------|-----|
+| Reportes por actividad | Cantidad de reportes acumulados por cada actividad | Identificar actividades problemáticas |
+| Distribución por causa | Proporción de reportes por cada tipo de causa | Entender la naturaleza de los problemas |
+| Tasa de reporte | Porcentaje de sesiones en las que el alumno reporta al menos una actividad | Monitorear calidad general del contenido |
+
+## Referencias
+
+- **Feature de supervisores:** [Supervisores - Spec](/epicas/supervisores/spec) (versión con texto libre para supervisores)
+- **Actividades de comprobación:** [Comprobación](/epicas/clase/comprobacion)
+- **Generación de contenido:** [Contenido](/epicas/contenido/overview)

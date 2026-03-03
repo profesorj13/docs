@@ -1,0 +1,71 @@
+---
+title: "Framework de métricas"
+description: "North Star metric y framework de métricas en capas para medir el éxito de TUNI."
+icon: "chart-mixed"
+---
+
+> **Última actualización:** Febrero 2026
+> **Estado:** En construcción
+
+<Warning>
+  Esta página está en proceso de desarrollo. El framework está definido a nivel conceptual; el tracking plan detallado está siendo incorporado.
+</Warning>
+
+## North Star: DAU
+
+**Daily Active Users** — la cantidad de estudiantes que usan TUNI al menos una vez por día.
+
+¿Por qué DAU y no otra métrica?
+- Si el estudiante vuelve todos los días, está aprendiendo
+- Si está aprendiendo, hay retención
+- Si hay retención, hay negocio
+
+Todas las decisiones de producto deben poder responder: **"¿esto hace que más estudiantes vuelvan mañana?"**
+
+---
+
+## Framework en capas
+
+El framework organiza las métricas en 3 niveles, de lo más estratégico a lo más operativo:
+
+### Nivel 1 — Métricas estratégicas
+
+Las categorías macro que alimentan DAU:
+
+| Categoría | Pregunta que responde |
+|-----------|----------------------|
+| **Alcance** | ¿Cuántos estudiantes conocen y acceden a TUNI? |
+| **Activación** | ¿Cuántos completan su primera clase? |
+| **Engagement** | ¿Con qué frecuencia e intensidad usan la plataforma? |
+| **Retención** | ¿Cuántos vuelven después de la primera semana? ¿Y después del primer mes? |
+| **Negocio** | ¿Se traduce en valor para las instituciones? |
+
+### Nivel 2 — Métricas específicas
+
+Métricas concretas que alimentan cada categoría de Nivel 1.
+
+<Accordion title="Ejemplo: Engagement">
+  - Clases completadas por semana
+  - Tiempo promedio por sesión
+  - Interacciones con Ada por clase
+  - Uso de funciones sociales (futuro)
+  - Racha diaria activa
+</Accordion>
+
+<Note>
+  **TO-DO:** Definir las métricas de Nivel 2 para cada categoría. Trabajo en progreso con el equipo de producto y datos.
+</Note>
+
+### Nivel 3 — Eventos trackeables
+
+Qué eventos concretos trackear en el producto para alimentar las métricas de Nivel 2.
+
+<Note>
+  **TO-DO:** El tracking plan detallado está en proceso de incorporación. El [plan de Mixpanel actual](/mixpanel-tracking) cubre los eventos implementados hasta ahora.
+</Note>
+
+---
+
+## Tracking plan actual
+
+El tracking de eventos implementado se encuentra en el [plan de tracking de Mixpanel](/mixpanel-tracking). Este plan cubre los eventos de la versión actual del producto (clase, dashboard, onboarding) y se irá extendiendo a medida que se incorporen nuevas épicas (perfil, comunidad, mobile).

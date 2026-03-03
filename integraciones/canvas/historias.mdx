@@ -1,12 +1,12 @@
 ---
 title: "Historias de Usuario"
-description: "Historias de usuario de la integración Canvas LMS (INT-001 a INT-009): widget flotante, detección de contexto, autenticación, engagement y derivación a clase."
+description: "Historias de usuario de la integración Canvas LMS (INT-001 a INT-013): widget flotante, detección de contexto, autenticación, engagement, derivación a clase, mapeo de estructura, comportamiento por nivel y conversación continua."
 icon: "list"
 ---
 
 # Historias de Usuario — Integración Canvas
 
-Todas las historias de usuario de la sub-épica Canvas LMS (INT-001 a INT-009).
+Todas las historias de usuario de la sub-épica Canvas LMS (INT-001 a INT-013).
 
 <AccordionGroup>
 
@@ -271,6 +271,139 @@ Todas las historias de usuario de la sub-épica Canvas LMS (INT-001 a INT-009).
     ## Notas técnicas
 
     - Área: Frontend + Backend.
+
+  </Accordion>
+
+  <Accordion title="INT-010 — Mapeo interno de estructura módulos/lecturas para widget Canvas" icon="sitemap">
+
+    **Épica:** Integraciones / Canvas · **Prioridad:** alta · **Estado:** backlog
+    **Jira:** [TUNI-964](https://aula-educabot.atlassian.net/browse/TUNI-964)
+
+    ## Historia de usuario
+
+    **Como** el widget de Ada,
+    **quiero** tener acceso a un mapeo de la estructura de cada materia (módulos, lecturas, nombres y URLs),
+    **para** poder construir hipervínculos navegables y orientar al alumno hacia contenido específico.
+
+    ## Descripción
+
+    Estructura de datos que mapea, por cada materia habilitada, sus módulos y lecturas con nombre y fragmento de URL en Canvas. Es prerequisito para que Ada pueda generar links clicables y dar overviews en los niveles Curso y Módulo.
+
+    ## Criterios de aceptación
+
+    - [ ] Definir estructura de datos del mapeo (materia → módulos → lecturas con nombre, hash de URL y orden).
+    - [ ] Cargar datos para las 3 materias piloto (4 módulos x 4 lecturas cada una).
+    - [ ] El widget puede consultar el mapeo dado un código de materia y obtener la lista de módulos/lecturas.
+    - [ ] Las URLs generadas son válidas y navegan correctamente dentro de Canvas (formato `/courses/{course_id}/pages/modulos#{hash}`).
+    - [ ] El mapeo es mantenible: se puede actualizar sin recompilar el widget.
+
+    ## Notas técnicas
+
+    - Área: Frontend + Datos.
+    - Dependencia bloqueante para INT-012.
+    - Dependencia parcial para INT-011.
+
+  </Accordion>
+
+  <Accordion title="INT-011 — Comportamiento del widget a nivel Curso" icon="house">
+
+    **Épica:** Integraciones / Canvas · **Prioridad:** media · **Estado:** backlog
+    **Jira:** [TUNI-965](https://aula-educabot.atlassian.net/browse/TUNI-965)
+
+    ## Historia de usuario
+
+    **Como** alumno navegando el home de un curso habilitado en Canvas,
+    **quiero** que Ada esté disponible para orientarme sobre la materia y dirigirme a un módulo o lectura,
+    **para** saber por dónde empezar a estudiar.
+
+    ## Descripción
+
+    Cuando el alumno está en el home de un curso habilitado (sin haber entrado a un módulo o lectura específica), Ada se presenta como orientadora motivacional. Responde preguntas generales sobre la materia y desde el primer intercambio sugiere entrar a un módulo o lectura concreta.
+
+    ### Mensaje condicional al expandir
+
+    - **Sin token almacenado en el front (primera vez):** "Hola! Soy Ada, tu tutora para [Materia]. ¿En qué tema estás trabajando? Puedo ayudarte a arrancar."
+    - **Con token almacenado (visita recurrente):** "Hola de nuevo! ¿En qué módulo querés trabajar hoy?"
+
+    La presencia del token en el front determina si es primera visita o no.
+
+    ## Criterios de aceptación
+
+    - [ ] El widget se renderiza en el home del curso si el curso está en la whitelist.
+    - [ ] Al expandir, Ada muestra un primer mensaje adaptado según presencia de token almacenado en el front (primera vez vs. recurrente).
+    - [ ] Ada responde preguntas generales sobre la materia de forma breve y motivacional.
+    - [ ] Ante cualquier consulta temática, Ada responde brevemente y sugiere entrar a la lectura correspondiente (con link si INT-010 está disponible).
+    - [ ] Ada da un overview de la estructura de la materia (módulos y temas principales) si el alumno lo solicita.
+    - [ ] El tono es cálido, motivacional y orientado a la acción.
+    - [ ] La derivación a módulo/lectura ocurre desde el primer intercambio, no espera múltiples turnos.
+
+    ## Notas técnicas
+
+    - Área: Frontend + Prompt engineering.
+    - Depende parcialmente de INT-010 (para links; sin mapeo, Ada sugiere pero sin hipervínculo).
+
+  </Accordion>
+
+  <Accordion title="INT-012 — Comportamiento del widget a nivel Módulo con navegación" icon="folder-open">
+
+    **Épica:** Integraciones / Canvas · **Prioridad:** baja · **Estado:** backlog
+    **Jira:** [TUNI-966](https://aula-educabot.atlassian.net/browse/TUNI-966)
+
+    ## Historia de usuario
+
+    **Como** alumno viendo la lista de lecturas de un módulo en Canvas,
+    **quiero** que Ada me dé un overview del módulo y me presente las lecturas como links navegables,
+    **para** elegir por dónde empezar y entrar directamente desde el chat.
+
+    ## Descripción
+
+    Cuando el alumno está a nivel de módulo, Ada actúa como guía de estudio con navegación activa. Ofrece un overview del módulo y presenta las lecturas como hipervínculos clicables que navegan dentro de Canvas. El foco es lograr que el alumno entre a una lectura.
+
+    ## Criterios de aceptación
+
+    - [ ] El widget detecta que el alumno está a nivel módulo (URL sin hash de lectura específica).
+    - [ ] Al expandir, Ada muestra el nombre del módulo y ofrece un overview de los temas que cubre.
+    - [ ] Ada presenta la lista de lecturas del módulo como hipervínculos clicables dentro del chat.
+    - [ ] Los hipervínculos navegan correctamente a la lectura correspondiente dentro de Canvas.
+    - [ ] Ante consultas temáticas, Ada responde brevemente y linkea a la lectura que cubre ese tema.
+    - [ ] Si el alumno pregunta "¿de qué se trata este módulo?", Ada da un resumen y la lista de lecturas con links.
+    - [ ] El tono es directo, servicial, orientado a la navegación.
+
+    ## Notas técnicas
+
+    - Área: Frontend + Prompt engineering.
+    - Depende de INT-010 (mapeo de estructura para construir hipervínculos).
+
+  </Accordion>
+
+  <Accordion title="INT-013 — Conversación continua entre niveles de navegación" icon="arrows-left-right">
+
+    **Épica:** Integraciones / Canvas · **Prioridad:** media · **Estado:** backlog
+    **Jira:** [TUNI-967](https://aula-educabot.atlassian.net/browse/TUNI-967)
+
+    ## Historia de usuario
+
+    **Como** alumno navegando entre niveles de un curso en Canvas,
+    **quiero** que Ada mantenga el hilo de la conversación cuando paso del home del curso a un módulo o a una lectura,
+    **para** no perder el contexto de lo que estábamos hablando.
+
+    ## Descripción
+
+    Cuando el alumno navega entre niveles (Curso → Módulo → Lectura), el widget detecta el cambio de contexto via URL y Ada mantiene la conversación existente, agregando un mensaje de transición que reconoce el nuevo nivel sin perder el hilo.
+
+    ## Criterios de aceptación
+
+    - [ ] El widget detecta cambios de nivel de navegación (cambios en la URL) sin perder el historial del chat.
+    - [ ] Al cambiar de nivel, Ada agrega un mensaje de transición contextual (ej: "Veo que entraste al Módulo 3...").
+    - [ ] El historial de mensajes previos se mantiene visible y scrolleable.
+    - [ ] La transición es natural: Ada conecta lo que se venía hablando con el nuevo contexto.
+    - [ ] Funciona en las 3 transiciones: Curso → Módulo, Módulo → Lectura, Curso → Lectura.
+    - [ ] Si el alumno vuelve a un nivel superior (ej: Módulo → Curso), Ada también transiciona sin perder el hilo.
+    - [ ] El widget escucha cambios de URL (hashchange / popstate / MutationObserver) para detectar navegación dentro de Canvas.
+
+    ## Notas técnicas
+
+    - Área: Frontend.
 
   </Accordion>
 

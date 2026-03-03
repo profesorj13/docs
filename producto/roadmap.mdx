@@ -1,0 +1,166 @@
+---
+title: "Roadmap y estado del producto"
+description: "Estado real de todas las épicas de TUNI, prioridades vigentes y Sprint 31."
+icon: "road"
+---
+
+> **Última actualización:** Marzo 2026
+
+## Norte de producto
+
+Todas las decisiones de priorización están orientadas a maximizar **DAU (Daily Active Users)**. Si los estudiantes vuelven todos los días, el producto funciona. El roadmap se organiza en fases según su impacto en adopción y retención.
+
+→ [Framework de métricas](/producto/metricas)
+
+---
+
+## Resumen por épica
+
+| Épica | Estado | Descripción |
+|-------|--------|-------------|
+| **Integración Canvas** | 🟢 Lanzado | Canvas LMS operativo (widget + OAuth + LTI) |
+| **Onboarding** | 🟢 Lanzado | Datos, Product Tour y nivelación completos |
+| **Clase** | 🟢 Lanzado | Core pedagógico completo — Objetivo, Plan y Tiempo |
+| **Dashboard** | 🟢 Mayormente lanzado | Estructura y navegación listas; UX features próximos |
+| **Supervisores** | 🟢 Mayormente lanzado | Panel base operativo |
+| **Contenido** | 🟢 Mayormente lanzado | Indexación lista; pendiente generación de videos |
+| **Plataforma** | 🟡 En desarrollo | White-labeling y feature flags por tenant |
+| **Mobile** | 🟠 Próximo | Responsive web + PWA |
+| **WhatsApp** | 🟣 Horizonte | Canal de consultas con Ada vía WA Business API |
+| **Perfil** | 🟣 Horizonte | Hub de identidad, puntos, nivel y customización |
+| **Desafíos** | 🟣 Horizonte | Competencia social, rankings y duelos |
+| **Evaluaciones** | 🟣 Horizonte | Evaluaciones optativas por módulo |
+
+---
+
+## Estado del producto
+
+<Tabs>
+  <Tab title="Lanzado" icon="circle-check">
+    Funcionalidades en producción, usándose activamente.
+
+    <CardGroup cols={2}>
+      <Card title="Canvas LMS" icon="plug" color="#16a34a" href="/integraciones/canvas/overview">
+        Integración completa: widget de chat anónimo, autenticación OAuth, provisión LTI 1.3. Operativo en clientes actuales.
+      </Card>
+      <Card title="Onboarding" icon="door-open" color="#16a34a" href="/epicas/onboarding/overview">
+        Flujo completo: registro de preferencias, presentación de Ada, product tour y nivelación inicial.
+      </Card>
+      <Card title="Clase" icon="chalkboard-teacher" color="#16a34a" href="/epicas/clase/overview">
+        Core pedagógico completo: objetivo de clase, plan de sesión, tiempo disponible y flujo de tutoría adaptativa con Ada.
+      </Card>
+      <Card title="Dashboard" icon="gauge" color="#16a34a" href="/epicas/dashboard/overview">
+        Estructura y navegación de materias, módulos y unidades. UX features próximos (métricas, racha, side sheet).
+      </Card>
+      <Card title="Supervisores" icon="users" color="#16a34a" href="/epicas/supervisores/overview">
+        Panel base operativo para docentes y stakeholders. Seguimiento de cohortes y gestión de contenido.
+      </Card>
+      <Card title="Contenido" icon="book-open" color="#16a34a" href="/epicas/contenido/overview">
+        Indexación de bibliografía y generación de actividades. Pendiente: generación de videos.
+      </Card>
+    </CardGroup>
+  </Tab>
+
+  <Tab title="En desarrollo" icon="code">
+    Features actualmente en construcción.
+
+    <CardGroup cols={2}>
+      <Card title="Plataforma — White-labeling" icon="palette" color="#ca8a04">
+        Identidad de marca por cliente: logo, colores, nombre de plataforma y favicon personalizables por tenant (PLAT-001).
+      </Card>
+      <Card title="Plataforma — Feature flags" icon="toggle-on" color="#ca8a04">
+        Sistema de feature flags por tenant para activar/desactivar módulos según necesidades del cliente (PLAT-002).
+      </Card>
+    </CardGroup>
+  </Tab>
+
+  <Tab title="Próximo" icon="arrow-right">
+    Priorizado para los próximos sprints.
+
+    <CardGroup cols={2}>
+      <Card title="Mobile" icon="mobile" color="#ea580c" href="/epicas/mobile/overview">
+        Responsive web + PWA. Adaptar la experiencia completa a dispositivos móviles — el público es joven y mobile-first.
+      </Card>
+      <Card title="Dashboard UX" icon="chart-line" color="#ea580c" href="/epicas/dashboard/overview">
+        Métricas semanales, racha diaria, side sheet de unidad y tutor flotante. Mejoras de engagement y navegación.
+      </Card>
+      <Card title="Clase — Nuevos flujos" icon="sparkles" color="#ea580c" href="/epicas/clase/overview">
+        Estudiar unidad específica, cerrar clase sin terminar, reportar actividades. Completar los flujos del core pedagógico.
+      </Card>
+    </CardGroup>
+  </Tab>
+
+  <Tab title="Horizonte" icon="telescope">
+    En el roadmap a futuro. Se priorizan según tracción y demanda.
+
+    <CardGroup cols={2}>
+      <Card title="Clase — Modos avanzados" icon="graduation-cap" color="#9333ea" href="/epicas/clase/overview">
+        Repaso, desempeño intensivo, tutor personalizado, historial conversacional. Modos de estudio diferenciados según contexto.
+      </Card>
+      <Card title="Perfil" icon="id-card" color="#9333ea" href="/epicas/perfil/overview">
+        Hub de identidad del estudiante: puntos, nivel, customización cosmética (mascotas, accesorios, marcos). Motor de progresión.
+      </Card>
+      <Card title="Desafíos" icon="trophy" color="#9333ea" href="/epicas/comunidad/overview">
+        Competencia social: duelos, rankings, desafíos grupales. El driver de retención más fuerte para el público universitario.
+      </Card>
+      <Card title="WhatsApp" icon="message" color="#9333ea">
+        Canal de consultas con Ada vía WhatsApp Business API. El alumno hace consultas rápidas desde la app que ya usa.
+      </Card>
+      <Card title="Evaluaciones" icon="circle-check" color="#9333ea" href="/epicas/evaluaciones/overview">
+        Evaluaciones optativas por módulo. Su mayor valor está atado a instancias de parciales y finales.
+      </Card>
+    </CardGroup>
+  </Tab>
+</Tabs>
+
+---
+
+## En foco: Sprint 31
+
+> Sprint activo — Marzo 2026. 15 historias en definición.
+
+### Prioridad alta
+
+| ID | Historia | Épica |
+|----|----------|-------|
+| DASH-010 | Side sheet detalle de unidad | Dashboard |
+| DASH-012 | TUNI en mobile | Dashboard |
+| CLS-220 | Estudiar una unidad específica | Clase |
+| CLS-221 | Cerrar clase sin terminar (alert dialog) | Clase |
+| PLAT-001 | Ambiente con identidad de marca del cliente | Plataforma |
+| PLAT-002 | Ambiente con funcionalidades a medida | Plataforma |
+
+### Prioridad media
+
+| ID | Historia | Épica |
+|----|----------|-------|
+| DASH-007 | Métricas semanales ("Esta semana") | Dashboard |
+| DASH-008 | Racha diaria (gamificación mínima) | Dashboard |
+| DASH-013 | Tutor flotante para consultas generales | Dashboard |
+| CLS-222 | Ocultar actividades reportadas | Clase |
+| CLS-223 | Tutor ayuda a repasar temas | Clase |
+| CLS-224 | Modo desempeño (estudio intensivo) | Clase |
+| CLS-225 | Tutor que sepa de mí — preferencias e historial | Clase |
+| INT-014 | Widget se acuerde de mí | Integraciones |
+
+### Prioridad baja
+
+| ID | Historia | Épica |
+|----|----------|-------|
+| INT-015 | Tutor disponible en WhatsApp | Integraciones |
+
+---
+
+## Criterio de priorización
+
+| Criterio | Descripción |
+|----------|-------------|
+| **Impacto en DAU** | ¿Cuánto contribuye a que los estudiantes vuelvan todos los días? |
+| **Público joven** | ¿Se alinea con los hábitos del estudiante universitario (mobile-first, social, visual)? |
+| **Dependencias** | ¿Puede avanzar independientemente o depende de otra épica? |
+| **Esfuerzo vs. valor** | ¿El esfuerzo de implementación se justifica con el valor entregado? |
+| **Clientes actuales** | ¿Es un pedido o necesidad de los clientes institucionales activos? |
+
+<Note>
+  Las épicas nuevas (Mobile, Perfil, Desafíos, Plataforma, WhatsApp) se suman al trabajo en curso de las épicas existentes (Clase, Dashboard, Onboarding, Contenido, Supervisores). No las reemplazan — se complementan.
+</Note>

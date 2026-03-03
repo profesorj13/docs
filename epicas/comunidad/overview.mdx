@@ -1,0 +1,97 @@
+---
+title: "Comunidad"
+description: "Interacción social entre estudiantes: compañeros, rankings, desafíos y competencia grupal."
+icon: "users"
+---
+
+> **Estado:** Definición inicial
+> **Fuente:** Reunión de priorización Juan + Ro (19/02/2026)
+> **Prioridad:** #3 en [roadmap](/producto/roadmap)
+
+## Problema
+
+El estudiante usa TUNI de forma aislada. No ve a sus compañeros, no puede compararse, y no tiene motivos sociales para volver. En un público universitario joven, la competencia social y la pertenencia a un grupo son drivers de retención clave que hoy no existen.
+
+## Objetivos
+
+- **Crear conexión social** entre estudiantes de un mismo curso.
+- **Generar retención** a través de competencia sana y desafíos.
+- **Aprovechar dinámicas grupales** (comisiones, cursos) como unidad de comunidad.
+- **Facilitar viralidad** orgánica (compartir desafíos, invitar compañeros).
+
+## Funcionalidades propuestas
+
+### Compañeros
+
+Lista automática de compañeros por curso — sin necesidad de agregar manualmente. Si estás inscripto en "Economía I - Comisión 3", ves a tus compañeros de esa comisión.
+
+### Ranking
+
+Ranking por puntos dentro del curso. Visible en el perfil y en la sección de comunidad.
+
+### Desafíos / Duelos
+
+Desafíos asincrónicos entre estudiantes:
+- Un estudiante lanza un desafío sobre un tema
+- El otro responde cuando puede (asincrónico)
+- Se comparan resultados
+
+<Note>
+  Los desafíos son asincrónicos para no depender de que ambos estén conectados al mismo tiempo.
+</Note>
+
+### Competencia grupal
+
+Competencia entre comisiones de una misma materia. "¿Qué comisión domina más el módulo de Microeconomía?"
+
+### Notificaciones
+
+- **Campanita** dentro de la plataforma
+- **Push notifications** (requiere mobile/PWA)
+- Tipos: desafío recibido, resultado de duelo, ranking semanal, actividad de compañeros
+
+### Viralidad
+
+Compartir desafíos vía **WhatsApp** con deep link que lleva directo al desafío en TUNI. Reduce fricción para invitar compañeros que todavía no usan la plataforma.
+
+## Alcance (a definir)
+
+<CardGroup cols={2}>
+  <Card title="Ideas incluidas" icon="check">
+    - Lista de compañeros automática por curso
+    - Ranking por puntos
+    - Desafíos asincrónicos entre estudiantes
+    - Competencia grupal por comisiones
+    - Notificaciones (campanita + push)
+    - Compartir desafíos vía WhatsApp (deep link)
+  </Card>
+  <Card title="Por definir" icon="circle-question">
+    - Diseño UX de cada funcionalidad
+    - Mecánica exacta de desafíos (tipos de preguntas, duración)
+    - Privacidad y visibilidad del ranking
+    - Moderación de interacciones
+    - Estrategia de notificaciones (frecuencia, opt-in/out)
+  </Card>
+</CardGroup>
+
+## Dependencias
+
+| Dirección | Épica | Relación |
+|-----------|-------|----------|
+| Depende de | [Perfil](/epicas/perfil/overview) | Necesitás identidad (avatar, puntos) antes de interacción social |
+| Relacionada | [Mobile](/epicas/mobile/overview) | Push notifications requieren PWA/mobile |
+| Relacionada | [Dashboard](/epicas/dashboard/overview) | Notificaciones y acceso a comunidad desde el dashboard |
+
+## Épicas relacionadas
+
+<CardGroup cols={3}>
+  <Card title="Perfil" icon="user" href="/epicas/perfil/overview">
+    Identidad del estudiante.
+  </Card>
+  <Card title="Mobile" icon="mobile" href="/epicas/mobile/overview">
+    Experiencia mobile-first.
+  </Card>
+  <Card title="Dashboard" icon="gauge" href="/epicas/dashboard/overview">
+    Panel de progreso del estudiante.
+  </Card>
+</CardGroup>

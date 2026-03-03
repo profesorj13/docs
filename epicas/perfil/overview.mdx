@@ -1,0 +1,85 @@
+---
+title: "Perfil de usuario"
+description: "Hub de identidad del estudiante: puntos, nivel y customización como recompensa."
+icon: "user"
+---
+
+> **Estado:** Definición inicial
+> **Fuente:** Reunión de priorización Juan + Ro (19/02/2026)
+> **Prioridad:** #2 en [roadmap](/producto/roadmap)
+
+## Problema
+
+El estudiante usa TUNI pero no tiene un lugar donde verse reflejado. Los puntos y niveles ya existen internamente (el sistema los calcula), pero no son visibles para el usuario. Sin perfil, no hay sentido de identidad, progresión ni motivación para volver.
+
+## Objetivos
+
+- **Hacer visible el progreso** que el sistema ya trackea internamente (puntos, nivel).
+- **Dar identidad** al estudiante dentro de la plataforma.
+- **Motivar el uso diario** a través de customización como recompensa.
+- **Crear una base** sobre la que construir comunidad (necesitás identidad antes de interacción social).
+
+## Visión de gamificación
+
+<Warning>
+  Decisión clave: **no insignias clásicas**. Los logros desbloquean elementos cosméticos, no medallas.
+</Warning>
+
+La gamificación en TUNI se centra en **customización de perfil**, no en insignias ni badges tradicionales. La inspiración viene de productos como Habbo, Duolingo y Pet Society, donde la recompensa es expresión personal.
+
+| Elemento | Descripción |
+|----------|-------------|
+| **Puntos** | Ya existen internamente. El perfil los hace visibles en contexto apropiado. |
+| **Nivel** | Representación visual del progreso acumulado. |
+| **Mascotas** | Compañero virtual que evoluciona con el uso. |
+| **Accesorios** | Sombreros, marcos, fondos y elementos cosméticos. |
+| **Avatar personalizable** | El estudiante construye su identidad visual. |
+
+### Cómo se desbloquean elementos
+
+Los logros del estudiante (completar clases, mantener racha, buenos resultados) desbloquean elementos cosméticos. La recompensa no es "ganaste una medalla" sino "desbloqueaste un nuevo accesorio para tu mascota".
+
+<Note>
+  Los puntos y niveles son visibles **en el perfil y la plataforma**, no en las respuestas de Ada. Ada sigue sin mencionar mecánicas internas en la conversación — ver [identidad de Ada](/identity).
+</Note>
+
+## Alcance (a definir)
+
+<CardGroup cols={2}>
+  <Card title="Ideas incluidas" icon="check">
+    - Página de perfil con puntos y nivel
+    - Avatar personalizable
+    - Mascota virtual
+    - Catálogo de accesorios desbloqueables
+    - Visualización de logros como elementos cosméticos
+  </Card>
+  <Card title="Por definir" icon="circle-question">
+    - Economía de puntos (cuántos por acción, equilibrio)
+    - Diseño visual del avatar y mascotas
+    - Criterios de desbloqueo por elemento
+    - Integración con el dashboard existente
+    - Pantalla de perfil: layout y componentes
+  </Card>
+</CardGroup>
+
+## Dependencias
+
+| Dirección | Épica | Relación |
+|-----------|-------|----------|
+| Depende de | Clase | Los puntos se generan por actividad en clase |
+| Bloquea a | [Comunidad](/epicas/comunidad/overview) | Necesitás identidad para interacción social |
+| Relacionada | [Dashboard](/epicas/dashboard/overview) | El perfil complementa el dashboard como hub del estudiante |
+
+## Épicas relacionadas
+
+<CardGroup cols={3}>
+  <Card title="Comunidad" icon="users" href="/epicas/comunidad/overview">
+    Interacción social entre estudiantes.
+  </Card>
+  <Card title="Dashboard" icon="gauge" href="/epicas/dashboard/overview">
+    Panel de progreso del estudiante.
+  </Card>
+  <Card title="Mobile" icon="mobile" href="/epicas/mobile/overview">
+    Experiencia mobile-first.
+  </Card>
+</CardGroup>

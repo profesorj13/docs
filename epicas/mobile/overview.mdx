@@ -1,0 +1,82 @@
+---
+title: "Mobile"
+description: "Adaptar la experiencia de clase para dispositivos móviles — prioridad #1 para impactar DAU."
+icon: "mobile"
+---
+
+> **Estado:** Definición inicial
+> **Fuente:** Reunión de priorización Juan + Ro (19/02/2026)
+> **Prioridad:** #1 en [roadmap](/producto/roadmap)
+
+## Problema
+
+TUNI fue construido desktop-first. El público objetivo (estudiantes universitarios, 18–25 años) es mayoritariamente mobile-first. Si la experiencia no funciona bien en el celular, la barrera de entrada para el uso diario es demasiado alta. Mobile es el prerequisito para impactar DAU.
+
+## Objetivos
+
+- **Adaptar la experiencia de clase** para que funcione nativamente en mobile.
+- **Eliminar la fricción** de tener que usar desktop para estudiar.
+- **Habilitar uso diario** desde el dispositivo principal del estudiante.
+- **Explorar canales alternativos** de interacción (WhatsApp, PWA).
+
+## Enfoque técnico
+
+### PWA como punto de partida
+
+Ya existe una base técnica (ticket DASH-011) para Progressive Web App. El enfoque es extender esta base para lograr una experiencia mobile completa:
+
+- Responsive real (no solo "se ve" en mobile, sino que funciona bien)
+- Instalable como app desde el navegador
+- Push notifications (necesarias para [Comunidad](/epicas/comunidad/overview))
+
+### Canal WhatsApp (exploración)
+
+Idea en exploración: que Ada esté disponible vía WhatsApp para interacciones rápidas. No reemplaza la experiencia completa de clase, pero puede ser un canal complementario para:
+- Consultas rápidas
+- Recordatorios de estudio
+- Notificaciones de desafíos
+
+<Note>
+  El canal WhatsApp es exploratorio y no está confirmado como parte del alcance. Requiere evaluación técnica y de producto.
+</Note>
+
+## Alcance (a definir)
+
+<CardGroup cols={2}>
+  <Card title="Ideas incluidas" icon="check">
+    - Experiencia de clase adaptada a mobile
+    - Dashboard responsive
+    - PWA instalable
+    - Push notifications
+    - Navegación mobile-first
+  </Card>
+  <Card title="Por definir" icon="circle-question">
+    - Qué pantallas priorizar para adaptación
+    - Interacciones de chat en mobile (teclado, scroll, input)
+    - Canal WhatsApp (viabilidad técnica)
+    - Performance targets en conexiones móviles
+    - Diseño UX mobile-specific
+  </Card>
+</CardGroup>
+
+## Dependencias
+
+| Dirección | Épica | Relación |
+|-----------|-------|----------|
+| Depende de | [Clase](/epicas/clase/overview) | La experiencia de clase es lo que se adapta |
+| Depende de | [Dashboard](/epicas/dashboard/overview) | El dashboard debe ser responsive |
+| Relacionada | [Comunidad](/epicas/comunidad/overview) | Push notifications y deep links |
+
+## Épicas relacionadas
+
+<CardGroup cols={3}>
+  <Card title="Clase" icon="book-open" href="/epicas/clase/overview">
+    Experiencia de clase a adaptar.
+  </Card>
+  <Card title="Comunidad" icon="users" href="/epicas/comunidad/overview">
+    Funciones sociales que requieren mobile.
+  </Card>
+  <Card title="Perfil" icon="user" href="/epicas/perfil/overview">
+    Identidad del estudiante.
+  </Card>
+</CardGroup>

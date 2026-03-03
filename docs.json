@@ -29,6 +29,13 @@
             ]
           },
           {
+            "group": "Producto",
+            "pages": [
+              "producto/roadmap",
+              "producto/metricas"
+            ]
+          },
+          {
             "group": "Técnico",
             "pages": [
               "mixpanel-tracking"
@@ -90,6 +97,24 @@
               "epicas/contenido/overview",
               "epicas/contenido/spec",
               "epicas/contenido/specs-actividades"
+            ]
+          },
+          {
+            "group": "Perfil",
+            "pages": [
+              "epicas/perfil/overview"
+            ]
+          },
+          {
+            "group": "Comunidad",
+            "pages": [
+              "epicas/comunidad/overview"
+            ]
+          },
+          {
+            "group": "Mobile",
+            "pages": [
+              "epicas/mobile/overview"
             ]
           }
         ]

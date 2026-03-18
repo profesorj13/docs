@@ -1,0 +1,60 @@
+---
+title: "Modo repaso"
+description: "Modo de estudio para repasar temas ya vistos, reforzando conceptos antes de que se olviden."
+icon: "rotate"
+---
+
+> **Estado:** Definición inicial
+> **Épica Jira:** [TUNI-1016](https://aula-educabot.atlassian.net/browse/TUNI-1016)
+
+## Problema
+
+El flujo actual de clase está orientado a avanzar en el plan de conceptos nuevos. No hay un modo dedicado para que el alumno repase temas que ya vio pero necesita reforzar. Sin repaso activo, el conocimiento se degrada con el tiempo (curva del olvido) y el alumno pierde dominio de conceptos que ya había superado.
+
+## Objetivos
+
+- **Habilitar repaso dirigido** de temas ya vistos, priorizados por riesgo de olvido.
+- **Diferenciar la experiencia** del modo avance: actividades más cortas, foco en refuerzo.
+- **Mantener el dominio** de conceptos a lo largo del tiempo, no solo al momento de aprenderlos.
+- **Integrar con el modelo del estudiante** para priorizar qué repasar según decaimiento temporal.
+
+## Alcance (a definir)
+
+<CardGroup cols={2}>
+  <Card title="Ideas incluidas" icon="check">
+    - Tutor ayuda a repasar temas ([TUNI-995](https://aula-educabot.atlassian.net/browse/TUNI-995))
+    - Selección inteligente de conceptos a repasar (spaced repetition)
+    - Actividades de refuerzo más cortas que las de avance
+    - Acceso desde el dashboard ("Repasar")
+  </Card>
+  <Card title="Por definir" icon="circle-question">
+    - Algoritmo de priorización de repaso (decaimiento temporal, errores previos)
+    - Diferencia en UX respecto al modo clase estándar
+    - Duración y cantidad de actividades por sesión de repaso
+    - Cómo se refleja en el plan de sesión (pastillas separadas?)
+    - Integración con racha diaria y gamificación
+  </Card>
+</CardGroup>
+
+## Dependencias
+
+| Dirección | Épica | Relación |
+|-----------|-------|----------|
+| Depende de | [Clase](/epicas/clase/overview) | Extiende el core pedagógico con un nuevo modo |
+| Depende de | [Contenido](/epicas/contenido/overview) | Necesita actividades de refuerzo generadas |
+| Relacionada | [Modo desempeño](/epicas/modo-desempeno/overview) | Ambos son modos de estudio diferenciados |
+| Relacionada | [Dashboard](/epicas/dashboard/overview) | Entry point para iniciar repaso |
+
+## Épicas relacionadas
+
+<CardGroup cols={3}>
+  <Card title="Clase" icon="book-open" href="/epicas/clase/overview">
+    Core pedagógico que se extiende.
+  </Card>
+  <Card title="Modo desempeño" icon="bolt" href="/epicas/modo-desempeno/overview">
+    Otro modo de estudio diferenciado.
+  </Card>
+  <Card title="Dashboard" icon="gauge" href="/epicas/dashboard/overview">
+    Punto de acceso al repaso.
+  </Card>
+</CardGroup>

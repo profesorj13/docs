@@ -1,0 +1,61 @@
+---
+title: "Modo desempeño"
+description: "Modo de estudio intensivo pre-parcial: práctica enfocada en los temas del examen."
+icon: "bolt"
+---
+
+> **Estado:** Definición inicial
+> **Épica Jira:** [TUNI-1017](https://aula-educabot.atlassian.net/browse/TUNI-1017)
+
+## Problema
+
+Cuando se acerca un parcial, el alumno necesita un modo de estudio diferente al avance regular. No quiere explorar conceptos nuevos, quiere practicar intensivamente los temas que van a entrar en el examen. Hoy TUNI no distingue entre "estoy aprendiendo" y "estoy preparándome para rendir", y la experiencia es la misma en ambos contextos.
+
+## Objetivos
+
+- **Modo de estudio intensivo** orientado a preparación pre-parcial.
+- **Foco en práctica** con actividades de mayor exigencia y simulacro de examen.
+- **Priorización por temario** del parcial, no por plan de avance.
+- **Feedback orientado a rendimiento** (nota estimada, áreas débiles, recomendaciones).
+
+## Alcance (a definir)
+
+<CardGroup cols={2}>
+  <Card title="Ideas incluidas" icon="check">
+    - Modo desempeño / estudio intensivo ([TUNI-996](https://aula-educabot.atlassian.net/browse/TUNI-996))
+    - Selección de temas por temario de parcial
+    - Actividades de mayor nivel cognitivo (analizar, evaluar)
+    - Simulacro de evaluación con condiciones de examen
+    - Feedback de rendimiento estimado
+  </Card>
+  <Card title="Por definir" icon="circle-question">
+    - Cómo se define el temario del parcial (manual vs automático)
+    - Diferencia en UX respecto al modo clase estándar
+    - Criterios de "listo para rendir"
+    - Integración con épica Evaluaciones
+    - Duración y estructura de la sesión intensiva
+  </Card>
+</CardGroup>
+
+## Dependencias
+
+| Dirección | Épica | Relación |
+|-----------|-------|----------|
+| Depende de | [Clase](/epicas/clase/overview) | Extiende el core pedagógico con un nuevo modo |
+| Depende de | [Contenido](/epicas/contenido/overview) | Necesita actividades de mayor exigencia |
+| Relacionada | [Modo repaso](/epicas/modo-repaso/overview) | Ambos son modos de estudio diferenciados |
+| Relacionada | [Evaluaciones](/epicas/evaluaciones/overview) | Comparte lógica de evaluación y scoring |
+
+## Épicas relacionadas
+
+<CardGroup cols={3}>
+  <Card title="Clase" icon="book-open" href="/epicas/clase/overview">
+    Core pedagógico que se extiende.
+  </Card>
+  <Card title="Modo repaso" icon="rotate" href="/epicas/modo-repaso/overview">
+    Otro modo de estudio diferenciado.
+  </Card>
+  <Card title="Evaluaciones" icon="circle-check" href="/epicas/evaluaciones/overview">
+    Evaluaciones que comparten lógica.
+  </Card>
+</CardGroup>

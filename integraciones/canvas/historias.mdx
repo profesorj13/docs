@@ -376,6 +376,85 @@ Todas las historias de usuario de la sub-épica Canvas LMS (INT-001 a INT-013).
 
   </Accordion>
 
+  <Accordion title="INT-014 — Pantalla de sesión expirada para usuarios Canvas" icon="clock-rotate-left">
+
+    **Épica:** Integraciones / Canvas · **Prioridad:** alta · **Estado:** backlog
+
+    ## Historia de usuario
+
+    **Como** alumno que accede a TUNI desde Canvas,
+    **quiero** ver un mensaje claro cuando mi sesión expira con una forma fácil de volver a autenticarme,
+    **para** no quedarme atrapado en una pantalla de login que no me sirve.
+
+    ## Descripción
+
+    Los alumnos que acceden a TUNI desde Canvas se autentican via LTI 1.3 — no tienen usuario y contraseña en TUNI. Cuando la sesión expira (token JWT vencido, inactividad, etc.), la webapp redirige a `/login`, pero esa pantalla no ofrece ninguna acción útil para estos usuarios.
+
+    Se necesita una pantalla intermedia (o variante de `/login`) que detecte que el usuario es de origen Canvas y le muestre:
+
+    1. Un mensaje amigable explicando que la sesión expiró.
+    2. Un botón "Acceder desde Canvas" que lo redirija al flujo más simple para re-obtener el token.
+
+    ### Flujo propuesto
+
+    ```
+    Sesión expira → Redirect a /login → Detectar origen Canvas →
+    Mostrar pantalla "Sesión expirada" → Botón "Acceder desde Canvas" →
+    Redirect a Canvas (curso o LTI launch) → Re-autenticación automática
+    ```
+
+    ### Detección del origen Canvas
+
+    El frontend puede detectar que el usuario era de Canvas mediante:
+    - Flag `auth_provider: "canvas"` almacenado en localStorage/sessionStorage durante el login LTI inicial.
+    - Parámetro `?from=canvas` en la URL de redirect al expirar.
+    - Claim del JWT (si aún es decodificable aunque expirado).
+
+    ### Pantalla propuesta
+
+    ```
+    +---------------------------------------------+
+    |                                              |
+    |         Tu sesión en TUNI expiró             |
+    |                                              |
+    |  Para volver a conectarte, accedé            |
+    |  desde tu aula virtual en Canvas.            |
+    |                                              |
+    |  [🎓 Acceder desde Canvas]                   |
+    |                                              |
+    |  ¿Necesitás ayuda?                           |
+    |  Contactanos a soporte@educabot.com          |
+    |                                              |
+    +---------------------------------------------+
+    ```
+
+    ### Destino del botón "Acceder desde Canvas"
+
+    La opción más simple es redirigir al curso en Canvas donde se inicia el flujo LTI:
+    - Si se guardó el `course_id` del último acceso: `https://siglo21.instructure.com/courses/{course_id}`
+    - Fallback genérico: `https://siglo21.instructure.com` (dashboard de Canvas)
+
+    Al llegar a Canvas, el alumno ya está logueado (sesión Canvas independiente) y al navegar a una materia habilitada el widget re-dispara el flujo LTI automáticamente.
+
+    ## Criterios de aceptación
+
+    - [ ] Al expirar la sesión de un usuario Canvas, se muestra la pantalla de sesión expirada (no el login genérico).
+    - [ ] La pantalla muestra un mensaje amigable en español argentino.
+    - [ ] El botón "Acceder desde Canvas" redirige al curso de Canvas del alumno (o al dashboard de Canvas como fallback).
+    - [ ] Si el usuario NO es de origen Canvas, se muestra el login normal.
+    - [ ] Se persiste el `auth_provider` y el `last_course_url` durante el login LTI para poder usarlos al expirar.
+    - [ ] El copy es consistente con el tono de Ada (cálido, directo, sin tecnicismos).
+    - [ ] Incluir link o email de soporte como alternativa.
+
+    ## Notas técnicas
+
+    - Área: Frontend + Backend.
+    - El backend debe incluir `auth_provider` en el payload del JWT o en la respuesta de login.
+    - El frontend debe persistir en localStorage: `auth_provider`, `canvas_course_url`.
+    - Considerar expiración del token de Canvas (refresh_token) como caso edge.
+
+  </Accordion>
+
   <Accordion title="INT-013 — Conversación continua entre niveles de navegación" icon="arrows-left-right">
 
     **Épica:** Integraciones / Canvas · **Prioridad:** media · **Estado:** backlog

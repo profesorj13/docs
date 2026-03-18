@@ -225,15 +225,20 @@ Estructura: 4 módulos por materia, 4 lecturas por módulo.
 
 | Componente | Estado |
 |------------|--------|
-| Componente React del Chat | Completo (placeholder) |
+| Componente React del Chat | Completo |
 | Flujo LTI 1.3 | Funcional |
 | Endpoint login | Funcional |
 | Endpoint launch | Funcional |
 | Base de datos TUNI | Establecida |
-| Obtención de access_token | Pendiente |
-| Lógica de comunicación con backend | Pendiente |
+| Obtención de access_token | Funcional |
+| Lógica de comunicación con backend | Funcional |
+| Widget en Canvas (inyección + bundle) | Funcional |
+| Detección de contexto (materia/módulo) | Funcional |
+| Widget a nivel Curso (INT-011) | Completo — [TUNI-965](https://aula-educabot.atlassian.net/browse/TUNI-965) |
+| Conversación continua entre niveles (INT-013) | Completo — [TUNI-967](https://aula-educabot.atlassian.net/browse/TUNI-967) |
+| Contexto home en embedded chat | Completo — [TUNI-973](https://aula-educabot.atlassian.net/browse/TUNI-973) |
+| Pruebas funcionales widget para prod | Completo — [TUNI-1021](https://aula-educabot.atlassian.net/browse/TUNI-1021) |
 | Flujo de registro diferido | Pendiente |
-| Inyección del widget en Canvas | Pendiente |
 | Endpoint Odin para actividades | Pendiente |
 | Contexto de lectura actual (RISE) | Pendiente |
 
@@ -271,6 +276,7 @@ Estructura: 4 módulos por materia, 4 lecturas por módulo.
 
 #### Educabot - Frontend
 
+- [ ] **Pantalla de sesión expirada para usuarios Canvas** (INT-014): detectar origen Canvas al expirar sesión, mostrar mensaje amigable con botón "Acceder desde Canvas" en vez del login genérico.
 - [ ] Soportar parámetro redirect (guardar token y redirigir a OAuth).
 - [ ] Manejo del code de Canvas.
 - [ ] Conectar widget con API de TUNI.

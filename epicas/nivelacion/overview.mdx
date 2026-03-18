@@ -1,0 +1,154 @@
+---
+title: "Nivelación inicial"
+description: "Diagnóstico rápido que calibra el nivel del alumno al iniciar una materia, para que el sistema adapte la dificultad desde la primera clase."
+icon: "scale-balanced"
+---
+
+> **Estado:** En definición
+> **Épica Jira:** [TUNI-1085](https://aula-educabot.atlassian.net/browse/TUNI-1085)
+> **Sprint:** 32
+> **Prioridad:** #2 en sprint (tras Mejorar la clase)
+
+## Problema
+
+Hoy todos los alumnos arrancan desde nivel 1, independientemente de su conocimiento previo. Un alumno avanzado recibe actividades demasiado fáciles y se aburre; un alumno con dificultades no recibe ayuda diferenciada. El sistema tiene 4 niveles de dominio por concepto ([Knowledge Tracking](/epicas/clase/knowledge-tracking)), pero siempre empieza desde cero.
+
+El [Onboarding](/epicas/onboarding/spec) captura datos de perfil (nombre, intereses, motivación) pero no evalúa conocimiento real. El modal de nivelación existe en la UI — "Hacer nivelación" vs "Comenzar ya" — pero la funcionalidad nunca se implementó.
+
+> "Que podamos hacer de alguna manera un test rápido, como lo hace un personal trainer que te hace un test de fuerza, para que vos puedas saber cómo estás y en base a eso armar un plan personalizado."
+> — Juan, planning Sprint 32
+
+## Objetivos
+
+- **Calibrar el nivel inicial** del alumno en cada materia con un test rápido (~5-8 preguntas).
+- **Adaptar la dificultad desde la primera clase**: no dar actividades básicas a alumnos avanzados ni exigir demasiado a principiantes.
+- **Setear los DomainLevel iniciales** en [Knowledge Tracking](/epicas/clase/knowledge-tracking) basándose en evidencia, no en suposición.
+- **Mantener la experiencia fluida**: el diagnóstico debe sentirse rápido y útil, no como un examen.
+
+## Diseño del diagnóstico
+
+### Flujo general
+
+<Steps>
+  <Step title="Trigger">
+    Primera vez que el alumno entra a una materia, o desde el modal de nivelación post-onboarding.
+  </Step>
+  <Step title="Presentación">
+    Ada explica brevemente: "Antes de empezar, vamos a hacer unas preguntas rápidas para conocer tu nivel y armar un plan a tu medida."
+  </Step>
+  <Step title="Test adaptativo">
+    5-8 preguntas de dificultad creciente. Empieza en nivel 2 (Comprender). Si acierta, sube a nivel 3. Si falla, baja a nivel 1. Se detiene cuando converge.
+  </Step>
+  <Step title="Resultado">
+    Ada muestra resumen visual: "En esta materia arrancás en nivel X. Tus puntos fuertes son A y B, y vamos a trabajar en C."
+  </Step>
+  <Step title="Efecto en sistema">
+    Se setean los DomainLevel iniciales por concepto/unidad. El plan de clase posterior se genera con estos niveles como base.
+  </Step>
+</Steps>
+
+### Algoritmo adaptativo (propuesta)
+
+```
+Pregunta 1 → Nivel 2 (Comprender)
+  ├── Acierta → Pregunta 2 → Nivel 3 (Aplicar)
+  │     ├── Acierta → Pregunta 3 → Nivel 4 (Evaluar)
+  │     │     ├── Acierta → Nivel inicial: 4 (dominio alto)
+  │     │     └── Falla  → Nivel inicial: 3 (comprensión aplicada)
+  │     └── Falla  → Pregunta 3b → Nivel 2 (confirmar)
+  │           ├── Acierta → Nivel inicial: 2 (básico confirmado)
+  │           └── Falla  → Nivel inicial: 1 (sin conocimiento)
+  └── Falla  → Pregunta 2b → Nivel 1 (Recordar)
+        ├── Acierta → Nivel inicial: 1 (conocimiento mínimo)
+        └── Falla  → Nivel inicial: 1 (sin conocimiento)
+```
+
+La estructura se repite por cada unidad clave de la materia (2-3 unidades muestreadas), totalizando 5-8 preguntas.
+
+### Principios de diseño
+
+- **Rápido**: menos de 5 minutos. El alumno no vino a rendir un examen, vino a estudiar.
+- **Adaptativo**: no hacer preguntas de más. Si ya sabemos el nivel, parar.
+- **Motivante**: el resultado debe sentirse como un descubrimiento, no como una nota.
+- **Opcional**: si el alumno elige "Comenzar ya", arranca desde nivel 1 (comportamiento actual).
+- **Sin puntos ni racha**: es diagnóstico, no clase. No genera puntos ni afecta la racha diaria.
+
+## Historias
+
+### NIV-001 · Diagnóstico rápido de nivel por materia
+
+**Como** alumno,
+**quiero** hacer un test rápido al empezar una materia para que el sistema sepa mi nivel,
+**para** que las clases se adapten a lo que ya sé y no pierda tiempo en cosas básicas.
+
+**Criterios de aceptación**
+- [ ] Al entrar por primera vez a una materia, se ofrece diagnóstico rápido (no obligatorio)
+- [ ] El test tiene 5-8 preguntas adaptativas (duración < 5 minutos)
+- [ ] Las preguntas se adaptan en dificultad según respuestas previas
+- [ ] Al finalizar, se muestra resumen visual del nivel detectado
+- [ ] Los niveles de dominio iniciales se setean en Knowledge Tracking
+- [ ] Las clases posteriores arrancan desde el nivel detectado, no desde cero
+- [ ] Si el alumno elige saltear, arranca desde nivel 1 (sin regresión)
+
+### NIV-002 · Adaptación de dificultad según nivel detectado
+
+**Como** sistema,
+**quiero** que las clases se adapten al nivel detectado por el diagnóstico,
+**para** no aburrir a alumnos avanzados ni frustrar a principiantes.
+
+**Criterios de aceptación**
+- [ ] Si el alumno tiene nivel inicial 3, las actividades empiezan en Aplicar/Analizar
+- [ ] `buildPlan` respeta los niveles iniciales del Knowledge Tracking
+- [ ] `getActivities` filtra por nivel de Bloom correspondiente al DomainLevel
+- [ ] Ada adapta su tono y profundidad según el nivel del alumno
+- [ ] Un alumno que hizo diagnóstico tiene una experiencia distinta a uno que no lo hizo
+
+## Alcance
+
+<CardGroup cols={2}>
+  <Card title="Incluido" icon="check">
+    - Test adaptativo de 5-8 preguntas por materia
+    - Conexión con modal de nivelación del onboarding
+    - Seteo de DomainLevel iniciales
+    - Pantalla de resultado con resumen visual
+    - Adaptación de buildPlan y getActivities al nivel inicial
+  </Card>
+  <Card title="Por definir" icon="circle-question">
+    - Qué unidades muestrear por materia (todas vs las más representativas)
+    - Diseño visual de la pantalla de resultado
+    - Si se puede re-hacer el diagnóstico después
+    - Comportamiento cuando no hay actividades suficientes para un nivel alto
+    - Integración con el panel de supervisores (¿ven el resultado del diagnóstico?)
+  </Card>
+</CardGroup>
+
+## Consideraciones técnicas
+
+- **Pool de preguntas**: reutilizar actividades existentes filtradas por nivel de Bloom. No requiere generación nueva.
+- **Nuevo tipo de sesión**: `session_type: "diagnostic"` o `"placement"` — no genera puntos ni racha.
+- **Seteo en batch**: al finalizar, setear `DomainLevel` para todos los conceptos de las unidades evaluadas.
+- **Modal existente**: el [Onboarding spec](/epicas/onboarding/spec) ya define el modal de nivelación con CTAs "Hacer nivelación" / "Comenzar ya". Conectar con este flujo.
+- **Prompt de Ada**: en M1 (inicio de clase), si `DomainLevel > 1`, saltear relevamiento básico y proponer comprobación directa.
+
+## Dependencias
+
+| Dirección | Épica | Relación |
+|-----------|-------|----------|
+| Depende de | [Clase](/epicas/clase/overview) | Reutiliza actividades y Knowledge Tracking |
+| Depende de | [Contenido](/epicas/contenido/overview) | Necesita actividades por nivel de Bloom disponibles |
+| Conecta con | [Onboarding](/epicas/onboarding/overview) | Modal de nivelación post-onboarding |
+| Alimenta a | [Modo desempeño](/epicas/modo-desempeno/overview) | Diagnóstico express reutiliza lógica de nivelación |
+
+## Épicas relacionadas
+
+<CardGroup cols={3}>
+  <Card title="Clase" icon="book-open" href="/epicas/clase/overview">
+    Core pedagógico que consume los niveles.
+  </Card>
+  <Card title="Onboarding" icon="door-open" href="/epicas/onboarding/overview">
+    Modal de nivelación existente.
+  </Card>
+  <Card title="Modo desempeño" icon="bolt" href="/epicas/modo-desempeno/overview">
+    Reutiliza diagnóstico express.
+  </Card>
+</CardGroup>

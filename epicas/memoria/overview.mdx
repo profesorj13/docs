@@ -1,0 +1,59 @@
+---
+title: "Memoria"
+description: "Persistencia de contexto, preferencias e historial del alumno para que Ada lo conozca entre sesiones."
+icon: "brain"
+---
+
+> **Estado:** En desarrollo
+> **Épica Jira:** [TUNI-1019](https://aula-educabot.atlassian.net/browse/TUNI-1019)
+> **Sprint:** 31
+
+## Problema
+
+Hoy cada sesión con Ada empieza de cero. El tutor no recuerda preferencias, errores recurrentes ni el historial de conversaciones previas del alumno. Esto genera una experiencia impersonal y repetitiva: el alumno tiene que volver a explicar su contexto, y Ada no puede aprovechar lo que ya sabe sobre él para personalizar la interacción.
+
+## Objetivos
+
+- **Que Ada conozca al alumno** entre sesiones: preferencias, dificultades recurrentes, estilo de aprendizaje.
+- **Persistir contexto conversacional** para que el widget y la clase retomen donde quedaron.
+- **Personalizar la interacción** basándose en historial real, no solo en el perfil de onboarding.
+- **Reducir fricción** eliminando la necesidad de repetir contexto.
+
+## Alcance
+
+<CardGroup cols={2}>
+  <Card title="Incluido" icon="check">
+    - Tutor que sepa de mí: preferencias e historial persistente ([TUNI-1001](https://aula-educabot.atlassian.net/browse/TUNI-1001))
+    - Widget se acuerde de mí: continuidad de conversación en el widget embebido ([TUNI-1002](https://aula-educabot.atlassian.net/browse/TUNI-1002))
+    - Inyección de contexto del alumno en cada llamada al LLM
+  </Card>
+  <Card title="Por definir" icon="circle-question">
+    - Qué datos se persisten (preferencias explícitas vs inferidas)
+    - Ventana de contexto: cuántas sesiones pasadas se inyectan
+    - Estrategia de resumen vs historial completo
+    - Impacto en consumo de tokens
+    - Privacidad: qué puede ver el supervisor del contexto persistido
+  </Card>
+</CardGroup>
+
+## Dependencias
+
+| Dirección | Épica | Relación |
+|-----------|-------|----------|
+| Depende de | [Clase](/epicas/clase/overview) | El contexto se genera durante las sesiones de tutoría |
+| Depende de | [Integración Canvas](/integraciones/canvas/overview) | El widget necesita persistir estado entre navegaciones |
+| Relacionada | [Perfil](/epicas/perfil/overview) | Las preferencias del alumno alimentan ambas épicas |
+
+## Épicas relacionadas
+
+<CardGroup cols={3}>
+  <Card title="Clase" icon="book-open" href="/epicas/clase/overview">
+    Core pedagógico que genera el historial.
+  </Card>
+  <Card title="Perfil" icon="user" href="/epicas/perfil/overview">
+    Hub de identidad del alumno.
+  </Card>
+  <Card title="Integración Canvas" icon="plug" href="/integraciones/canvas/overview">
+    Widget donde se aplica la persistencia.
+  </Card>
+</CardGroup>

@@ -1,0 +1,205 @@
+---
+title: "Panel de administración"
+description: "Panel interno para monitorear conversaciones, hacer QA del tutor y seguir el comportamiento de los alumnos a lo largo del flujo."
+icon: "shield-halved"
+---
+
+> **Alcance:** MVP interno para el equipo de TUNI. Este panel sienta las bases para el futuro [panel de supervisores](/epicas/supervisores/overview) destinado a docentes.
+
+---
+
+## Objetivo
+
+Dar al equipo de TUNI visibilidad completa sobre las conversaciones que los alumnos mantienen con Ada — tanto en el **chat-widget** (anónimo, dentro de Canvas) como en **la clase** (autenticado, dentro de TUNI) — para:
+
+- Monitorear la calidad de las respuestas de Ada y detectar problemas.
+- Hacer QA sistemático del tutor y proponer mejoras a prompts/flujos.
+- Entender el recorrido del alumno desde el primer contacto anónimo hasta la clase.
+- Observar patrones de uso y abandono.
+
+---
+
+## Acceso y roles
+
+- Solo usuarios del equipo interno de TUNI.
+- Se otorga un nuevo rol **`admin`** al usuario existente.
+- Un usuario con rol `admin` ve la sección "Admin" en la navegación.
+- **No se requiere un sistema de permisos granular** para el MVP — todo admin ve todo.
+
+<Note>
+La decisión de si esto vive como sección dentro de la webapp actual o como app separada queda a criterio del equipo de desarrollo.
+</Note>
+
+---
+
+## Funcionalidades
+
+### 1. Visor de conversaciones del chat-widget
+
+Permite ver las conversaciones que los alumnos tienen con Ada dentro del widget embebido en Canvas, **antes de autenticarse en TUNI**.
+
+**Vista lista:** (Si sale rapido, si no quedara para v2)
+
+| Columna | Descripción |
+|---------|-------------|
+| Fecha/hora | Timestamp de inicio de la conversación |
+| Identificador | Session ID o IP (ver [Identificación de usuarios](#identificación-de-usuarios)) |
+| Curso | `course_code` si está disponible (parseado del contexto de Canvas) |
+| Mensajes | Cantidad de mensajes en la conversación |
+| Estado | Revisada / No revisada |
+| Resultado | Hacia dónde fue el usuario: autenticó, fue a TUNI, abandonó |
+
+**Vista detalle de conversación:**
+
+- Mensajes completos ida y vuelta (alumno ↔ Ada), renderizados como chat.
+- **Timeline de eventos** intercalados en la conversación, mostrando los eventos del tracking plan: (Seria lo ideal) (Notar que todos estos son eventos QUE YA SE ESTAN TRACKEANDO CON MIX PANNEL, por lo que podemos usar eso para identificar rapidamente el codigo donde sumar estos logs)
+  - `widget.launcher.clicked` — Abrió el widget
+  - `widget.chat.message_sent` — Envió mensaje (con `message_length`)
+  - `widget.auth.card_shown` — Ada sugirió autenticarse
+  - `widget.auth.modal_opened` — Abrió modal de auth
+  - `widget.auth.popup_opened` — Abrió popup OAuth
+  - `widget.auth.completed` — Se autenticó exitosamente
+  - `widget.auth.cancelled` — Canceló autenticación
+  - `widget.go_to_tuni.clicked` — Fue a TUNI
+  - `widget.video.played` — Reprodujo video promo
+
+Los eventos se muestran como chips/badges dentro del hilo de chat, en su posición temporal correcta.
+
+---
+
+### 2. Visor de conversaciones de la clase
+
+Permite ver las conversaciones dentro de las **clases** (sesiones de tutoría adaptativa), donde el alumno ya está autenticado.
+
+**Vista lista:**
+
+| Columna | Descripción |
+|---------|-------------|
+| Fecha/hora | Timestamp de inicio de la sesión |
+| Alumno | Nombre + email del alumno |
+| Materia | Materia de la clase |
+| Conceptos | Conceptos estudiados |
+| Duración | Duración de la sesión |
+| Estado | Revisada / No revisada |
+
+**Vista detalle de conversación:**
+
+- Mensajes completos ida y vuelta (alumno ↔ Ada).
+- **Timeline de eventos** intercalados: (A chequear si esta bien implementado lo de mix panel, con los cambios que hubo puede ser necesario corregir.)
+  - `tutor.session.created` — Inicio de sesión
+  - `tutor.activity.card_clicked` — Abrió una actividad
+  - `tutor.session.ended` — Finalizó sesión (con `total_correct`, `total_incorrect`, `max_streak`)
+  - `teaching.plan_created` — Se generó plan de enseñanza (con `user_level`, `target_level`, `trigger`)
+  - `teaching.pill_completed` — Completó una píldora
+  - `teaching.plan_completed` — Completó el plan de enseñanza
+  - `teaching.post_session_created` — Se creó sesión post-enseñanza
+  - `tutor.closure.*` — Eventos del flujo de cierre
+
+---
+
+### 3. Vista por usuario (V2)
+
+Permite buscar un alumno y ver **todas sus conversaciones** (widget + clase) en orden cronológico.
+
+**Búsqueda por:**
+- Nombre
+- Email
+- User ID
+
+**Vista de perfil del alumno:**
+- Datos básicos: nombre, email, fecha de registro
+- Datos de onboarding: nickname, rango de edad, objetivo, personalidad, hobbies
+- Lista de todas sus conversaciones (widget y clase) ordenadas por fecha
+
+#### Identificación de usuarios
+
+El widget es anónimo — no hay usuario autenticado. Para poder hacer seguimiento pre-auth:
+
+- **Pre-autenticación (widget):** Identificar por `session_id` (ya existe en los eventos del widget). Agrupar conversaciones del mismo session.
+- **Post-autenticación (clase):** Identificar por `user_id`.
+- **Vinculación (nice-to-have, no MVP):** Si el usuario se autentica durante la sesión del widget (`widget.auth.completed`), vincular la conversación anónima con el `user_id`. Esto permitiría ver el recorrido completo desde el widget hasta la clase.
+
+<Note>
+Investigar si actualmente se persiste algún identificador que permita vincular sesiones anónimas con usuarios autenticados. Si no existe, definir la estrategia con el equipo (cookie, fingerprint, IP, etc.). Para el MVP, las vistas de widget y clase pueden funcionar de forma independiente.
+</Note>
+
+---
+
+### 4. Vista general (sin filtro)
+
+Lista unificada de **todas las conversaciones** (widget + clase) ordenadas cronológicamente, sin filtrar por usuario.
+
+- Permite ver la actividad general de la plataforma.
+- Filtros disponibles: tipo (widget / clase), rango de fechas, materia, estado (revisada / no revisada).
+- Volumen estimado: ~100 conversaciones diarias.
+
+---
+
+### 5. Herramientas de QA
+
+Sobre cada conversación, el admin puede:
+
+- **Marcar como revisada:** Toggle que indica que alguien del equipo ya miró esa conversación.
+- **Dejar notas:** Campo de texto libre asociado a la conversación. Visible para todos los admins. Útil para anotar problemas detectados, ideas de mejora, o bugs en el comportamiento de Ada.
+
+---
+
+## Fuentes de datos (A chequear, corregir)
+
+| Dato | Origen | Observaciones |
+|------|--------|---------------|
+| Mensajes del widget | API/DB del chat-widget | Verificar que las conversaciones se persisten y hay un endpoint GET disponible |
+| Mensajes de la clase | API/DB de `tich-cronos` | Ya existen endpoints GET para conversaciones |
+| Eventos del widget | Mixpanel o DB propia | Los eventos se envían a Mixpanel; evaluar si conviene consultarlos desde ahí o replicarlos en DB |
+| Eventos de la clase | Mixpanel o DB propia | Mismo caso que widget |
+| Datos del alumno | DB de usuarios de TUNI | Nombre, email, onboarding data |
+| Notas de QA | **Nueva tabla** | Crear tabla `admin_notes` o similar |
+| Estado "revisada" | **Nuevo campo** | Flag en la conversación o tabla separada |
+
+<Warning>
+**Verificar con el equipo:**
+1. ¿Las conversaciones del widget se persisten actualmente? ¿Hay endpoint GET?
+2. ¿Los eventos se consultan desde Mixpanel API o conviene guardarlos en DB propia para esta funcionalidad?
+3. ¿Existe algún identificador persistente en el widget que permita agrupar conversaciones de un mismo usuario anónimo?
+</Warning>
+
+---
+
+## Lo que NO incluye el MVP
+
+- Alertas o notificaciones automáticas (ej: "Ada respondió algo incorrecto").
+- Dashboard con métricas agregadas (eso es [supervisores](/epicas/supervisores/overview)).
+- Edición de prompts o configuración de Ada desde el panel.
+- Exportación de datos.
+- Filtros avanzados o búsqueda full-text dentro de mensajes.
+- Vinculación automática widget ↔ clase (nice-to-have, no bloquea MVP).
+
+---
+
+## Relación con épica de supervisores
+
+Este panel admin es el **precursor interno** del panel de supervisores. La diferencia clave:
+
+| Aspecto | Admin (MVP) | Supervisores (futuro) |
+|---------|-------------|----------------------|
+| Usuarios | Equipo TUNI | Docentes, coordinadores |
+| Alcance | Todas las conversaciones | Solo sus materias/alumnos |
+| Foco | QA del tutor, monitoreo técnico | Seguimiento pedagógico |
+| Métricas | No incluye | Dashboards con métricas agregadas |
+| Permisos | Admin ve todo | Filtrado por rol y materia |
+
+Lo que se construya acá (visor de conversaciones, timeline de eventos, infraestructura de acceso a datos) se reutiliza luego para supervisores, agregando filtros por permisos y métricas agregadas.
+
+---
+
+## Criterios de aceptación
+
+1. Un usuario con rol `admin` puede acceder al panel de administración.
+2. El panel muestra una lista de conversaciones del widget con los campos definidos.
+3. El panel muestra una lista de conversaciones de la clase con los campos definidos.
+4. Al hacer click en una conversación, se ven los mensajes completos con eventos intercalados.
+5. Se puede buscar un alumno por nombre o email y ver todas sus conversaciones.
+6. Se puede ver una lista general de todas las conversaciones sin filtro de usuario.
+7. Se puede marcar una conversación como "revisada".
+8. Se puede dejar una nota de texto en una conversación, visible para otros admins.
+9. Se pueden filtrar conversaciones por tipo (widget/clase), rango de fechas y estado de revisión.

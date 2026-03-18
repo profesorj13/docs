@@ -18,17 +18,22 @@ Todas las decisiones de priorización están orientadas a maximizar **DAU (Daily
 
 | Épica | Estado | Descripción |
 |-------|--------|-------------|
-| **Integración Canvas** | 🟢 Lanzado | Canvas LMS operativo (widget + OAuth + LTI) |
-| **Onboarding** | 🟢 Lanzado | Datos, Product Tour y nivelación completos |
+| **Integración Canvas** | 🟢 Lanzado | Widget, OAuth, LTI, contexto de curso y conversación continua operativos |
+| **Onboarding** | 🟢 Lanzado | Datos, Product Tour, nivelación y presentación de Ada completos |
 | **Clase** | 🟢 Lanzado | Core pedagógico completo — Objetivo, Plan y Tiempo |
-| **Dashboard** | 🟢 Mayormente lanzado | Estructura y navegación listas; UX features próximos |
-| **Supervisores** | 🟢 Mayormente lanzado | Panel base operativo |
-| **Contenido** | 🟢 Mayormente lanzado | Indexación lista; pendiente generación de videos |
+| **Dashboard** | 🟢 Lanzado | Métricas semanales, side sheet de unidad, racha y navegación multi-materia completos |
+| **Supervisores** | 🟢 Lanzado | Panel base operativo |
+| **Contenido** | 🟢 Lanzado | Indexación y generación de actividades operativas; fix de bugs en curso |
+| **Mejoras Clase** | 🟡 En desarrollo | Botón "Ahora no", tutor flotante, validación de actividades |
+| **Nivelación Inicial** | 🟡 En desarrollo | Diagnóstico rápido para calibrar nivel del alumno al iniciar materia |
+| **Memoria** | 🟡 En desarrollo | Persistencia de contexto y preferencias del alumno entre sesiones |
 | **Plataforma** | 🟡 En desarrollo | White-labeling y feature flags por tenant |
-| **Mobile** | 🟠 Próximo | Responsive web + PWA |
+| **Mobile** | 🟠 Próximo | Responsive web + PWA; mejora UI home mobile en sprint |
+| **Modo repaso** | 🟣 Horizonte | Modo de estudio para repasar temas ya vistos |
+| **Modo desempeño** | 🟣 Horizonte | Estudio intensivo pre-parcial |
 | **WhatsApp** | 🟣 Horizonte | Canal de consultas con Ada vía WA Business API |
 | **Perfil** | 🟣 Horizonte | Hub de identidad, puntos, nivel y customización |
-| **Desafíos** | 🟣 Horizonte | Competencia social, rankings y duelos |
+| **Comunidad** | 🟣 Horizonte | Competencia social, rankings y duelos |
 | **Evaluaciones** | 🟣 Horizonte | Evaluaciones optativas por módulo |
 
 ---
@@ -41,22 +46,22 @@ Todas las decisiones de priorización están orientadas a maximizar **DAU (Daily
 
     <CardGroup cols={2}>
       <Card title="Canvas LMS" icon="plug" color="#16a34a" href="/integraciones/canvas/overview">
-        Integración completa: widget de chat anónimo, autenticación OAuth, provisión LTI 1.3. Operativo en clientes actuales.
+        Integración completa: widget, OAuth, LTI 1.3, contexto de curso, conversación continua entre niveles. Operativo en prod.
       </Card>
       <Card title="Onboarding" icon="door-open" color="#16a34a" href="/epicas/onboarding/overview">
-        Flujo completo: registro de preferencias, presentación de Ada, product tour y nivelación inicial.
+        Flujo completo: registro de preferencias, presentación de Ada, product tour interactivo y nivelación inicial.
       </Card>
       <Card title="Clase" icon="chalkboard-teacher" color="#16a34a" href="/epicas/clase/overview">
         Core pedagógico completo: objetivo de clase, plan de sesión, tiempo disponible y flujo de tutoría adaptativa con Ada.
       </Card>
       <Card title="Dashboard" icon="gauge" color="#16a34a" href="/epicas/dashboard/overview">
-        Estructura y navegación de materias, módulos y unidades. UX features próximos (métricas, racha, side sheet).
+        Completo: métricas semanales, racha diaria, side sheet de unidad, navegación multi-materia y progreso por unidad.
       </Card>
       <Card title="Supervisores" icon="users" color="#16a34a" href="/epicas/supervisores/overview">
         Panel base operativo para docentes y stakeholders. Seguimiento de cohortes y gestión de contenido.
       </Card>
       <Card title="Contenido" icon="book-open" color="#16a34a" href="/epicas/contenido/overview">
-        Indexación de bibliografía y generación de actividades. Pendiente: generación de videos.
+        Indexación de bibliografía y generación de actividades operativa. Fix de bugs en actividades MC y complete phrase en curso.
       </Card>
     </CardGroup>
   </Tab>
@@ -65,6 +70,15 @@ Todas las decisiones de priorización están orientadas a maximizar **DAU (Daily
     Features actualmente en construcción.
 
     <CardGroup cols={2}>
+      <Card title="Mejoras Clase" icon="sparkles" color="#ca8a04" href="/epicas/clase/overview">
+        Botón "Ahora no" con retoma de contexto, tutor flotante para consultas generales, validación de actividades realizadas.
+      </Card>
+      <Card title="Nivelación Inicial" icon="scale-balanced" color="#ca8a04" href="/epicas/nivelacion/overview">
+        Test de diagnóstico rápido (~5-8 preguntas) para calibrar el nivel del alumno al iniciar una materia. "Como un personal trainer."
+      </Card>
+      <Card title="Memoria" icon="brain" color="#ca8a04" href="/epicas/memoria/overview">
+        Persistencia de contexto, preferencias e historial del alumno para que Ada lo conozca entre sesiones.
+      </Card>
       <Card title="Plataforma — White-labeling" icon="palette" color="#ca8a04">
         Identidad de marca por cliente: logo, colores, nombre de plataforma y favicon personalizables por tenant (PLAT-001).
       </Card>
@@ -79,13 +93,10 @@ Todas las decisiones de priorización están orientadas a maximizar **DAU (Daily
 
     <CardGroup cols={2}>
       <Card title="Mobile" icon="mobile" color="#ea580c" href="/epicas/mobile/overview">
-        Responsive web + PWA. Adaptar la experiencia completa a dispositivos móviles — el público es joven y mobile-first.
+        Responsive web + PWA. Mejora UI home mobile en sprint actual. El público es joven y mobile-first.
       </Card>
-      <Card title="Dashboard UX" icon="chart-line" color="#ea580c" href="/epicas/dashboard/overview">
-        Métricas semanales, racha diaria, side sheet de unidad y tutor flotante. Mejoras de engagement y navegación.
-      </Card>
-      <Card title="Clase — Nuevos flujos" icon="sparkles" color="#ea580c" href="/epicas/clase/overview">
-        Estudiar unidad específica, cerrar clase sin terminar, reportar actividades. Completar los flujos del core pedagógico.
+      <Card title="Estabilizar producción" icon="shield" color="#ea580c">
+        Fix de bugs críticos: redirect chat-session, complete phrase, widget redirige materia equivocada, historial de chats.
       </Card>
     </CardGroup>
   </Tab>
@@ -94,13 +105,16 @@ Todas las decisiones de priorización están orientadas a maximizar **DAU (Daily
     En el roadmap a futuro. Se priorizan según tracción y demanda.
 
     <CardGroup cols={2}>
-      <Card title="Clase — Modos avanzados" icon="graduation-cap" color="#9333ea" href="/epicas/clase/overview">
-        Repaso, desempeño intensivo, tutor personalizado, historial conversacional. Modos de estudio diferenciados según contexto.
+      <Card title="Modo repaso" icon="rotate" color="#9333ea" href="/epicas/modo-repaso/overview">
+        Modo de estudio para repasar temas ya vistos, priorizados por riesgo de olvido (spaced repetition).
+      </Card>
+      <Card title="Modo desempeño" icon="bolt" color="#9333ea" href="/epicas/modo-desempeno/overview">
+        Estudio intensivo pre-parcial: práctica enfocada en los temas del examen con simulacro.
       </Card>
       <Card title="Perfil" icon="id-card" color="#9333ea" href="/epicas/perfil/overview">
         Hub de identidad del estudiante: puntos, nivel, customización cosmética (mascotas, accesorios, marcos). Motor de progresión.
       </Card>
-      <Card title="Desafíos" icon="trophy" color="#9333ea" href="/epicas/comunidad/overview">
+      <Card title="Comunidad" icon="trophy" color="#9333ea" href="/epicas/comunidad/overview">
         Competencia social: duelos, rankings, desafíos grupales. El driver de retención más fuerte para el público universitario.
       </Card>
       <Card title="WhatsApp" icon="message" color="#9333ea">
@@ -115,39 +129,31 @@ Todas las decisiones de priorización están orientadas a maximizar **DAU (Daily
 
 ---
 
-## En foco: Sprint 31
+## En foco: Sprint 32
 
-> Sprint activo — Marzo 2026. 15 historias en definición.
+> Sprint activo — Marzo 2026. Norte: **mejorar la experiencia de clase** para que los alumnos terminen las sesiones.
 
-### Prioridad alta
+### Historias nuevas
 
-| ID | Historia | Épica |
-|----|----------|-------|
-| DASH-010 | Side sheet detalle de unidad | Dashboard |
-| DASH-012 | TUNI en mobile | Dashboard |
-| CLS-220 | Estudiar una unidad específica | Clase |
-| CLS-221 | Cerrar clase sin terminar (alert dialog) | Clase |
-| PLAT-001 | Ambiente con identidad de marca del cliente | Plataforma |
-| PLAT-002 | Ambiente con funcionalidades a medida | Plataforma |
+| Ticket | Historia | Épica | Prioridad |
+|--------|----------|-------|-----------|
+| [TUNI-1087](https://aula-educabot.atlassian.net/browse/TUNI-1087) | Arreglo integral de actividades rotas | Mejoras Clase | Highest |
+| [TUNI-1088](https://aula-educabot.atlassian.net/browse/TUNI-1088) | Clase basada en pasos con duración predecible | Mejoras Clase | High |
+| [TUNI-1089](https://aula-educabot.atlassian.net/browse/TUNI-1089) | Diagnóstico rápido de nivel por materia | Nivelación Inicial | High |
+| [TUNI-1090](https://aula-educabot.atlassian.net/browse/TUNI-1090) | Adaptación de dificultad según nivel detectado | Modelo Estudiante | High |
+| [TUNI-1091](https://aula-educabot.atlassian.net/browse/TUNI-1091) | Modo examen: sesión de práctica intensiva | Modo Desempeño | High |
 
-### Prioridad media
+### Carryover del Sprint 31
 
-| ID | Historia | Épica |
-|----|----------|-------|
-| DASH-007 | Métricas semanales ("Esta semana") | Dashboard |
-| DASH-008 | Racha diaria (gamificación mínima) | Dashboard |
-| DASH-013 | Tutor flotante para consultas generales | Dashboard |
-| CLS-222 | Ocultar actividades reportadas | Clase |
-| CLS-223 | Tutor ayuda a repasar temas | Clase |
-| CLS-224 | Modo desempeño (estudio intensivo) | Clase |
-| CLS-225 | Tutor que sepa de mí — preferencias e historial | Clase |
-| INT-014 | Widget se acuerde de mí | Integraciones |
+| Ticket | Historia | Épica | Estado |
+|--------|----------|-------|--------|
+| [TUNI-1043](https://aula-educabot.atlassian.net/browse/TUNI-1043) | Botón "Ahora no": retomar contexto | Mejoras Clase | En curso |
+| [TUNI-1001](https://aula-educabot.atlassian.net/browse/TUNI-1001) | Tutor que sepa de mí (MVP memoria) | Memoria | En curso |
+| [TUNI-1070](https://aula-educabot.atlassian.net/browse/TUNI-1070) | Bug: redirect a chat-session | Estabilización | En curso |
+| [TUNI-1067](https://aula-educabot.atlassian.net/browse/TUNI-1067) | Widget redirige a materia equivocada | Integración | Por hacer |
+| [TUNI-1045](https://aula-educabot.atlassian.net/browse/TUNI-1045) | Complete phrase no matchea expected | Contenido | Por hacer |
 
-### Prioridad baja
-
-| ID | Historia | Épica |
-|----|----------|-------|
-| INT-015 | Tutor disponible en WhatsApp | Integraciones |
+→ [Planning completo](/sprint32-planning.md)
 
 ---
 
@@ -162,5 +168,5 @@ Todas las decisiones de priorización están orientadas a maximizar **DAU (Daily
 | **Clientes actuales** | ¿Es un pedido o necesidad de los clientes institucionales activos? |
 
 <Note>
-  Las épicas nuevas (Mobile, Perfil, Desafíos, Plataforma, WhatsApp) se suman al trabajo en curso de las épicas existentes (Clase, Dashboard, Onboarding, Contenido, Supervisores). No las reemplazan — se complementan.
+  Las épicas nuevas (Memoria, Modo Repaso, Modo Desempeño, Mobile, Perfil, Comunidad, Plataforma, WhatsApp) se suman al trabajo en curso de las épicas existentes (Clase, Dashboard, Onboarding, Contenido, Supervisores, Integración). No las reemplazan — se complementan.
 </Note>

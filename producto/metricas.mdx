@@ -4,12 +4,7 @@ description: "North Star metric y framework de métricas en capas para medir el 
 icon: "chart-mixed"
 ---
 
-> **Última actualización:** Febrero 2026
-> **Estado:** En construcción
-
-<Warning>
-  Esta página está en proceso de desarrollo. El framework está definido a nivel conceptual; el tracking plan detallado está siendo incorporado.
-</Warning>
+> **Última actualización:** Marzo 2026
 
 ## North Star: DAU
 
@@ -63,6 +58,53 @@ Qué eventos concretos trackear en el producto para alimentar las métricas de N
 <Note>
   **TO-DO:** El tracking plan detallado está en proceso de incorporación. El [plan de Mixpanel actual](/mixpanel-tracking) cubre los eventos implementados hasta ahora.
 </Note>
+
+---
+
+## Baseline — Primeros 15 días en producción
+
+> Datos al 18 de marzo de 2026. Período: primeros 15 días post-lanzamiento.
+
+### Chat sessions (= clases)
+
+Una **chat session** es una clase completa con Ada — desde el inicio hasta el cierre.
+
+| Métrica | Valor | % |
+|---------|-------|---|
+| Total creadas | 175 | — |
+| Llegaron al modo enseñar | 101 | ~58% |
+| Con al menos una study session | 66 | ~38% |
+| Con al menos una study session completa | 48 | ~27% |
+| **Completadas** | **13** | **~7.5%** |
+
+| Métrica de usuarios | Valor | % |
+|---------------------|-------|---|
+| Usuarios que crearon una chat session | 92 | — |
+| **Usuarios que completaron una chat session** | **8** | **~8.7%** |
+
+### Study sessions (= set de actividades dentro de una clase)
+
+Una **study session** es un set de actividades (ejercicios, comprobaciones) dentro de una clase.
+
+| Métrica | Valor | % |
+|---------|-------|---|
+| Study sessions creadas | 89 | — |
+| **Study sessions completadas** | **61** | **~69%** |
+| Usuarios que realizaron una study session | 52 | — |
+| **Usuarios que completaron una study session** | **40** | **~77%** |
+
+### Lectura
+
+<Warning>
+  **Hallazgo crítico:** Los alumnos completan las actividades individuales (69-77%) pero no completan la clase (7.5%). El cuello de botella no es la actividad — es la estructura de la clase. La clase hoy se completa al subir de nivel (objetivo de resultado), lo que genera sesiones impredecibles y sin sensación de cierre.
+</Warning>
+
+Este hallazgo es el driver principal del [Sprint 32](/sprint32-planning): reestructurar la clase en pasos con duración predecible ([TUNI-1088](https://aula-educabot.atlassian.net/browse/TUNI-1088)).
+
+**Métricas objetivo post-Sprint 32:**
+- Chat session completion rate: de ~7.5% a >40%
+- User completion rate: de ~8.7% a >30%
+- Mantener study session completion rate ≥ 69%
 
 ---
 

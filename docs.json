@@ -85,6 +85,12 @@
             ]
           },
           {
+            "group": "Admin (Panel Interno)",
+            "pages": [
+              "epicas/admin/spec"
+            ]
+          },
+          {
             "group": "Supervisores",
             "pages": [
               "epicas/supervisores/overview",
@@ -115,6 +121,30 @@
             "group": "Mobile",
             "pages": [
               "epicas/mobile/overview"
+            ]
+          },
+          {
+            "group": "Nivelación Inicial",
+            "pages": [
+              "epicas/nivelacion/overview"
+            ]
+          },
+          {
+            "group": "Memoria",
+            "pages": [
+              "epicas/memoria/overview"
+            ]
+          },
+          {
+            "group": "Modo Repaso",
+            "pages": [
+              "epicas/modo-repaso/overview"
+            ]
+          },
+          {
+            "group": "Modo Desempeño",
+            "pages": [
+              "epicas/modo-desempeno/overview"
             ]
           }
         ]
